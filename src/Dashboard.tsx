@@ -1,56 +1,10 @@
+import iconHome from './assets/sidebar-icons/home.svg'
+import iconLibrary from './assets/sidebar-icons/library.svg'
+import iconAi from './assets/sidebar-icons/ai.svg'
+import iconTodo from './assets/sidebar-icons/todo.svg'
+import iconCalendar from './assets/sidebar-icons/calendar.svg'
+
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
-
-function IconHome({ size = 22, strokeWidth = 1.8, className }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className ? `opacity-90 ${className}` : 'opacity-90'}
-    >
-      <path
-        d="M4 10.2L12 4l8 6.2V20a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 20v-9.8Z"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        strokeLinejoin="round"
-      />
-      <path
-        d="M9.5 21.5v-7a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v7"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function IconLibrary({ size = 22, strokeWidth = 1.8, className }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className ? `opacity-90 ${className}` : 'opacity-90'}
-    >
-      <path
-        d="M6.5 5.5h9.5a2 2 0 0 1 2 2v12.5a1.5 1.5 0 0 1-1.5 1.5H6.5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8 9h8M8 12h8M8 15h6"
-        stroke="currentColor"
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
 
 function IconClock({ size = 18, strokeWidth = 1.8, className }: IconProps) {
   return (
@@ -143,97 +97,48 @@ function IconDoc({ size = 28, strokeWidth = 1.8, className }: IconProps) {
 }
 
 function Sidebar() {
-  const itemClassName =
-    'grid h-[38px] w-[38px] place-items-center rounded-full border border-[rgba(255,255,255,0.16)] shadow-[0_12px_30px_rgba(0,0,0,0.18)]'
+  const items: Array<{ label: string; iconSrc: string; active?: boolean }> = [
+    { label: 'Home', iconSrc: iconHome, active: true },
+    { label: 'Library', iconSrc: iconLibrary },
+    { label: 'Notion AI', iconSrc: iconAi },
+    { label: 'Todo list', iconSrc: iconTodo },
+    { label: 'Notion Calendar', iconSrc: iconCalendar },
+  ]
 
-  const plainItemClassName = 'grid h-[38px] w-[38px] place-items-center rounded-full opacity-80'
+  const itemClassName =
+    'group/item relative flex h-[86px] w-full items-center gap-0 rounded-full bg-white/10 px-0 text-white/70 transition-[background-color,color,box-shadow] duration-200 group-hover:gap-[18px] group-hover:px-[22px]'
 
   return (
     <div
       enable-xr={true}
       style={{ '--xr-background-material': 'translucent' }}
-      className="absolute left-[-92px] top-[130px] flex h-[372px] w-[72px] flex-col items-center gap-[18px] rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[10px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+      className="group absolute right-[calc(100%+24px)] top-[130px] flex h-[372px] w-[72px] flex-col gap-[14px] overflow-hidden rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md transition-[width] duration-300 ease-out hover:w-[360px]"
       aria-label="Sidebar"
     >
-      <div className={itemClassName} aria-label="Home">
-        <IconHome />
-      </div>
-      <div className={plainItemClassName} aria-label="Library">
-        <IconLibrary className="opacity-75" />
-      </div>
-      <div className={plainItemClassName} aria-label="Activity">
-        <svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="opacity-75"
+      {items.map((item) => (
+        <button
+          key={item.label}
+          type="button"
+          className={`${itemClassName} justify-center ${
+            item.active
+              ? 'bg-white/20 text-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.22)]'
+              : 'hover:bg-white/20'
+          } hover:ring-1 hover:ring-white/10 group-hover:justify-start`}
+          aria-label={item.label}
         >
-          <path
-            d="M7 17l4-4 3 3 5-7"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <img
+            src={item.iconSrc}
+            alt=""
+            aria-hidden="true"
+            className={`h-[32px] w-[32px] shrink-0 transition-opacity duration-200 ${
+              item.active ? 'opacity-100' : 'opacity-60 group-hover/item:opacity-90'
+            }`}
           />
-          <path
-            d="M5.5 19.5h13"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-      <div className={plainItemClassName} aria-label="Tasks">
-        <svg
-          width={22}
-          height={22}
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="opacity-75"
-        >
-          <path
-            d="M7 12l3 3 7-8"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M5.5 6.5h13"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-      <div
-        className="grid h-[30px] w-[30px] place-items-center rounded-[10px] border border-[rgba(255,255,255,0.16)] opacity-75"
-        aria-label="Dock"
-      >
-        <svg
-          width={18}
-          height={18}
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7 3.5h8.5L18.5 6.5v14A1.5 1.5 0 0 1 17 22H7A1.5 1.5 0 0 1 5.5 20.5V5A1.5 1.5 0 0 1 7 3.5Z"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinejoin="round"
-          />
-          <path
-            d="M15.5 3.5V6.5h3"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
+          <span className="min-w-0 max-w-0 overflow-hidden truncate whitespace-nowrap text-[44px] font-medium leading-none tracking-[-0.02em] opacity-0 translate-x-[-8px] transition-[max-width,opacity,transform] duration-300 group-hover:max-w-[260px] group-hover:translate-x-0 group-hover:opacity-100">
+            {item.label}
+          </span>
+        </button>
+      ))}
     </div>
   )
 }
