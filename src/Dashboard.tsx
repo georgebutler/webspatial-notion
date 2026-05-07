@@ -150,7 +150,9 @@ function Sidebar() {
 
   return (
     <div
-      className="absolute left-[-46px] top-[130px] flex h-[372px] w-[72px] flex-col items-center gap-[18px] rounded-[44px] border border-[rgba(255,255,255,0.14)] p-[10px] shadow-[0_20px_50px_rgba(0,0,0,0.28)]"
+      enable-xr={true}
+      style={{ '--xr-background-material': 'translucent' }}
+      className="absolute left-[-46px] top-[130px] flex h-[372px] w-[72px] flex-col items-center gap-[18px] rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[10px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
       aria-label="Sidebar"
     >
       <div className={itemClassName} aria-label="Home">
@@ -279,12 +281,14 @@ function EventRow({ color, title, time }: { color: string; title: string; time: 
 export default function Dashboard() {
   return (
     <div
-      className="relative box-border h-[min(680px,78vh)] w-[min(1120px,92vw)] p-[46px] text-[rgba(245,245,245,0.96)]"
+      className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)] text-[rgba(245,245,245,0.96)]"
     >
       <Sidebar />
 
       <div
-        className="flex h-full flex-col gap-[26px]"
+        enable-xr={true}
+        style={{ '--xr-background-material': 'translucent' }}
+        className="flex h-full flex-col gap-[26px] rounded-[32px] border border-[rgba(255,255,255,0.12)] bg-white/5 p-[46px] shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-md"
       >
         <div
           className="mt-1 text-center text-[64px] font-extrabold tracking-[-0.03em]"
