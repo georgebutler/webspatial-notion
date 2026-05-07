@@ -3,6 +3,7 @@ import iconLibrary from './assets/sidebar-icons/library.svg'
 import iconAi from './assets/sidebar-icons/ai.svg'
 import iconTodo from './assets/sidebar-icons/todo.svg'
 import iconCalendar from './assets/sidebar-icons/calendar.svg'
+import userAvatar from './assets/user.png'
 
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
 
@@ -97,8 +98,8 @@ function IconDoc({ size = 28, strokeWidth = 1.8, className }: IconProps) {
 }
 
 function Sidebar() {
-  const items: Array<{ label: string; iconSrc: string; active?: boolean }> = [
-    { label: 'Home', iconSrc: iconHome, active: true },
+  const items: Array<{ label: string; iconSrc: string }> = [
+    { label: 'Home', iconSrc: iconHome },
     { label: 'Library', iconSrc: iconLibrary },
     { label: 'Notion AI', iconSrc: iconAi },
     { label: 'Todo list', iconSrc: iconTodo },
@@ -119,20 +120,14 @@ function Sidebar() {
         <button
           key={item.label}
           type="button"
-          className={`${itemClassName} justify-center ${
-            item.active
-              ? 'bg-white/20 text-white/95 shadow-[0_10px_30px_rgba(0,0,0,0.22)]'
-              : 'hover:bg-white/20'
-          } hover:ring-1 hover:ring-white/10 group-hover:justify-start`}
+          className={`${itemClassName} justify-center hover:bg-white/20 hover:text-white/95 hover:shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:ring-1 hover:ring-white/10 focus-visible:bg-white/20 focus-visible:text-white/95 focus-visible:shadow-[0_10px_30px_rgba(0,0,0,0.22)] focus-visible:ring-1 focus-visible:ring-white/15 group-hover:justify-start`}
           aria-label={item.label}
         >
           <img
             src={item.iconSrc}
             alt=""
             aria-hidden="true"
-            className={`h-[32px] w-[32px] shrink-0 transition-opacity duration-200 ${
-              item.active ? 'opacity-100' : 'opacity-60 group-hover/item:opacity-90'
-            }`}
+            className="h-[32px] w-[32px] shrink-0 opacity-60 transition-opacity duration-200 group-hover/item:opacity-90"
           />
           <span className="min-w-0 max-w-0 overflow-hidden truncate whitespace-nowrap text-[44px] font-medium leading-none tracking-[-0.02em] opacity-0 translate-x-[-8px] transition-[max-width,opacity,transform] duration-300 group-hover:max-w-[260px] group-hover:translate-x-0 group-hover:opacity-100">
             {item.label}
@@ -158,9 +153,10 @@ function RecentlyVisitedCard({ title }: { title: string }) {
       </div>
 
       <div className="flex items-center gap-[10px] opacity-90">
-        <div
-          className="h-[22px] w-[22px] rounded-full border border-[rgba(255,255,255,0.18)]"
-          aria-hidden="true"
+        <img
+          src={userAvatar}
+          alt="User"
+          className="h-[22px] w-[22px] rounded-full border border-[rgba(255,255,255,0.18)] object-cover"
         />
         <div className="text-[16px] opacity-90">Feb 2</div>
       </div>
