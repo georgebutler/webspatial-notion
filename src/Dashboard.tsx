@@ -152,7 +152,7 @@ function Sidebar() {
     <div
       enable-xr={true}
       style={{ '--xr-background-material': 'translucent' }}
-      className="absolute left-[-46px] top-[130px] flex h-[372px] w-[72px] flex-col items-center gap-[18px] rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[10px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
+      className="absolute left-[-92px] top-[130px] flex h-[372px] w-[72px] flex-col items-center gap-[18px] rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[10px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md"
       aria-label="Sidebar"
     >
       <div className={itemClassName} aria-label="Home">
@@ -209,7 +209,6 @@ function Sidebar() {
           />
         </svg>
       </div>
-      <div className="flex-1" />
       <div
         className="grid h-[30px] w-[30px] place-items-center rounded-[10px] border border-[rgba(255,255,255,0.16)] opacity-75"
         aria-label="Dock"
