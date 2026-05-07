@@ -4,6 +4,7 @@ function App() {
   return (
     <div
       style={{
+        backgroundColor: 'transparent',
         height: '100vh',
         width: '100vw',
         display: 'flex',
@@ -14,10 +15,7 @@ function App() {
       <div
         enable-xr={true}
         style={{
-          '--xr-background-material': 'translucent',
-          borderRadius: 46,
-          border: '1px solid rgba(255,255,255,0.10)',
-          boxShadow: '0 30px 90px rgba(0,0,0,0.35)',
+          '--xr-background-material': 'translucent'
         }}
       >
         <Dashboard />

@@ -372,7 +372,7 @@ export default function Dashboard() {
             marginTop: 4,
           }}
         >
-          Mock Notion
+          Good afternoon
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
