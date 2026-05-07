@@ -2,16 +2,7 @@ import Dashboard from './Dashboard'
 
 function App() {
   return (
-    <div
-      style={{
-        backgroundColor: 'transparent',
-        height: '100vh',
-        width: '100vw',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <div className="flex h-screen w-screen items-center justify-center bg-transparent">
       <div
         enable-xr={true}
         style={{

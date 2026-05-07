@@ -1,6 +1,1 @@
 @import "tailwindcss";
-
-.isSpatial {
-  --xr-background-material: transparent;
-  background-color: transparent;
-}
