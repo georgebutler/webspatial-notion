@@ -79,7 +79,7 @@ function NavItem({
 
 export default function Library() {
   return (
-    <div className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)] text-[rgba(245,245,245,0.96)]">
+    <div className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)]">
       <div
         enable-xr={true}
         style={{ '--xr-background-material': 'translucent' }}

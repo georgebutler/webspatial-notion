@@ -138,7 +138,7 @@ function EventRow({ color, title, time }: { color: string; title: string; time: 
 export default function Dashboard({ onNavigate }: DashboardProps) {
   return (
     <div
-      className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)] text-[rgba(245,245,245,0.96)]"
+      className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)]"
     >
       <Sidebar onNavigate={onNavigate} />
 

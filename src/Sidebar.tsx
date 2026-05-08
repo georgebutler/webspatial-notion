@@ -11,6 +11,8 @@ export default function Sidebar({
 }: {
   onNavigate?: (route: Route) => void
 }) {
+  const isSpatial = typeof document !== 'undefined' && document.body.classList.contains('isSpatial')
+
   const items: Array<{ label: string; iconSrc: string; route?: Route }> = [
     { label: 'Home', iconSrc: iconHome, route: 'dashboard' },
     { label: 'Library', iconSrc: iconLibrary, route: 'library' },
@@ -19,14 +21,23 @@ export default function Sidebar({
     { label: 'Notion Calendar', iconSrc: iconCalendar },
   ]
 
-  const itemClassName =
-    'group/item relative flex h-[86px] w-full items-center gap-0 rounded-full bg-white/10 px-0 text-white/70 transition-[background-color,color,box-shadow] duration-200 group-hover:gap-[18px] group-hover:px-[22px]'
+  const itemClassName = isSpatial
+    ? 'group/item relative flex h-[86px] w-full items-center gap-0 rounded-full bg-white/10 px-0 text-white/70 transition-[background-color,color,box-shadow] duration-200 group-hover:gap-[18px] group-hover:px-[22px]'
+    : 'group/item relative flex h-[86px] w-full items-center gap-0 rounded-full bg-black/5 px-0 text-black/70 transition-[background-color,color,box-shadow] duration-200 group-hover:gap-[18px] group-hover:px-[22px]'
+
+  const containerClassName = isSpatial
+    ? 'group absolute right-[calc(100%+24px)] top-[130px] flex h-[372px] w-[72px] flex-col gap-[14px] overflow-hidden rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md transition-[width] duration-300 ease-out hover:w-[360px]'
+    : 'group absolute right-[calc(100%+24px)] top-[130px] flex h-[372px] w-[72px] flex-col gap-[14px] overflow-hidden rounded-[44px] border border-black/10 bg-white/80 p-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur-md transition-[width] duration-300 ease-out hover:w-[360px]'
+
+  const buttonHoverClassName = isSpatial
+    ? 'hover:bg-white/20 hover:text-white/95 hover:shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:ring-1 hover:ring-white/10 focus-visible:bg-white/20 focus-visible:text-white/95 focus-visible:shadow-[0_10px_30px_rgba(0,0,0,0.22)] focus-visible:ring-1 focus-visible:ring-white/15'
+    : 'hover:bg-black/10 hover:text-black hover:shadow-[0_10px_30px_rgba(0,0,0,0.12)] hover:ring-1 hover:ring-black/10 focus-visible:bg-black/10 focus-visible:text-black focus-visible:shadow-[0_10px_30px_rgba(0,0,0,0.12)] focus-visible:ring-1 focus-visible:ring-black/15'
 
   return (
     <div
       enable-xr={true}
       style={{ '--xr-background-material': 'translucent' }}
-      className="group absolute right-[calc(100%+24px)] top-[130px] flex h-[372px] w-[72px] flex-col gap-[14px] overflow-hidden rounded-[44px] border border-[rgba(255,255,255,0.14)] bg-white/5 p-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.28)] backdrop-blur-md transition-[width] duration-300 ease-out hover:w-[360px]"
+      className={containerClassName}
       aria-label="Sidebar"
     >
       {items.map((item) => (
@@ -64,14 +75,16 @@ export default function Sidebar({
 
             onNavigate?.(item.route)
           }}
-          className={`${itemClassName} justify-center hover:bg-white/20 hover:text-white/95 hover:shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:ring-1 hover:ring-white/10 focus-visible:bg-white/20 focus-visible:text-white/95 focus-visible:shadow-[0_10px_30px_rgba(0,0,0,0.22)] focus-visible:ring-1 focus-visible:ring-white/15 group-hover:justify-start`}
+          className={`${itemClassName} ${buttonHoverClassName} justify-center group-hover:justify-start`}
           aria-label={item.label}
         >
           <img
             src={item.iconSrc}
             alt=""
             aria-hidden="true"
-            className="h-[32px] w-[32px] shrink-0 opacity-60 transition-opacity duration-200 group-hover/item:opacity-90"
+            className={`h-[32px] w-[32px] shrink-0 opacity-60 transition-opacity duration-200 group-hover/item:opacity-90 ${
+              isSpatial ? '' : 'invert'
+            }`}
           />
           <span className="min-w-0 max-w-0 overflow-hidden truncate whitespace-nowrap text-[44px] font-medium leading-none tracking-[-0.02em] opacity-0 translate-x-[-8px] transition-[max-width,opacity,transform] duration-300 group-hover:max-w-[260px] group-hover:translate-x-0 group-hover:opacity-100">
             {item.label}
