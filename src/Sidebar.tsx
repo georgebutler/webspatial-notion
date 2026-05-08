@@ -33,7 +33,37 @@ export default function Sidebar({
         <button
           key={item.label}
           type="button"
-          onClick={() => (item.route ? onNavigate?.(item.route) : undefined)}
+          onClick={() => {
+            if (!item.route) return
+
+            if (item.route === 'library') {
+              const url = new URL(window.location.href)
+              url.searchParams.set('route', 'library')
+
+              const currentX = typeof window.screenX === 'number' ? window.screenX : 0
+              const currentY = typeof window.screenY === 'number' ? window.screenY : 0
+              const currentW = typeof window.outerWidth === 'number' ? window.outerWidth : 1120
+              const currentH = typeof window.outerHeight === 'number' ? window.outerHeight : 760
+              const availW = typeof window.screen?.availWidth === 'number' ? window.screen.availWidth : currentW
+              const availH =
+                typeof window.screen?.availHeight === 'number' ? window.screen.availHeight : currentH
+
+              const width = Math.min(currentW, availW)
+              const height = Math.min(currentH, availH)
+
+              // Try to open next to the current window (avoid overlapping), fall back to a small offset.
+              let left = currentX + currentW + 24
+              let top = currentY
+              if (left + width > availW) left = Math.max(0, currentX + 40)
+              if (top + height > availH) top = Math.max(0, availH - height)
+
+              const features = `popup=yes,width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`
+              window.open(url.toString(), '_blank', features)
+              return
+            }
+
+            onNavigate?.(item.route)
+          }}
           className={`${itemClassName} justify-center hover:bg-white/20 hover:text-white/95 hover:shadow-[0_10px_30px_rgba(0,0,0,0.22)] hover:ring-1 hover:ring-white/10 focus-visible:bg-white/20 focus-visible:text-white/95 focus-visible:shadow-[0_10px_30px_rgba(0,0,0,0.22)] focus-visible:ring-1 focus-visible:ring-white/15 group-hover:justify-start`}
           aria-label={item.label}
         >
@@ -51,4 +81,3 @@ export default function Sidebar({
     </div>
   )
 }
-

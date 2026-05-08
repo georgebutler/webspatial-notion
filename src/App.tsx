@@ -1,17 +1,29 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Dashboard from './Dashboard'
 import Library from './Library'
 
 function App() {
-  const [route, setRoute] = useState<'dashboard' | 'library'>('dashboard')
+  const initialRoute =
+    new URLSearchParams(window.location.search).get('route') === 'library'
+      ? 'library'
+      : 'dashboard'
+
+  const [route, setRoute] = useState<'dashboard' | 'library'>(initialRoute)
+
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (route === 'dashboard') url.searchParams.delete('route')
+    else url.searchParams.set('route', route)
+    window.history.replaceState({}, '', url)
+  }, [route])
 
   return (
     <div className="flex h-screen w-screen items-center justify-center bg-transparent">
       {route === 'dashboard' ? (
         <Dashboard onNavigate={setRoute} />
       ) : (
-        <Library onNavigate={setRoute} />
+        <Library />
       )}
     </div>
   )

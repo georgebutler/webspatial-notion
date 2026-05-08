@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-import Sidebar, { type Route } from './Sidebar'
-
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
 
 function IconDoc({ size = 20, strokeWidth = 1.8, className }: IconProps) {
@@ -79,13 +77,9 @@ function NavItem({
   )
 }
 
-type LibraryProps = { onNavigate?: (route: Route) => void }
-
-export default function Library({ onNavigate }: LibraryProps) {
+export default function Library() {
   return (
     <div className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)] text-[rgba(245,245,245,0.96)]">
-      <Sidebar onNavigate={onNavigate} />
-
       <div
         enable-xr={true}
         style={{ '--xr-background-material': 'translucent' }}
