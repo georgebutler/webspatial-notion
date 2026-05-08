@@ -4,7 +4,7 @@ import iconAi from './assets/sidebar-icons/ai.svg'
 import iconTodo from './assets/sidebar-icons/todo.svg'
 import iconCalendar from './assets/sidebar-icons/calendar.svg'
 
-export type Route = 'dashboard' | 'library'
+export type Route = 'dashboard' | 'library' | 'ai'
 
 export default function Sidebar({
   onNavigate,
@@ -16,7 +16,7 @@ export default function Sidebar({
   const items: Array<{ label: string; iconSrc: string; route?: Route }> = [
     { label: 'Home', iconSrc: iconHome, route: 'dashboard' },
     { label: 'Library', iconSrc: iconLibrary, route: 'library' },
-    { label: 'Notion AI', iconSrc: iconAi },
+    { label: 'Notion AI', iconSrc: iconAi, route: 'ai' },
     { label: 'Todo list', iconSrc: iconTodo },
     { label: 'Notion Calendar', iconSrc: iconCalendar },
   ]
@@ -47,15 +47,16 @@ export default function Sidebar({
           onClick={() => {
             if (!item.route) return
 
-            if (item.route === 'library') {
+            const openSceneInNewWindow = (route: Exclude<Route, 'dashboard'>) => {
               const url = new URL(window.location.href)
-              url.searchParams.set('route', 'library')
+              url.searchParams.set('route', route)
 
               const currentX = typeof window.screenX === 'number' ? window.screenX : 0
               const currentY = typeof window.screenY === 'number' ? window.screenY : 0
               const currentW = typeof window.outerWidth === 'number' ? window.outerWidth : 1120
               const currentH = typeof window.outerHeight === 'number' ? window.outerHeight : 760
-              const availW = typeof window.screen?.availWidth === 'number' ? window.screen.availWidth : currentW
+              const availW =
+                typeof window.screen?.availWidth === 'number' ? window.screen.availWidth : currentW
               const availH =
                 typeof window.screen?.availHeight === 'number' ? window.screen.availHeight : currentH
 
@@ -70,6 +71,10 @@ export default function Sidebar({
 
               const features = `popup=yes,width=${width},height=${height},left=${left},top=${top},noopener,noreferrer`
               window.open(url.toString(), '_blank', features)
+            }
+
+            if (item.route === 'library' || item.route === 'ai') {
+              openSceneInNewWindow(item.route)
               return
             }
 
