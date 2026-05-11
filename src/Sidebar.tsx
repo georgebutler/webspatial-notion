@@ -4,7 +4,7 @@ import iconAi from './assets/sidebar-icons/ai.svg'
 import iconTodo from './assets/sidebar-icons/todo.svg'
 import iconCalendar from './assets/sidebar-icons/calendar.svg'
 
-export type Route = 'dashboard' | 'library' | 'ai' | 'todo'
+export type Route = 'dashboard' | 'library' | 'ai' | 'todo' | 'calendar'
 
 export default function Sidebar({
   onNavigate,
@@ -18,7 +18,7 @@ export default function Sidebar({
     { label: 'Library', iconSrc: iconLibrary, route: 'library' },
     { label: 'Notion AI', iconSrc: iconAi, route: 'ai' },
     { label: 'Todo list', iconSrc: iconTodo, route: 'todo' },
-    { label: 'Notion Calendar', iconSrc: iconCalendar },
+    { label: 'Notion Calendar', iconSrc: iconCalendar, route: 'calendar' },
   ]
 
   const itemClassName = isSpatial
@@ -73,7 +73,12 @@ export default function Sidebar({
               window.open(url.toString(), '_blank', features)
             }
 
-            if (item.route === 'library' || item.route === 'ai' || item.route === 'todo') {
+            if (
+              item.route === 'library' ||
+              item.route === 'ai' ||
+              item.route === 'todo' ||
+              item.route === 'calendar'
+            ) {
               openSceneInNewWindow(item.route)
               return
             }

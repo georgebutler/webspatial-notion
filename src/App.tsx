@@ -2,18 +2,19 @@ import { useEffect, useState } from 'react'
 
 import Dashboard from './Dashboard'
 import Ai from './Ai'
+import Calendar from './Calendar'
 import Library from './Library'
 import Todo from './Todo'
 
 function App() {
   const initialRoute =
-    ((): 'dashboard' | 'library' | 'ai' | 'todo' => {
+    ((): 'dashboard' | 'library' | 'ai' | 'todo' | 'calendar' => {
       const route = new URLSearchParams(window.location.search).get('route')
-      if (route === 'library' || route === 'ai' || route === 'todo') return route
+      if (route === 'library' || route === 'ai' || route === 'todo' || route === 'calendar') return route
       return 'dashboard'
     })()
 
-  const [route, setRoute] = useState<'dashboard' | 'library' | 'ai' | 'todo'>(initialRoute)
+  const [route, setRoute] = useState<'dashboard' | 'library' | 'ai' | 'todo' | 'calendar'>(initialRoute)
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -30,6 +31,8 @@ function App() {
         <Library />
       ) : route === 'ai' ? (
         <Ai />
+      ) : route === 'calendar' ? (
+        <Calendar />
       ) : (
         <Todo />
       )}
