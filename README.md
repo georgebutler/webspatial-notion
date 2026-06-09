@@ -1,73 +1,72 @@
-# React + TypeScript + Vite
+# WebSpatial Notion
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+WebSpatial Notion is a frontend demo designed to showcase what a productivity app like Notion might look like as a web spatial app.
 
-Currently, two official plugins are available:
+This is not a fully functional Notion client. It is a functional frontend demo focused on spatial UI concepts, layout ideas, and interaction patterns rather than production-ready workspace, document editing, authentication, collaboration, or data-sync features.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What this demo includes
 
-## React Compiler
+- A dashboard-style home view
+- A library view
+- A Notion AI-inspired view
+- A todo/checklist view
+- A calendar view
+- Route query support for opening specific views
+- WebSpatial environment detection and spatial-specific styling
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## What this is not
 
-## Expanding the ESLint configuration
+This is not a complete productivity application or a fully functional client. It is a frontend-only demo intended to communicate the feel of a spatial productivity experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- WebSpatial SDK
+- WebSpatial Builder
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Install dependencies:
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Build the project:
+
+```bash
+npm run build
+```
+
+Run linting:
+
+```bash
+npm run lint
+```
+
+## Preview
+
+Build and preview the app locally:
+
+```bash
+npm run preview
+```
+
+Run with WebSpatial Builder:
+
+```bash
+npm run avp
+```
+
+## Notes
+
+The app detects whether it is running in a spatial web environment and adjusts styling accordingly. In non-spatial browsers, it still runs as a regular frontend demo.
