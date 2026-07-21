@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ComponentProps } from 'react'
+import { Model } from '@webspatial/react-sdk'
 
 type DocumentItem = {
   title: string
@@ -13,6 +14,15 @@ const documents: DocumentItem[] = [
 ]
 
 function SolarSystemDocument() {
+  const modelProps = {
+    'enable-xr': true,
+    autoPlay: true,
+    loop: true,
+    poster: '/solar-system-placeholder.svg',
+    src: '/usdz/Planets.usdz',
+    className: 'model3D product-3D mt-8 block aspect-[2/1] h-auto w-full max-w-full self-stretch overflow-hidden rounded-2xl bg-[#15171d] object-cover',
+  } as ComponentProps<typeof Model> & { poster: string }
+
   return (
     <>
       <h1 className="text-3xl font-bold">The Solar System</h1>
@@ -20,13 +30,24 @@ function SolarSystemDocument() {
         The solar system is our cosmic neighborhood, centered on the Sun and made up of planets, moons,
         dwarf planets, asteroids, comets, and dust held together by gravity.
       </p>
-      <figure className="mt-8 overflow-hidden rounded-2xl border border-black/10 bg-[#15171d]">
+      <Model
+        {...modelProps}
+        style={{
+          width: '100%',
+          height: 'auto',
+          maxWidth: '100%',
+          aspectRatio: '2 / 1',
+          backgroundColor: '#15171d',
+          borderRadius: '1rem',
+        }}
+      >
+        <source src="/usdz/Planets.usdz" type="model/vnd.usdz+zip" />
         <img
+          alt="Solar System"
           src="/solar-system-placeholder.svg"
-          alt="Placeholder illustration of the solar system and its planetary orbits"
-          className="block aspect-[16/9] w-full object-cover"
+          className="model-fallback block aspect-[2/1] h-full w-full object-cover"
         />
-      </figure>
+      </Model>
       <p className="mt-8 text-[16px] leading-7">
         The eight planets orbit the Sun in order: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and
         Neptune. Mercury is the smallest and closest to the Sun; Venus is a hot, cloud-covered rocky world;

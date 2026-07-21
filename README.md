@@ -70,3 +70,9 @@ npm run avp
 ## Notes
 
 The app detects whether it is running in a spatial web environment and adjusts styling accordingly. In non-spatial browsers, it still runs as a regular frontend demo.
+
+### Model element polyfill
+
+The Solar System document uses the web platform's `<model>` element to display the `Planets.usdz` asset. Native `<model>` support is currently limited, so regular browsers load the Immersive Web model-element polyfill from `public/model-element-polyfill.js` during startup. The polyfill provides the browser-side USDZ renderer, canvas fallback, model controls, and animation playback while preserving the same `<model>` markup used by WebSpatial.
+
+If you change the model markup, keep the `<source type="model/vnd.usdz+zip">` child and a useful fallback image. The polyfill is loaded automatically by `src/main.tsx` only when the browser does not already expose `HTMLModelElement`; WebSpatial environments continue using the SDK's native `<Model>` integration.
