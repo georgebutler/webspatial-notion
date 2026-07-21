@@ -1,6 +1,6 @@
 # WebSpatial Notion
 
-WebSpatial Notion is a frontend demo designed to showcase what a productivity app like Notion might look like as a web spatial app.
+WebSpatial Notion is a frontend demo designed to showcase what a productivity app like Notion might look like as a WebSpatial app.
 
 This is not a fully functional Notion client. It is a functional frontend demo focused on spatial UI concepts, layout ideas, and interaction patterns rather than production-ready workspace, document editing, authentication, collaboration, or data-sync features.
 
