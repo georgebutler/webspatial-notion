@@ -20,7 +20,7 @@ export default function Sidebar() {
     <div
       enable-xr={true}
       style={{ '--xr-background-material': 'translucent' }}
-      className="inline-flex w-[68px] flex-col items-center gap-3 rounded-[34px] border border-white/10 p-3 shadow sm:w-[68px]"
+      className="notion-sidebar inline-flex w-[68px] flex-col items-center gap-3 rounded-[34px] border border-white/10 p-3 shadow sm:w-[68px]"
       aria-label="Sidebar"
     >
       {items.map((item, index) => (

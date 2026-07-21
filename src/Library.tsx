@@ -147,7 +147,7 @@ function NavItem({
 export default function Library() {
   return (
     <div className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
-      <aside className="w-[360px] shrink-0 bg-[rgba(0,0,0,0.34)] p-[28px] max-[1023px]:w-[250px] max-[1023px]:p-[20px] max-[639px]:w-[128px] max-[639px]:p-[14px]">
+      <aside className="notion-sidebar w-[360px] shrink-0 bg-[rgba(0,0,0,0.34)] p-[28px] max-[1023px]:w-[250px] max-[1023px]:p-[20px] max-[639px]:w-[128px] max-[639px]:p-[14px]">
             <div className="text-[34px] font-extrabold tracking-[-0.03em] text-white/95 max-[1023px]:text-[28px] max-[639px]:text-[20px]">
               Amy's Notion
             </div>
@@ -181,7 +181,7 @@ export default function Library() {
                   </p>
                 </section>
 
-                <section className="relative overflow-hidden rounded-[14px] border border-black/10 bg-[#15171d]">
+                <section className="notion-model-surface relative overflow-hidden rounded-[14px] border border-black/10 bg-[#15171d]">
                   <div className="pointer-events-none absolute z-10 m-[16px] flex items-center gap-[8px] rounded-full bg-black/35 px-[10px] py-[6px] text-[13px] font-semibold text-white/88 backdrop-blur-md max-[1023px]:m-[10px] max-[1023px]:gap-[6px] max-[1023px]:px-[8px] max-[1023px]:py-[5px] max-[1023px]:text-[12px] max-[639px]:m-[8px] max-[639px]:gap-[4px] max-[639px]:px-[6px] max-[639px]:py-[4px] max-[639px]:text-[10px]">
                     <IconCube size={16} />
                     <span>3D Model</span>
