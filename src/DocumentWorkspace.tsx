@@ -5,12 +5,42 @@ type DocumentItem = {
 }
 
 const documents: DocumentItem[] = [
+  { title: 'The Solar System' },
   { title: 'Q3 Product Development' },
   { title: 'Feature Specification' },
   { title: 'Product Roadmap Q1' },
 ]
 
+function SolarSystemDocument() {
+  return (
+    <>
+      <h1 className="text-3xl font-bold">The Solar System</h1>
+      <p className="mt-4 text-[16px] leading-7">
+        The solar system is our cosmic neighborhood, centered on the Sun and made up of planets, moons,
+        dwarf planets, asteroids, comets, and dust held together by gravity.
+      </p>
+      <figure className="mt-8 overflow-hidden rounded-2xl border border-black/10 bg-[#15171d]">
+        <img
+          src="/solar-system-placeholder.svg"
+          alt="Placeholder illustration of the solar system and its planetary orbits"
+          className="block aspect-[16/9] w-full object-cover"
+        />
+      </figure>
+      <p className="mt-8 text-[16px] leading-7">
+        The eight planets orbit the Sun in order: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and
+        Neptune. Mercury is the smallest and closest to the Sun; Venus is a hot, cloud-covered rocky world;
+        Earth is the only known planet with life; Mars is a cold, iron-rich planet; Jupiter is the largest
+        planet; Saturn is known for its bright rings; Uranus is an ice giant that rotates on its side; and
+        Neptune is a distant, windy ice giant. Together, these worlds show the remarkable variety of planets
+        in our solar system.
+      </p>
+    </>
+  )
+}
+
 function DocumentBody({ title }: { title: string }) {
+  if (title === 'The Solar System') return <SolarSystemDocument />
+
   return (
     <>
       <h1 className="text-3xl font-bold">{title}</h1>

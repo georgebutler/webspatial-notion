@@ -105,11 +105,12 @@ const daysAgo = (days: number) => {
 }
 
 const workspaceItems: WorkspaceItem[] = [
-  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(0) },
-  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(1) },
-  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(2) },
-  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(3) },
-  { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(12) },
+  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(0) },
+  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(1) },
+  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(2) },
+  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(3) },
+  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(4) },
+  { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(13) },
 ]
 
 const eventColors = ['bg-cyan-400', 'bg-emerald-400', 'bg-yellow-400', 'bg-fuchsia-400']
