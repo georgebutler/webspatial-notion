@@ -113,7 +113,7 @@ export default function Todo() {
           {selectedTitleForView ? (
             <ListContent title={selectedTitleForView} items={items} onToggle={toggleItem} />
           ) : (
-            <h1 className="text-2xl font-semibold">Click a list on the left to get started</h1>
+            <h1 className="text-lg font-semibold text-white/90">Click a list on the left to get started</h1>
           )}
         </div>
       </div>

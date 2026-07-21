@@ -12,23 +12,7 @@ function App() {
   if (pathname === '/ai') return <Ai />
   if (pathname === '/calendar') return <Calendar />
 
-  if (pathname === '/doc') {
-    return (
-      <div className="h-screen w-screen overflow-hidden p-4 sm:p-6">
-        <div className="mx-auto flex h-full w-full max-w-[960px]">
-          <main className="min-w-0 flex-1 overflow-hidden">
-            <div
-              enable-xr={true}
-              style={{ '--xr-background-material': 'translucent' }}
-              className="h-full w-full overflow-hidden rounded-[28px] bg-white/10 p-4 sm:p-6 md:p-8"
-            >
-              <DocumentWorkspace />
-            </div>
-          </main>
-        </div>
-      </div>
-    )
-  }
+  if (pathname === '/doc') return <DocumentWorkspace />
 
   return (
     <div
