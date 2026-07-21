@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type DocumentItem = {
   title: string
+  slug: string
 }
 
 const documents: DocumentItem[] = [
-  { title: 'The Solar System' },
-  { title: 'Q3 Product Development' },
-  { title: 'Feature Specification' },
-  { title: 'Product Roadmap Q1' },
+  { title: 'The Solar System', slug: 'the-solar-system' },
+  { title: 'Q3 Product Development', slug: 'q3-product-development' },
+  { title: 'Feature Specification', slug: 'feature-specification' },
+  { title: 'Product Roadmap Q1', slug: 'product-roadmap-q1' },
 ]
 
 function SolarSystemDocument() {
@@ -76,10 +77,31 @@ function DocumentBody({ title }: { title: string }) {
 }
 
 export default function DocumentWorkspace() {
-  const selectedTitle = new URLSearchParams(window.location.search).get('title')
-  const initialIndex = selectedTitle ? documents.findIndex((document) => document.title === selectedTitle) : -1
-  const [selectedIndex, setSelectedIndex] = useState(initialIndex)
+  const getSelectedIndex = () => {
+    const url = new URL(window.location.href)
+    const slug = url.pathname.startsWith('/doc/') ? url.pathname.slice('/doc/'.length) : ''
+
+    if (slug) return documents.findIndex((document) => document.slug === slug)
+    return -1
+  }
+
+  const [selectedIndex, setSelectedIndex] = useState(getSelectedIndex)
   const selectedDocument = selectedIndex >= 0 ? documents[selectedIndex] : null
+
+  useEffect(() => {
+    const handlePopState = () => setSelectedIndex(getSelectedIndex())
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  const selectDocument = (index: number) => {
+    const document = documents[index]
+    const url = new URL(window.location.href)
+    url.pathname = `/doc/${document.slug}`
+    url.search = ''
+    window.history.pushState({}, '', url)
+    setSelectedIndex(index)
+  }
 
   return (
     <div
@@ -95,7 +117,7 @@ export default function DocumentWorkspace() {
             <li key={document.title}>
               <button
                 type="button"
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => selectDocument(index)}
                 title={document.title}
                 className={`w-full truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
                   selectedIndex === index ? 'bg-white/10 text-white' : 'text-white/90 hover:bg-white/10'

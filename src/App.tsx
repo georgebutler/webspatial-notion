@@ -12,7 +12,7 @@ function App() {
   if (pathname === '/ai') return <Ai />
   if (pathname === '/calendar') return <Calendar />
 
-  if (pathname === '/doc') return <DocumentWorkspace />
+  if (pathname === '/doc' || pathname.startsWith('/doc/')) return <DocumentWorkspace />
 
   return (
     <div

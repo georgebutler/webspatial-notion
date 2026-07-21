@@ -1,0 +1,24 @@
+{
+  "rewrites": [
+    {
+      "source": "/doc",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/doc/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/todo",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ai",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/calendar",
+      "destination": "/index.html"
+    }
+  ]
+}

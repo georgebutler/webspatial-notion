@@ -128,9 +128,9 @@ function ItemIcon({ type }: { type: WorkspaceItem['type'] }) {
 function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
   const openItem = () => {
     if (item.type === 'Database') return
-    const path = item.type === 'List' ? '/todo' : '/doc'
+    const slug = item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    const path = item.type === 'List' ? '/todo' : `/doc/${slug}`
     const url = new URL(path, window.location.origin)
-    url.searchParams.set('title', item.title)
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
   }
 
