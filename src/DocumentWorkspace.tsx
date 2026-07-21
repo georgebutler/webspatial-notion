@@ -52,14 +52,11 @@ export default function DocumentWorkspace() {
   const selectedDocument = selectedIndex >= 0 ? documents[selectedIndex] : null
 
   return (
-    <div
-      enable-xr={true}
-      style={{ '--xr-background-material': 'regular' }}
-      className="flex h-full w-full flex-col gap-6 overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:flex-row lg:p-12"
-    >
+    <div className="flex h-full w-full flex-col gap-6 overflow-hidden border border-white/10 p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12">
       <aside className="hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
         <h2 className="text-lg font-semibold text-white/90">Documents</h2>
-        <ul className="mt-4 min-h-0 flex-1 space-y-2 overflow-y-auto [scrollbar-width:none]">
+        <div className="mt-4 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
+          <ul className="space-y-2">
           {documents.map((document, index) => (
             <li key={document.title}>
               <button
@@ -74,16 +71,17 @@ export default function DocumentWorkspace() {
               </button>
             </li>
           ))}
-        </ul>
+          </ul>
+        </div>
       </aside>
 
-      <div className={`h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${documents[0] ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+      <div className={`h-full flex-1 overflow-auto rounded-2xl px-10 py-8 lg:hidden ${documents[0] ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
         <div className="mx-auto max-w-[900px]">
           {documents[0] ? <DocumentBody title={documents[0].title} /> : <h1 className="text-2xl font-semibold">Select a document to get started</h1>}
         </div>
       </div>
 
-      <div className={`hidden h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+      <div className={`hidden h-full flex-1 overflow-auto rounded-2xl px-10 py-8 lg:block ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
         <div className="mx-auto max-w-[900px]">
           {selectedDocument ? <DocumentBody title={selectedDocument.title} /> : <h1 className="text-2xl font-semibold">Click a document on the left to get started</h1>}
         </div>

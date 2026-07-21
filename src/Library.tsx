@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Model } from '@webspatial/react-sdk'
 
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
 
@@ -112,12 +111,12 @@ function NavSection({
   children: ReactNode
 }) {
   return (
-    <div className="flex flex-col gap-[10px]">
-      <div className="flex items-center justify-between px-[6px] text-[16px] opacity-50">
+    <div className="flex flex-col gap-[10px] max-[1023px]:gap-[8px] max-[639px]:gap-[6px]">
+      <div className="flex items-center justify-between px-[6px] text-[16px] opacity-50 max-[1023px]:text-[14px] max-[639px]:px-[4px] max-[639px]:text-[11px]">
         <div>{title}</div>
         <div>{count}</div>
       </div>
-      <div className="flex flex-col gap-[6px]">{children}</div>
+      <div className="flex flex-col gap-[6px] max-[639px]:gap-[4px]">{children}</div>
     </div>
   )
 }
@@ -132,13 +131,13 @@ function NavItem({
   return (
     <button
       type="button"
-      className={`flex w-full items-center gap-[14px] rounded-[16px] px-[16px] py-[12px] text-left transition-[background-color] duration-200 ${
+      className={`flex w-full items-center gap-[14px] rounded-[16px] px-[16px] py-[12px] text-left transition-[background-color] duration-200 max-[1023px]:gap-[10px] max-[1023px]:rounded-[12px] max-[1023px]:px-[12px] max-[1023px]:py-[10px] max-[639px]:gap-[6px] max-[639px]:rounded-[10px] max-[639px]:px-[8px] max-[639px]:py-[8px] ${
         active ? 'bg-white/15' : 'hover:bg-white/10'
       }`}
       aria-current={active ? 'page' : undefined}
     >
-      <IconDoc className="text-white/85" />
-      <div className="min-w-0 flex-1 truncate text-[18px] tracking-[-0.01em] text-white/90">
+      <IconDoc className="text-white/85 max-[639px]:h-[16px] max-[639px]:w-[16px]" />
+      <div className="min-w-0 flex-1 truncate text-[18px] tracking-[-0.01em] text-white/90 max-[1023px]:text-[15px] max-[639px]:text-[11px]">
         {title}
       </div>
     </button>
@@ -147,19 +146,13 @@ function NavItem({
 
 export default function Library() {
   return (
-    <div className="relative h-[min(760px,86vh)] w-[min(1180px,94vw)]">
-      <div
-        enable-xr={true}
-        style={{ '--xr-background-material': 'translucent' }}
-        className="flex h-full overflow-hidden rounded-[36px] border border-[rgba(255,255,255,0.12)] bg-white/5 shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-md"
-      >
-        <div className="flex h-full w-full overflow-hidden">
-          <aside className="w-[360px] shrink-0 bg-[rgba(0,0,0,0.34)] p-[28px]">
-            <div className="text-[34px] font-extrabold tracking-[-0.03em] text-white/95">
+    <div className="flex h-full min-h-0 w-full min-w-0 overflow-hidden">
+      <aside className="w-[360px] shrink-0 bg-[rgba(0,0,0,0.34)] p-[28px] max-[1023px]:w-[250px] max-[1023px]:p-[20px] max-[639px]:w-[128px] max-[639px]:p-[14px]">
+            <div className="text-[34px] font-extrabold tracking-[-0.03em] text-white/95 max-[1023px]:text-[28px] max-[639px]:text-[20px]">
               Amy's Notion
             </div>
 
-            <div className="mt-[22px] flex flex-col gap-[22px]">
+            <div className="mt-[22px] flex flex-col gap-[22px] max-[1023px]:mt-[18px] max-[1023px]:gap-[18px] max-[639px]:mt-[14px] max-[639px]:gap-[14px]">
               <NavSection title="Recents" count={2}>
                 <NavItem title="Solar System Overview" active />
                 <NavItem title="Feature Specification v2.1" />
@@ -171,16 +164,16 @@ export default function Library() {
                 <NavItem title="Product Roadmap Q1 2026" />
               </NavSection>
             </div>
-          </aside>
+      </aside>
 
-          <main className="flex min-w-0 flex-1 bg-[rgba(255,255,255,0.92)] text-black">
-            <div className="h-full w-full overflow-auto px-[40px] py-[30px]">
-              <div className="text-[38px] font-extrabold leading-none tracking-[-0.03em]">
+      <main className="flex min-w-0 flex-1 bg-white text-black">
+        <div className="h-full w-full overflow-auto px-[40px] py-[30px] max-[1023px]:px-[24px] max-[1023px]:py-[20px] max-[639px]:px-[12px] max-[639px]:py-[16px]">
+              <div className="text-[38px] font-extrabold leading-none tracking-[-0.03em] max-[1023px]:text-[30px] max-[639px]:text-[24px]">
                 The Solar System
               </div>
 
-              <div className="mt-[22px] flex flex-col gap-[12px] text-[21px] leading-[1.32] opacity-95">
-                <section className="relative rounded-[12px] border border-black/10 bg-white/70 px-[22px] py-[16px] shadow-[0_8px_28px_rgba(0,0,0,0.05)]">
+              <div className="mt-[22px] flex flex-col gap-[12px] text-[21px] leading-[1.32] opacity-95 max-[1023px]:mt-[18px] max-[1023px]:gap-[10px] max-[1023px]:text-[18px] max-[639px]:mt-[14px] max-[639px]:gap-[8px] max-[639px]:text-[14px]">
+                <section className="relative rounded-[12px] border border-black/10 bg-white/70 px-[22px] py-[16px] max-[1023px]:rounded-[10px] max-[1023px]:px-[16px] max-[1023px]:py-[12px] max-[639px]:rounded-[8px] max-[639px]:px-[12px] max-[639px]:py-[10px]">
                   <IconGrip className="absolute right-[14px] top-[12px] text-black" />
                   <p className="max-w-[760px]">
                     The solar system consists of the Sun and everything that orbits it—eight planets, dwarf
@@ -188,32 +181,29 @@ export default function Library() {
                   </p>
                 </section>
 
-                <section className="relative overflow-hidden rounded-[14px] border border-black/10 bg-[#15171d] shadow-[0_10px_34px_rgba(0,0,0,0.12)]">
-                  <div className="pointer-events-none absolute z-10 m-[16px] flex items-center gap-[8px] rounded-full bg-black/35 px-[10px] py-[6px] text-[13px] font-semibold text-white/88 backdrop-blur-md">
+                <section className="relative overflow-hidden rounded-[14px] border border-black/10 bg-[#15171d]">
+                  <div className="pointer-events-none absolute z-10 m-[16px] flex items-center gap-[8px] rounded-full bg-black/35 px-[10px] py-[6px] text-[13px] font-semibold text-white/88 backdrop-blur-md max-[1023px]:m-[10px] max-[1023px]:gap-[6px] max-[1023px]:px-[8px] max-[1023px]:py-[5px] max-[1023px]:text-[12px] max-[639px]:m-[8px] max-[639px]:gap-[4px] max-[639px]:px-[6px] max-[639px]:py-[4px] max-[639px]:text-[10px]">
                     <IconCube size={16} />
                     <span>3D Model</span>
                   </div>
                   <button
                     type="button"
-                    className="absolute right-[12px] top-[12px] z-10 flex h-[32px] w-[32px] items-center justify-center rounded-[8px] bg-black/35 text-white backdrop-blur-md transition-colors duration-200 hover:bg-black/50"
+                    className="absolute right-[12px] top-[12px] z-10 flex h-[32px] w-[32px] items-center justify-center rounded-[8px] bg-black/35 text-white backdrop-blur-md transition-colors duration-200 hover:bg-black/50 max-[1023px]:right-[10px] max-[1023px]:top-[10px] max-[1023px]:h-[28px] max-[1023px]:w-[28px] max-[639px]:right-[8px] max-[639px]:top-[8px] max-[639px]:h-[24px] max-[639px]:w-[24px]"
                     aria-label="Expand 3D model"
                   >
-                    <IconExpand size={21} />
+                    <IconExpand size={21} className="max-[1023px]:h-[18px] max-[1023px]:w-[18px] max-[639px]:h-[16px] max-[639px]:w-[16px]" />
                   </button>
-                  <Model
-                    enable-xr={true}
-                    src="/usdz/Planets.usdz"
+                  <div
                     className="flex aspect-[16/8.7] w-full items-center justify-center overflow-hidden bg-[radial-gradient(circle_at_50%_42%,rgba(255,170,76,0.36),transparent_24%),linear-gradient(135deg,#232734_0%,#101219_55%,#07080c_100%)] text-white"
-                    style={{ '--xr-depth': '260px' }}
-                    aria-label="Interactive 3D model of the solar system"
+                    aria-label="Interactive solar system model placeholder"
                   >
-                    <div className="flex h-full w-full items-center justify-center px-[28px] text-center text-[18px] font-medium text-white/70">
-                      Interactive solar system model
+                    <div className="flex h-full w-full items-center justify-center px-[28px] text-center text-[18px] font-medium text-white/70 max-[1023px]:px-[20px] max-[1023px]:text-[16px] max-[639px]:px-[12px] max-[639px]:text-[12px]">
+                      Interactive solar system model placeholder
                     </div>
-                  </Model>
+                  </div>
                 </section>
 
-                <section className="relative rounded-[12px] border border-black/10 bg-white/70 px-[22px] py-[16px] shadow-[0_8px_28px_rgba(0,0,0,0.05)]">
+                <section className="relative rounded-[12px] border border-black/10 bg-white/70 px-[22px] py-[16px] max-[1023px]:rounded-[10px] max-[1023px]:px-[16px] max-[1023px]:py-[12px] max-[639px]:rounded-[8px] max-[639px]:px-[12px] max-[639px]:py-[10px]">
                   <IconGrip className="absolute right-[14px] top-[12px] text-black" />
                   <p className="max-w-[760px]">
                     The inner planets—Mercury, Venus, Earth, and Mars—are rocky and closer to the Sun. The
@@ -222,10 +212,8 @@ export default function Library() {
                   </p>
                 </section>
               </div>
-            </div>
-          </main>
         </div>
-      </div>
+      </main>
     </div>
   )
 }
