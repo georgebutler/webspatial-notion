@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import userAvatar from './assets/user.png'
 
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
@@ -182,32 +180,11 @@ function EventRow({ index, title, start, end }: { index: number; title: string; 
   )
 }
 
-function WelcomeOverlay({ greeting }: { greeting: string }) {
-  const [visible, setVisible] = useState(true)
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setVisible(false), 1500)
-    return () => window.clearTimeout(timer)
-  }, [])
-
-  if (!visible) return null
-
-  return (
-    <div className="pointer-events-none fixed inset-0 z-50">
-      <div className="absolute inset-0 flex items-center justify-center">
-        <h1 className="text-4xl font-bold text-white opacity-95 sm:text-5xl md:text-6xl">{greeting}</h1>
-      </div>
-    </div>
-  )
-}
-
 export default function Dashboard() {
   const today = new Date()
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 18 ? 'Good afternoon' : 'Good evening'
 
   return (
     <div className="flex h-full w-full flex-col items-center overflow-hidden">
-      <WelcomeOverlay greeting={greeting} />
       <div className="relative mt-2 flex min-h-0 w-full flex-1 flex-col gap-6 overflow-hidden sm:mt-6 sm:gap-8">
         <section className="shrink-0">
           <div className="flex items-center gap-2 text-neutral-300">

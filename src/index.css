@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --notion-text: #37352f;
-  --notion-muted: #787774;
-  --notion-subtle: #9b9a97;
-  --notion-border: rgba(55, 53, 47, 0.16);
-  --notion-surface: rgba(245, 244, 242, 0.92);
-  --notion-surface-raised: rgba(255, 255, 255, 0.88);
-  --notion-hover: rgba(55, 53, 47, 0.08);
+  --notion-text: #202020;
+  --notion-muted: #6f6f6f;
+  --notion-subtle: #a0a0a0;
+  --notion-border: rgba(32, 32, 32, 0.16);
+  --notion-surface: rgba(245, 245, 245, 0.94);
+  --notion-surface-raised: rgba(255, 255, 255, 0.92);
+  --notion-hover: rgba(32, 32, 32, 0.08);
 }
 
 html,
@@ -92,7 +92,7 @@ html.is-web .border-white\/10 {
 }
 
 html.is-web .border-white\/20 {
-  border-color: rgba(55, 53, 47, 0.24);
+  border-color: rgba(32, 32, 32, 0.24);
 }
 
 html.is-web .bg-white\/5 {
@@ -112,11 +112,11 @@ html.is-web .ring-white\/10 {
 }
 
 html.is-web .ring-white\/20 {
-  --tw-ring-color: rgba(55, 53, 47, 0.24);
+  --tw-ring-color: rgba(32, 32, 32, 0.24);
 }
 
 html.is-web .ring-white\/30 {
-  --tw-ring-color: rgba(55, 53, 47, 0.3);
+  --tw-ring-color: rgba(32, 32, 32, 0.3);
 }
 
 html.is-web .placeholder\:text-white\/60::placeholder {
@@ -129,7 +129,7 @@ html.is-web textarea {
 }
 
 html.is-web .notion-sidebar {
-  background-color: rgba(247, 246, 243, 0.96);
+  background-color: rgba(245, 245, 245, 0.96);
 }
 
 html.is-web .notion-model-surface {

@@ -30,7 +30,7 @@ export default function Sidebar() {
           onClick={() => openScene(item.path, `${item.path.slice(1)}Scene`)}
           className={`flex w-full items-center justify-center rounded-full p-2 transition-colors ${
             index === 0
-              ? 'bg-white/15 ring-1 ring-white/30'
+              ? ''
               : 'hover:bg-white/10 hover:ring-1 hover:ring-white/20 focus-visible:bg-white/10 focus-visible:ring-1 focus-visible:ring-white/20'
           }`}
           aria-label={item.label}
