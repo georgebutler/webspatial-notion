@@ -1,80 +1,122 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
-type TodoItem = { id: string; title: string; done?: boolean }
+type TodoItem = { id: number; text: string; done: boolean }
 
-function Checkbox({ checked }: { checked: boolean }) {
+const lists = ['User Flow & Interaction']
+const defaultItems: TodoItem[] = [
+  { id: 1, text: 'Review requirements', done: false },
+  { id: 2, text: 'Outline tasks and owners', done: true },
+  { id: 3, text: 'Track open questions', done: false },
+  { id: 4, text: 'Schedule follow-up', done: false },
+]
+
+function getItems(title: string) {
+  if (title.toLowerCase().includes('user flow')) {
+    return [
+      { id: 1, text: 'List core screens', done: true },
+      { id: 2, text: 'Map interactions', done: false },
+      { id: 3, text: 'Validate edge cases', done: false },
+      { id: 4, text: 'Share review notes', done: false },
+    ]
+  }
+  return defaultItems
+}
+
+function Checklist({ items, onToggle }: { items: TodoItem[]; onToggle?: (id: number) => void }) {
   return (
-    <div
-      aria-hidden="true"
-      className={`flex h-[34px] w-[34px] items-center justify-center rounded-[8px] border-2 transition-colors duration-200 ${
-        checked ? 'border-[#2F7DFF] bg-[#2F7DFF]' : 'border-white/45 bg-transparent'
-      }`}
-    >
-      {checked ? (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M20 6L9 17l-5-5"
-            stroke="white"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+    <ul className="space-y-3">
+      {items.map((item) => (
+        <li key={item.id} className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={item.done}
+            onChange={() => onToggle?.(item.id)}
+            readOnly={!onToggle}
+            aria-label={`todo-${item.id}`}
+            className="mt-1 h-5 w-5 accent-cyan-500"
           />
-        </svg>
-      ) : null}
-    </div>
+          <span className={`break-words text-[17px] font-semibold ${item.done ? 'text-neutral-700 line-through' : 'text-neutral-900'}`}>
+            {item.text}
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function ListContent({ title, items, onToggle }: { title: string; items: TodoItem[]; onToggle?: (id: number) => void }) {
+  return (
+    <>
+      <h1 className="text-3xl font-bold">{title}</h1>
+      <div className="mt-6">
+        <Checklist items={items} onToggle={onToggle} />
+      </div>
+      <p className="mt-8 text-[14px] text-neutral-600">Last updated: Today — Checklist</p>
+    </>
   )
 }
 
 export default function Todo() {
-  const [items, setItems] = useState<TodoItem[]>([
-    { id: '1', title: 'Revise the design plan', done: false },
-    { id: '2', title: 'Review the interaction effects with David', done: true },
-    { id: '3', title: 'Wait for David to fix the bugs', done: false },
-    { id: '4', title: 'Continue the architectural software research', done: false },
-  ])
+  const selectedTitle = new URLSearchParams(window.location.search).get('title')
+  const initialIndex = selectedTitle ? lists.findIndex((title) => title === selectedTitle) : -1
+  const [selectedIndex, setSelectedIndex] = useState(initialIndex)
+  const [items, setItems] = useState<TodoItem[]>(() =>
+    initialIndex >= 0 ? getItems(lists[initialIndex]) : [],
+  )
+  const selectedTitleForView = selectedIndex >= 0 ? lists[selectedIndex] : null
+
+  const selectList = (index: number) => {
+    setSelectedIndex(index)
+    setItems(getItems(lists[index]))
+  }
+
+  const toggleItem = (id: number) => {
+    setItems((current) => current.map((item) => (item.id === id ? { ...item, done: !item.done } : item)))
+  }
+
+  const mobileItems = useMemo(() => (lists[0] ? getItems(lists[0]) : []), [])
 
   return (
-    <div className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)] text-white">
-      <div
-        enable-xr={true}
-        style={{ '--xr-background-material': 'translucent' }}
-        className="flex h-full flex-col gap-[34px] overflow-hidden rounded-[56px] border border-[rgba(255,255,255,0.12)] bg-white/5 p-[54px] shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-md"
-      >
-        <div className="flex flex-col gap-[16px]">
-          <div className="text-[76px] font-extrabold tracking-[-0.04em]">TODO</div>
-          <div className="text-[34px] font-medium tracking-[-0.02em] opacity-55">Today</div>
-        </div>
+    <div
+      enable-xr={true}
+      style={{ '--xr-background-material': 'regular' }}
+      className="flex h-full w-full flex-col gap-6 overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:flex-row lg:p-12"
+    >
+      <aside className="hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
+        <h2 className="text-lg font-semibold text-white/90">Lists</h2>
+        <ul className="mt-4 min-h-0 flex-1 space-y-2 overflow-y-auto [scrollbar-width:none]">
+          {lists.map((title, index) => (
+            <li key={title}>
+              <button
+                type="button"
+                onClick={() => selectList(index)}
+                title={title}
+                className={`w-full truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
+                  selectedIndex === index ? 'bg-white/10 text-white' : 'text-white/90 hover:bg-white/10'
+                }`}
+              >
+                {title}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </aside>
 
-        <div className="flex flex-1">
-          <div className="w-full rounded-[40px] border border-white/10 bg-white/10 p-[34px] shadow-[0_26px_70px_rgba(0,0,0,0.18)] backdrop-blur-md">
-            <div className="flex flex-col gap-[20px]">
-              {items.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() =>
-                    setItems((prev) =>
-                      prev.map((p) => (p.id === item.id ? { ...p, done: !p.done } : p)),
-                    )
-                  }
-                  className="flex items-center gap-[20px] text-left"
-                  aria-pressed={!!item.done}
-                >
-                  <Checkbox checked={!!item.done} />
-                  <div
-                    className={`text-[34px] tracking-[-0.02em] ${
-                      item.done ? 'opacity-45' : 'opacity-95'
-                    }`}
-                  >
-                    {item.title}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
+      <div className={`h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${mobileItems.length ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+        <div className="mx-auto max-w-[900px]">
+          {mobileItems.length ? <ListContent title={lists[0]} items={mobileItems} /> : <h1 className="text-2xl font-semibold">Select a list to get started</h1>}
+        </div>
+      </div>
+
+      <div className={`hidden h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedTitleForView ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+        <div className="mx-auto max-w-[900px]">
+          {selectedTitleForView ? (
+            <ListContent title={selectedTitleForView} items={items} onToggle={toggleItem} />
+          ) : (
+            <h1 className="text-2xl font-semibold">Click a list on the left to get started</h1>
+          )}
         </div>
       </div>
     </div>
   )
 }
-

@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
+
 import userAvatar from './assets/user.png'
-import Sidebar, { type Route } from './Sidebar'
 
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
 
@@ -93,106 +94,159 @@ function IconDoc({ size = 28, strokeWidth = 1.8, className }: IconProps) {
   )
 }
 
-type DashboardProps = { onNavigate?: (route: Route) => void }
+type WorkspaceItem = {
+  title: string
+  type: 'Document' | 'List' | 'Database'
+  lastAccessed: Date
+}
 
-function RecentlyVisitedCard({ title }: { title: string }) {
+const daysAgo = (days: number) => {
+  const date = new Date()
+  date.setDate(date.getDate() - days)
+  return date
+}
+
+const workspaceItems: WorkspaceItem[] = [
+  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(0) },
+  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(1) },
+  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(2) },
+  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(3) },
+  { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(12) },
+]
+
+const eventColors = ['bg-cyan-400', 'bg-emerald-400', 'bg-yellow-400', 'bg-fuchsia-400']
+
+function ItemIcon({ type }: { type: WorkspaceItem['type'] }) {
+  if (type === 'List') {
+    return <IconCalendar size={32} className="text-neutral-200" />
+  }
+  if (type === 'Database') {
+    return <IconDoc size={32} className="text-neutral-200" />
+  }
+  return <IconDoc size={32} className="text-neutral-200" />
+}
+
+function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
+  const openItem = () => {
+    if (item.type === 'Database') return
+    const path = item.type === 'List' ? '/todo' : '/doc'
+    const url = new URL(path, window.location.origin)
+    url.searchParams.set('title', item.title)
+    window.open(url.toString(), '_blank', 'noopener,noreferrer')
+  }
+
   return (
-    <div
-      className="flex h-[172px] min-w-[150px] flex-1 flex-col justify-between rounded-[24px] border border-[rgba(255,255,255,0.12)] p-[18px] shadow-[0_20px_50px_rgba(0,0,0,0.18)]"
+    <button
+      type="button"
+      onClick={openItem}
+      title={item.type === 'Database' ? 'No action' : 'Open document'}
+      className="flex shrink-0 cursor-pointer flex-col rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition-colors hover:bg-white/15"
     >
-      <div className="flex flex-col gap-[10px]">
-        <IconDoc />
-        <div
-          className="max-w-[160px] text-[18px] font-[650] leading-[1.12] tracking-[-0.02em]"
-        >
-          {title}
-        </div>
+      <div className="ml-1">
+        <ItemIcon type={item.type} />
       </div>
-
-      <div className="flex items-center gap-[10px] opacity-90">
+      <div className="my-4 ml-1 w-[140px] leading-5 font-semibold text-neutral-100">
+        {item.title}
+      </div>
+      <div className="mt-auto flex items-center justify-between pr-1 pl-1">
         <img
           src={userAvatar}
-          alt="User"
-          className="h-[22px] w-[22px] rounded-full border border-[rgba(255,255,255,0.18)] object-cover"
+          alt=""
+          className="h-6 w-6 rounded-full object-cover"
         />
-        <div className="text-[16px] opacity-90">Feb 2</div>
+        <div className="w-[106px] text-right text-[17px] font-semibold text-neutral-400">
+          {item.lastAccessed.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+        </div>
+      </div>
+    </button>
+  )
+}
+
+function EventRow({ index, title, start, end }: { index: number; title: string; start: number; end: number }) {
+  const formatTime = (hour: number, minute: number) => {
+    const period = hour >= 12 ? 'PM' : 'AM'
+    const displayHour = hour % 12 || 12
+    return `${displayHour}:${String(minute).padStart(2, '0')} ${period}`
+  }
+
+  return (
+    <div className="flex items-start gap-4">
+      <div className={`h-16 w-[5px] rounded ${eventColors[index % eventColors.length]}`} />
+      <div className="flex flex-col">
+        <div className="text-[17px] font-semibold text-white/95">{title}</div>
+        <div className="mt-3 text-[17px] font-semibold text-neutral-400">
+          {formatTime(start, index % 2 ? 15 : 0)} - {formatTime(end, index % 2 ? 0 : 15)}
+        </div>
       </div>
     </div>
   )
 }
 
-function EventRow({ color, title, time }: { color: string; title: string; time: string }) {
+function WelcomeOverlay({ greeting }: { greeting: string }) {
+  const [visible, setVisible] = useState(true)
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVisible(false), 1500)
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  if (!visible) return null
+
   return (
-    <div
-      className="flex items-start gap-[18px] border-l-[4px] pl-[18px]"
-      style={{ borderLeftColor: color }}
-    >
-      <div className="flex flex-col gap-[6px]">
-        <div className="text-[18px] font-[650] tracking-[-0.01em]">{title}</div>
-        <div className="text-[16px] opacity-[0.78]">{time}</div>
+    <div className="pointer-events-none fixed inset-0 z-50">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <h1 className="text-4xl font-bold text-white opacity-95 sm:text-5xl md:text-6xl">{greeting}</h1>
       </div>
     </div>
   )
 }
 
-export default function Dashboard({ onNavigate }: DashboardProps) {
+export default function Dashboard() {
+  const today = new Date()
+  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 18 ? 'Good afternoon' : 'Good evening'
+
   return (
-    <div
-      className="relative h-[min(680px,78vh)] w-[min(1120px,92vw)]"
-    >
-      <Sidebar onNavigate={onNavigate} />
-
-      <div
-        enable-xr={true}
-        style={{ '--xr-background-material': 'translucent' }}
-        className="flex h-full flex-col gap-[26px] rounded-[32px] border border-[rgba(255,255,255,0.12)] bg-white/5 p-[46px] shadow-[0_26px_70px_rgba(0,0,0,0.22)] backdrop-blur-md"
-      >
-        <div
-          className="mt-1 text-center text-[64px] font-extrabold tracking-[-0.03em]"
-        >
-          Good afternoon
-        </div>
-
-        <div className="flex flex-col gap-[14px]">
-          <div className="flex items-center gap-[10px] opacity-[0.85]">
-            <IconClock />
-            <div className="text-[18px] tracking-[-0.01em]">Recently visited</div>
+    <div className="flex h-full w-full flex-col items-center overflow-hidden">
+      <WelcomeOverlay greeting={greeting} />
+      <div className="relative mt-2 flex min-h-0 w-full flex-1 flex-col gap-6 overflow-hidden sm:mt-6 sm:gap-8">
+        <section className="shrink-0">
+          <div className="flex items-center gap-2 text-neutral-300">
+            <IconClock size={20} />
+            <p className="text-[17px]">Recently visited</p>
           </div>
-
-          <div className="flex gap-[18px]">
-            <RecentlyVisitedCard title={'Q3 Product\nDevelopment …'} />
-            <RecentlyVisitedCard title={'Feature\nSpecification …'} />
-            <RecentlyVisitedCard title={'User Flow &\nInteraction …'} />
-            <RecentlyVisitedCard title={'Product\nRoadmap Q1 …'} />
-            <RecentlyVisitedCard title={'UI/UX Design\nSpecification'} />
-          </div>
-        </div>
-
-        <div className="flex flex-1 flex-col gap-[14px]">
-          <div className="flex items-center gap-[10px] opacity-[0.85]">
-            <IconCalendar />
-            <div className="text-[18px] tracking-[-0.01em]">Upcoming Event</div>
-          </div>
-
-          <div
-            className="flex min-h-[250px] flex-1 gap-[24px] rounded-[26px] border border-[rgba(255,255,255,0.12)] p-[26px] shadow-[0_26px_70px_rgba(0,0,0,0.22)]"
-          >
-            <div
-              className="flex w-[190px] flex-col gap-[28px] pt-[8px]"
-            >
-              <div className="text-[18px] font-bold text-[rgba(255,175,83,0.95)]">
-                Today March 9
-              </div>
-              <div className="text-[18px] font-[650] opacity-70">Tuesday March 10</div>
-            </div>
-
-            <div className="flex flex-col gap-[22px] pt-[8px]">
-              <EventRow color="#21C0FF" title="Research" time="2:15 – 3:15 PM" />
-              <EventRow color="#43D36E" title="Meeting Kevin" time="4:00 – 6:00 PM" />
-              <EventRow color="#FFD334" title="Research" time="2:15 – 3:15 PM" />
+          <div className="mt-4 w-full overflow-x-auto pb-2 [scrollbar-width:none]">
+            <div className="flex w-max items-stretch gap-3">
+              {workspaceItems.map((item) => (
+                <RecentlyVisitedCard key={item.title} item={item} />
+              ))}
             </div>
           </div>
-        </div>
+        </section>
+
+        <section className="flex min-h-0 flex-1 flex-col">
+          <div className="flex items-center gap-2 text-neutral-300">
+            <IconCalendar size={20} />
+            <p className="text-[17px]">Upcoming Events</p>
+          </div>
+          <div className="mt-4 min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-white/10 px-4 pt-5 pb-4 backdrop-blur sm:px-5 sm:pt-6 [scrollbar-width:none]">
+            <div className="space-y-5">
+              {[0, 1, 2, 3, 4, 5].map((index) => (
+                <div key={index} className="flex items-start gap-4 sm:gap-6">
+                  <p className={`mt-1 w-[140px] shrink-0 text-[15px] font-semibold sm:w-[183px] sm:text-[17px] ${index === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
+                    {index === 0
+                      ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+                      : new Date(today.getTime() + index * 86400000).toLocaleDateString(undefined, {
+                          weekday: 'long',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                  </p>
+                  <EventRow index={index} title={index % 2 === 0 ? 'Research' : 'Meeting'} start={14 + (index % 3)} end={15 + (index % 3)} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   )
