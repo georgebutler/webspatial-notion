@@ -115,10 +115,9 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
 
   const modelProps = {
     'enable-xr': true,
-    poster: '/solar-system-placeholder.svg',
     src: `/usdz/${planetName}.usdz`,
     className: 'webspatial-model block h-full w-full object-cover',
-  } as ComponentProps<typeof Model> & { poster: string }
+  } as ComponentProps<typeof Model>
 
   return (
     <div className="notion-planet-model">
@@ -135,11 +134,6 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
         }}
       >
         <source src={`/usdz/${planetName}.usdz`} type="model/vnd.usdz+zip" />
-        <img
-          alt={planetName}
-          src="/solar-system-placeholder.svg"
-          className="model-fallback block h-full w-full object-cover"
-        />
       </Model>
     </div>
   )
@@ -151,10 +145,9 @@ function SolarSystemCollection() {
     'enable-xr': true,
     autoPlay: true,
     loop: true,
-    poster: '/solar-system-placeholder.svg',
     src: '/glb/Planets.glb',
     className: 'webspatial-model solar-system-collection-model block h-full w-full',
-  } as ComponentProps<typeof Model> & { poster: string }
+  } as ComponentProps<typeof Model>
 
   return (
     <div className="notion-model-surface solar-system-collection relative mt-8">
@@ -173,11 +166,6 @@ function SolarSystemCollection() {
         }}
       >
         <source src="/glb/Planets.glb" type="model/gltf-binary" />
-        <img
-          alt="Loading Solar System models"
-          src="/solar-system-placeholder.svg"
-          className="model-fallback block h-full w-full object-contain"
-        />
       </Model>
     </div>
   )
@@ -356,13 +344,13 @@ export default function DocumentWorkspace() {
         </div>
       </aside>
 
-      <div className={`h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${documents[0] ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+      <div className={`notion-document-content h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${documents[0] ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
         <div className="w-full">
           {documents[0] ? <DocumentBody title={documents[0].title} /> : <h1 className="text-2xl font-semibold">Select a document to get started</h1>}
         </div>
       </div>
 
-      <div className={`hidden h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+      <div className={`notion-document-content hidden h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
         <div className="w-full">
           {selectedDocument ? <DocumentBody title={selectedDocument.title} /> : <h1 className="text-lg font-semibold text-white/90">Click a document on the left to get started</h1>}
         </div>
