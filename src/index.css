@@ -194,20 +194,12 @@ html.isSpatial .notion-document-content {
   background-size: cover;
 }
 
-.solar-system-collection-model {
+.solar-system-collection-model,
+.notion-planet-model .webspatial-model {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-html.isSpatial .webspatial-model {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
   max-width: none;
-  --xr-depth: 400px;
-  --xr-back: 200px;
 }
 
 .notion-model-surface .__model-element-fallback-canvas-f7a9c3e1__,
