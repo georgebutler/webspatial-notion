@@ -10,6 +10,12 @@ if (!isSpatial && !('HTMLModelElement' in window)) {
   polyfillScript.type = 'module'
   polyfillScript.src = '/model-element-polyfill.js'
   document.head.appendChild(polyfillScript)
+  polyfillScript.addEventListener('load', () => {
+    const modelViewScript = document.createElement('script')
+    modelViewScript.type = 'module'
+    modelViewScript.src = '/solar-system-model-view.js'
+    document.head.appendChild(modelViewScript)
+  })
 }
 
 document.documentElement.classList.toggle('isSpatial', isSpatial)

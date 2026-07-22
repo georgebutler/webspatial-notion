@@ -20,7 +20,7 @@ function SolarSystemDocument() {
     loop: true,
     poster: '/solar-system-placeholder.svg',
     src: '/usdz/Planets.usdz',
-    className: 'model3D product-3D mt-8 block aspect-[2/1] h-auto w-full max-w-full self-stretch overflow-hidden rounded-2xl bg-[#15171d] object-cover',
+    className: 'model3D product-3D solar-system-model mt-8 block aspect-[2/1] h-auto w-full max-w-full self-stretch overflow-hidden rounded-2xl bg-[#15171d] object-cover',
   } as ComponentProps<typeof Model> & { poster: string }
 
   return (
