@@ -197,6 +197,20 @@ html.isSpatial .notion-text-block {
   height: 100%;
 }
 
+html.isSpatial .webspatial-model {
+  position: fixed;
+  width: min(320px, calc(100vw - 32px));
+  height: min(320px, calc(100vw - 32px));
+  max-width: none;
+  --xr-depth: 400px;
+  --xr-back: 200px;
+}
+
+html.isSpatial .solar-system-collection .webspatial-model {
+  width: min(800px, calc(100vw - 48px));
+  height: min(450px, calc((100vw - 48px) * 0.5625));
+}
+
 .notion-model-surface .__model-element-fallback-canvas-f7a9c3e1__,
 .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
   background: transparent !important;

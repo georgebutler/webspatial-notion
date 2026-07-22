@@ -117,7 +117,7 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
     'enable-xr': true,
     poster: '/solar-system-placeholder.svg',
     src: `/usdz/${planetName}.usdz`,
-    className: 'block h-full w-full object-cover',
+    className: 'webspatial-model block h-full w-full object-cover',
   } as ComponentProps<typeof Model> & { poster: string }
 
   return (
@@ -130,9 +130,6 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
         ref={modelRef}
         {...modelProps}
         style={{
-          width: '100%',
-          height: '100%',
-          maxWidth: '100%',
           aspectRatio: '1',
           backgroundColor: 'transparent',
         }}
@@ -156,7 +153,7 @@ function SolarSystemCollection() {
     loop: true,
     poster: '/solar-system-placeholder.svg',
     src: '/glb/Planets.glb',
-    className: 'solar-system-collection-model block h-full w-full',
+    className: 'webspatial-model solar-system-collection-model block h-full w-full',
   } as ComponentProps<typeof Model> & { poster: string }
 
   return (
@@ -172,9 +169,6 @@ function SolarSystemCollection() {
           void modelRef.current?.play()
         }}
         style={{
-          width: '100%',
-          height: '100%',
-          maxWidth: '100%',
           backgroundColor: 'transparent',
         }}
       >
@@ -314,8 +308,6 @@ export default function DocumentWorkspace() {
 
   return (
     <div
-      enable-xr={true}
-      style={{ '--xr-background-material': 'regular' }}
       className="flex h-full w-full flex-col gap-6 overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside className="hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
