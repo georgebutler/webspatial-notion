@@ -74,6 +74,34 @@ const planets = [
 ]
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 3
+const DOCUMENT_LAST_MODIFIED = new Date('2026-07-22T22:34:26Z').getTime()
+
+function formatElapsedTime(milliseconds: number) {
+  const minutes = Math.max(0, Math.floor(milliseconds / 60_000))
+  if (minutes < 1) return 'just now'
+  if (minutes === 1) return '1 minute ago'
+  if (minutes < 60) return `${minutes} minutes ago`
+
+  const hours = Math.floor(minutes / 60)
+  if (hours === 1) return '1 hour ago'
+  if (hours < 24) return `${hours} hours ago`
+
+  const days = Math.floor(hours / 24)
+  if (days === 1) return '1 day ago'
+  return `${days} days ago`
+}
+
+function DocumentLastModified() {
+  const [now, setNow] = useState(() => Date.now())
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 60_000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  return <p className="mt-8 text-[13px] text-neutral-500">Last modified {formatElapsedTime(now - DOCUMENT_LAST_MODIFIED)}</p>
+}
+
 function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>, enabled: boolean) {
   useEffect(() => {
     if (!enabled) return
@@ -226,6 +254,7 @@ function SolarSystemDocument() {
           </section>
         ))}
       </div>
+      <DocumentLastModified />
     </>
   )
 }
@@ -262,7 +291,7 @@ function DocumentBody({ title }: { title: string }) {
         <br />
         3. Integrate comments and mentions.
       </NotionTextBlock>
-      <NotionTextBlock className="mt-8 text-[14px] text-neutral-600">Last updated: Today — Draft</NotionTextBlock>
+      <DocumentLastModified />
     </>
   )
 }
