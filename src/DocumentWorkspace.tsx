@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type ComponentProps, type MutableRefObject, type PropsWithChildren } from 'react'
+import { useEffect, useRef, useState, type ComponentProps, type PropsWithChildren } from 'react'
 import { Model, type ModelRef } from '@webspatial/react-sdk'
-import { Box, GripVertical } from 'lucide-react'
+import { Box, FileText, GripVertical } from 'lucide-react'
 
 type DocumentItem = {
   title: string
@@ -73,132 +73,7 @@ const planets = [
   },
 ]
 
-type SolarSystemOrbitDefinition = {
-  name: string
-  radius: number
-  speed: number
-  phase: number
-}
-
 const PLANET_ROTATION_DEGREES_PER_SECOND = 3
-
-const solarSystemOrbitDefinitions: SolarSystemOrbitDefinition[] = [
-  { name: 'Sun', radius: 0, speed: 0, phase: 0 },
-  { name: 'Mercury', radius: 0.28, speed: 0.18, phase: 0.2 },
-  { name: 'Venus', radius: 0.4, speed: 0.14, phase: 1.1 },
-  { name: 'Earth', radius: 0.54, speed: 0.11, phase: 2.2 },
-  { name: 'Mars', radius: 0.7, speed: 0.085, phase: 3.1 },
-  { name: 'Jupiter', radius: 0.92, speed: 0.06, phase: 4.3 },
-  { name: 'Saturn', radius: 1.16, speed: 0.045, phase: 5.2 },
-  { name: 'Uranus', radius: 1.4, speed: 0.03, phase: 0.8 },
-  { name: 'Neptune', radius: 1.64, speed: 0.02, phase: 2.8 },
-]
-
-function useSolarSystemOrbit(
-  modelRefs: MutableRefObject<Record<string, ModelRef | null>>,
-  itemRefs: MutableRefObject<Record<string, HTMLDivElement | null>>,
-  enabled: boolean,
-) {
-  useEffect(() => {
-    let mounted = true
-    let animationFrame: number | undefined
-    let previousTime: number | undefined
-    const pendingModels = new Set<string>()
-    const baseTransforms = new Map<string, DOMMatrix>()
-    const angles = new Map(solarSystemOrbitDefinitions.map(({ name, phase }) => [name, phase]))
-    const selfRotationAngles = new Map(solarSystemOrbitDefinitions.map(({ name }) => [name, 0]))
-    let sunTransform: DOMMatrix | undefined
-
-    const captureTransform = (name: string) => {
-      const model = modelRefs.current[name]
-      if (!model || baseTransforms.has(name)) return
-
-      const transform = DOMMatrix.fromMatrix(model.entityTransform)
-      baseTransforms.set(name, transform)
-      if (name === 'Sun') sunTransform = DOMMatrix.fromMatrix(transform)
-    }
-
-    const captureWhenReady = (name: string) => {
-      const model = modelRefs.current[name]
-      if (!model || baseTransforms.has(name) || pendingModels.has(name)) return
-
-      const ready = model.ready
-      if (!ready || typeof ready.then !== 'function') {
-        captureTransform(name)
-        return
-      }
-
-      pendingModels.add(name)
-      ready.then(
-        () => {
-          pendingModels.delete(name)
-          if (mounted) captureTransform(name)
-        },
-        () => {
-          pendingModels.delete(name)
-        },
-      )
-    }
-
-    const animate = (time: number) => {
-      if (!mounted) return
-
-      const deltaSeconds = previousTime === undefined ? 0 : Math.min((time - previousTime) / 1000, 0.1)
-      previousTime = time
-
-      solarSystemOrbitDefinitions.forEach(({ name, speed }) => {
-        if (enabled) captureWhenReady(name)
-        const angle = (angles.get(name) ?? 0) + speed * deltaSeconds
-        angles.set(name, angle)
-        if (enabled) {
-          selfRotationAngles.set(
-            name,
-            (selfRotationAngles.get(name) ?? 0) +
-              (PLANET_ROTATION_DEGREES_PER_SECOND * Math.PI * deltaSeconds) / 180,
-          )
-        }
-
-        if (!enabled) {
-          const definition = solarSystemOrbitDefinitions.find((item) => item.name === name)
-          const item = itemRefs.current[name]
-          if (definition && item) {
-            const x = Math.cos(angle) * definition.radius * 34
-            const y = Math.sin(angle) * definition.radius * 34
-            item.style.transform = `translate(calc(-50% + ${x}%), calc(-50% + ${y}%))`
-          }
-        }
-      })
-
-      if (enabled && sunTransform) {
-        solarSystemOrbitDefinitions.forEach(({ name, radius }) => {
-          const model = modelRefs.current[name]
-          const baseTransform = baseTransforms.get(name)
-          if (!model || !baseTransform) return
-
-          const transform = DOMMatrix.fromMatrix(baseTransform)
-          if (name !== 'Sun') {
-            const angle = angles.get(name) ?? 0
-            transform.m41 = sunTransform!.m41 + Math.cos(angle) * radius
-            transform.m42 = sunTransform!.m42
-            transform.m43 = sunTransform!.m43 + Math.sin(angle) * radius
-          }
-          transform.rotateSelf(0, (selfRotationAngles.get(name) ?? 0) * (180 / Math.PI), 0)
-          model.entityTransform = transform
-        })
-      }
-
-      animationFrame = requestAnimationFrame(animate)
-    }
-
-    animationFrame = requestAnimationFrame(animate)
-
-    return () => {
-      mounted = false
-      if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
-    }
-  }, [enabled, itemRefs, modelRefs])
-}
-
 function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>, enabled: boolean) {
   useEffect(() => {
     if (!enabled) return
@@ -274,10 +149,15 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
 }
 
 function SolarSystemCollection() {
-  const modelRefs = useRef<Record<string, ModelRef | null>>({})
-  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({})
-  const spatialMode = document.documentElement.classList.contains('isSpatial')
-  useSolarSystemOrbit(modelRefs, itemRefs, spatialMode)
+  const modelRef = useRef<ModelRef>(null)
+  const modelProps = {
+    'enable-xr': true,
+    autoPlay: true,
+    loop: true,
+    poster: '/solar-system-placeholder.svg',
+    src: '/glb/Planets.glb',
+    className: 'solar-system-collection-model block h-full w-full',
+  } as ComponentProps<typeof Model> & { poster: string }
 
   return (
     <div className="notion-model-surface solar-system-collection relative mt-8">
@@ -285,47 +165,26 @@ function SolarSystemCollection() {
         <Box size={16} strokeWidth={1.8} />
         <span>3D Model</span>
       </div>
-      <div className="solar-system-model-layer">
-        {solarSystemOrbitDefinitions.map(({ name, radius, phase }) => (
-          <div
-            className="solar-system-model-item"
-            key={name}
-            ref={(item) => {
-              itemRefs.current[name] = item
-            }}
-            style={{
-              '--orbit-x': `${Math.cos(phase) * radius * 34}%`,
-              '--orbit-y': `${Math.sin(phase) * radius * 34}%`,
-            } as React.CSSProperties}
-          >
-            <span className="solar-system-planet-name">{name}</span>
-            <Model
-              ref={(model) => {
-                modelRefs.current[name] = model
-              }}
-              enable-xr
-              {...({
-                poster: '/solar-system-placeholder.svg',
-                src: `/usdz/${name}.usdz`,
-                className: 'solar-system-collection-model block h-full w-full',
-              } as ComponentProps<typeof Model> & { poster: string })}
-              style={{
-                width: '100%',
-                height: '100%',
-                maxWidth: '100%',
-                backgroundColor: 'transparent',
-              }}
-            >
-              <source src={`/usdz/${name}.usdz`} type="model/vnd.usdz+zip" />
-              <img
-                alt={name}
-                src="/solar-system-placeholder.svg"
-                className="model-fallback block h-full w-full object-cover"
-              />
-            </Model>
-          </div>
-        ))}
-      </div>
+      <Model
+        ref={modelRef}
+        {...modelProps}
+        onLoad={() => {
+          void modelRef.current?.play()
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+          maxWidth: '100%',
+          backgroundColor: 'transparent',
+        }}
+      >
+        <source src="/glb/Planets.glb" type="model/gltf-binary" />
+        <img
+          alt="Loading Solar System models"
+          src="/solar-system-placeholder.svg"
+          className="model-fallback block h-full w-full object-contain"
+        />
+      </Model>
     </div>
   )
 }
@@ -455,7 +314,10 @@ export default function DocumentWorkspace() {
       className="flex h-full w-full flex-col gap-6 overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside className="hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
-        <h2 className="text-lg font-semibold text-white/90">Documents</h2>
+        <div className="flex items-center gap-2 text-white/90">
+          <FileText size={20} strokeWidth={1.8} aria-hidden="true" />
+          <h2 className="text-lg font-semibold">Documents</h2>
+        </div>
         <div className="mt-4 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
           <ul className="space-y-2">
           {documents.map((document, index) => (

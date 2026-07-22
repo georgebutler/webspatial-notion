@@ -188,9 +188,9 @@ export default function Dashboard() {
     <div className="flex h-full w-full flex-col items-center overflow-hidden">
       <div className="relative mt-2 flex min-h-0 w-full flex-1 flex-col gap-6 overflow-hidden sm:mt-6 sm:gap-8">
         <section className="shrink-0">
-          <div className="flex items-center gap-2 text-neutral-300">
+          <div className="flex items-center gap-2 text-white/90">
             <IconClock size={20} />
-            <p className="text-[17px]">Recently visited</p>
+            <p className="text-lg font-semibold">Recently visited</p>
           </div>
           <div className="mt-4 w-full overflow-x-auto pb-2 [scrollbar-width:none]">
             <div className="flex w-max items-stretch gap-3">
@@ -202,9 +202,9 @@ export default function Dashboard() {
         </section>
 
         <section className="flex min-h-0 flex-1 flex-col">
-          <div className="flex items-center gap-2 text-neutral-300">
+          <div className="flex items-center gap-2 text-white/90">
             <IconCalendar size={20} />
-            <p className="text-[17px]">Upcoming Events</p>
+            <p className="text-lg font-semibold">Upcoming Events</p>
           </div>
           <div className="mt-4 min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-white/10 px-4 pt-5 pb-4 backdrop-blur sm:px-5 sm:pt-6 [scrollbar-width:none]">
             <div className="space-y-5">
