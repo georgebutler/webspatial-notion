@@ -27,9 +27,17 @@
 
     const scale = Math.abs(state.pivotGroup.scale.x) || 1
     const sunPosition = getModelPosition(sun, state.model)
+    const translation = {
+      x: -scale * sunPosition.x,
+      y: -scale * sunPosition.y,
+      z: -scale * sunPosition.z,
+    }
+    state.entityTransform = new DOMMatrix()
+      .translate(translation.x, translation.y, translation.z)
+      .scale(scale, scale, scale)
     state.pivotGroup.rotation.set(0, 0, 0)
     state.pivotGroup.scale.setScalar(scale)
-    state.pivotGroup.position.set(-scale * sunPosition.x, -scale * sunPosition.y, -scale * sunPosition.z)
+    state.pivotGroup.position.set(translation.x, translation.y, translation.z)
     state.boundingBoxCenter = new DOMPointReadOnly(sunPosition.x, sunPosition.y, sunPosition.z, 1)
     state.userSetEntityTransform = true
 
@@ -46,6 +54,8 @@
     if (modelElement.__solarSystemViewWatched) return
     modelElement.__solarSystemViewWatched = true
     modelElement.addEventListener('load', () => applyView(modelElement))
+    modelElement.addEventListener('resize', () => applyView(modelElement))
+    new ResizeObserver(() => applyView(modelElement)).observe(modelElement)
     applyView(modelElement)
   }
 

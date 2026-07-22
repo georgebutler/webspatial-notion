@@ -8,6 +8,7 @@ const isSpatial = Spatial.prototype.runInSpatialWeb()
 if (!isSpatial && !('HTMLModelElement' in window)) {
   const polyfillScript = document.createElement('script')
   polyfillScript.type = 'module'
+  // Vendored from https://raw.githubusercontent.com/immersive-web/model-element-samples/refs/heads/main/model-element-polyfill/model-element-polyfill.js
   polyfillScript.src = '/model-element-polyfill.js'
   document.head.appendChild(polyfillScript)
   polyfillScript.addEventListener('load', () => {
