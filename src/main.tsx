@@ -11,12 +11,6 @@ if (!isSpatial && !('HTMLModelElement' in window)) {
   // Vendored from https://raw.githubusercontent.com/immersive-web/model-element-samples/refs/heads/main/model-element-polyfill/model-element-polyfill.js
   polyfillScript.src = '/model-element-polyfill.js'
   document.head.appendChild(polyfillScript)
-  polyfillScript.addEventListener('load', () => {
-    const modelViewScript = document.createElement('script')
-    modelViewScript.type = 'module'
-    modelViewScript.src = '/solar-system-model-view.js'
-    document.head.appendChild(modelViewScript)
-  })
 }
 
 document.documentElement.classList.toggle('isSpatial', isSpatial)
