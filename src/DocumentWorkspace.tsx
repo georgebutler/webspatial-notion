@@ -205,6 +205,11 @@ const documents: DocumentItem[] = [
   { title: 'Product Roadmap Q1', slug: 'product-roadmap-q1' },
 ]
 
+const documentSections = [
+  { title: 'Recently edited', items: documents.slice(0, 2) },
+  { title: 'Private', items: documents.slice(2) },
+]
+
 function SolarSystemDocument() {
   return (
     <>
@@ -286,7 +291,7 @@ export default function DocumentWorkspace() {
     const slug = url.pathname.startsWith('/doc/') ? url.pathname.slice('/doc/'.length) : ''
 
     if (slug) return documents.findIndex((document) => document.slug === slug)
-    return -1
+    return 0
   }
 
   const [selectedIndex, setSelectedIndex] = useState(getSelectedIndex)
@@ -318,23 +323,40 @@ export default function DocumentWorkspace() {
           <FileText size={20} strokeWidth={1.8} aria-hidden="true" />
           <h2 className="text-lg font-semibold">Documents</h2>
         </div>
-        <div className="mt-4 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
-          <ul className="space-y-2">
-          {documents.map((document, index) => (
-            <li key={document.title}>
-              <button
-                type="button"
-                onClick={() => selectDocument(index)}
-                title={document.title}
-                className={`w-full truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
-                  selectedIndex === index ? 'bg-white/10 text-white' : 'text-white/90 hover:bg-white/10'
-                }`}
-              >
-                {document.title}
-              </button>
-            </li>
-          ))}
-          </ul>
+        <div className="mt-6 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
+          <div className="space-y-6">
+            {documentSections.map((section) => (
+              <section key={section.title}>
+                <div className="flex items-center justify-between px-3 text-sm font-medium text-white/60">
+                  <span>{section.title}</span>
+                  <span>{section.items.length}</span>
+                </div>
+                <ul className="mt-2 space-y-2">
+                  {section.items.map((document) => {
+                    const index = documents.indexOf(document)
+
+                    return (
+                      <li key={document.title}>
+                        <button
+                          type="button"
+                          onClick={() => selectDocument(index)}
+                          title={document.title}
+                          className={`flex w-full items-center gap-2 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
+                            selectedIndex === index
+                              ? 'bg-white/10 text-white'
+                              : 'text-white/90 hover:bg-white/10'
+                          }`}
+                        >
+                          <FileText className="shrink-0" size={18} strokeWidth={1.8} aria-hidden="true" />
+                          <span className="truncate">{document.title}</span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+            ))}
+          </div>
         </div>
       </aside>
 
