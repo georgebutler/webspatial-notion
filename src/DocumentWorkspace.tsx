@@ -1,5 +1,5 @@
-import { useEffect, useState, type ComponentProps, type PropsWithChildren } from 'react'
-import { Model } from '@webspatial/react-sdk'
+import { useEffect, useRef, useState, type ComponentProps, type PropsWithChildren } from 'react'
+import { Model, type ModelRef } from '@webspatial/react-sdk'
 import { Box, GripVertical } from 'lucide-react'
 
 type DocumentItem = {
@@ -73,7 +73,55 @@ const planets = [
   },
 ]
 
+const PLANET_ROTATION_DEGREES_PER_SECOND = 3
+
+function usePlanetRotation(modelRef: React.RefObject<ModelRef | null>, enabled: boolean) {
+  useEffect(() => {
+    if (!enabled) return
+
+    let mounted = true
+    let animationFrame: number | undefined
+    let previousTime: number | undefined
+
+    const animate = (time: number) => {
+      if (!mounted) return
+
+      const current = modelRef.current
+      if (current) {
+        const deltaSeconds = previousTime === undefined ? 0 : (time - previousTime) / 1000
+        previousTime = time
+        const rotationDegrees = PLANET_ROTATION_DEGREES_PER_SECOND * deltaSeconds
+
+        if (rotationDegrees > 0) {
+          current.entityTransform = DOMMatrix.fromMatrix(current.entityTransform).rotateSelf(0, rotationDegrees, 0)
+        }
+      }
+
+      animationFrame = requestAnimationFrame(animate)
+    }
+
+    const startRotation = () => {
+      if (mounted) animationFrame = requestAnimationFrame(animate)
+    }
+
+    const ready = modelRef.current?.ready
+    if (ready && typeof ready.then === 'function') {
+      ready.then(startRotation, startRotation)
+    } else {
+      startRotation()
+    }
+
+    return () => {
+      mounted = false
+      if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
+    }
+  }, [enabled, modelRef])
+}
+
 function PlanetModelSlot({ planetName }: { planetName: string }) {
+  const modelRef = useRef<ModelRef>(null)
+  usePlanetRotation(modelRef, true)
+
   const modelProps = {
     'enable-xr': true,
     poster: '/solar-system-placeholder.svg',
@@ -88,6 +136,7 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
         <span>3D Model</span>
       </div>
       <Model
+        ref={modelRef}
         {...modelProps}
         style={{
           width: '100%',
