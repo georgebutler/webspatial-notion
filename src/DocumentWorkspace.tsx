@@ -152,8 +152,6 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
         enable-xr={true}
         src={`/usdz/${planetName}.usdz`}
         className="webspatial-model"
-        poster="/2k_stars_milky_way.jpg"
-        alt={`${planetName} 3D model`}
       />
     </div>
   )
@@ -171,8 +169,6 @@ function SolarSystemCollection() {
           enable-xr={true}
           src="/usdz/Planets.usdz"
           className="webspatial-model"
-          poster="/2k_stars_milky_way.jpg"
-          alt="Solar system 3D model"
         />
       </div>
       <div className="notion-model-card-copy">

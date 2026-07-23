@@ -186,15 +186,8 @@ html.isSpatial .notion-document-content {
   --xr-depth: 150px;
 }
 
-.notion-planet-model img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
-  background: transparent !important;
+  background: #000 !important;
 }
 
 .notion-model-card {
@@ -222,7 +215,7 @@ html.isSpatial .notion-document-content {
 
 .notion-model-card .notion-planet-model {
   border-radius: 0;
-  background-color: transparent;
+  background-color: #000;
 }
 
 .notion-model-card .notion-model-label {
@@ -238,5 +231,14 @@ html.isSpatial .notion-document-content {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background-color: var(--notion-surface);
+  background-color: #000;
+}
+
+html.isSpatial .notion-planet-model,
+html.isSpatial .notion-model-card .notion-planet-model {
+  background-color: transparent;
+}
+
+html.isSpatial .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  background: transparent !important;
 }
