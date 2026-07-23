@@ -133,7 +133,14 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
       if (mounted) animationFrame = requestAnimationFrame(animate)
     }
 
-    void modelRef.current?.ready?.then(startAnimation)
+    void modelRef.current?.ready
+      ?.then(() => {
+        console.info('[WebSpatial model] ready', modelRef.current?.currentSrc)
+        startAnimation()
+      })
+      .catch((error: unknown) => {
+        console.error('[WebSpatial model] ready failed', error)
+      })
 
     return () => {
       mounted = false
@@ -159,6 +166,8 @@ function PlanetModelSlot({
         enable-xr={true}
         src={src}
         className="webspatial-model"
+        onLoad={() => console.info('[WebSpatial model] loaded', src)}
+        onError={() => console.error('[WebSpatial model] failed', src)}
       />
       <div className="notion-model-label" aria-hidden="true">
         <Box size={16} strokeWidth={1.8} />
