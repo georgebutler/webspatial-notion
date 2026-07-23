@@ -171,11 +171,8 @@ function PlanetModelSlot({
 
 function SolarSystemCollection() {
   return (
-    <div className="notion-model-card mt-8">
+    <div className="notion-model-card mt-4">
       <PlanetModelSlot planetName="Solar System" src="/usdz/Planets.usdz" />
-      <div className="notion-model-card-copy">
-        <p>Interactive overview of the Sun and eight planets in our solar system.</p>
-      </div>
     </div>
   )
 }
