@@ -5,29 +5,35 @@ import App from './App.tsx'
 import { Spatial } from '@webspatial/core-sdk'
 
 const isSpatial = Spatial.prototype.runInSpatialWeb()
-if (!isSpatial && !('HTMLModelElement' in window)) {
+
+function renderApp() {
+  document.documentElement.classList.toggle('isSpatial', isSpatial)
+  document.documentElement.classList.toggle('is-web', !isSpatial)
+  document.body.classList.toggle('isSpatial', isSpatial)
+  document.body.classList.toggle('is-web', !isSpatial)
+
+  if (isSpatial) {
+    document.documentElement.classList.add('bg-transparent')
+    document.documentElement.style.setProperty('--xr-background-material', 'transparent')
+  }
+
+  document.body.classList.toggle('text-white', isSpatial)
+  document.body.classList.toggle('text-black', !isSpatial)
+
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+}
+
+if (isSpatial || 'HTMLModelElement' in window) {
+  renderApp()
+} else {
   const polyfillScript = document.createElement('script')
   polyfillScript.type = 'module'
-  // Vendored from https://raw.githubusercontent.com/immersive-web/model-element-samples/refs/heads/main/model-element-polyfill/model-element-polyfill.js
   polyfillScript.src = '/model-element-polyfill.js'
+  polyfillScript.addEventListener('load', renderApp, { once: true })
+  polyfillScript.addEventListener('error', renderApp, { once: true })
   document.head.appendChild(polyfillScript)
 }
-
-document.documentElement.classList.toggle('isSpatial', isSpatial)
-document.documentElement.classList.toggle('is-web', !isSpatial)
-document.body.classList.toggle('isSpatial', isSpatial)
-document.body.classList.toggle('is-web', !isSpatial)
-
-if (isSpatial) {
-  document.documentElement.classList.add('bg-transparent')
-  document.documentElement.style.setProperty('--xr-background-material', 'transparent')
-}
-
-document.body.classList.toggle('text-white', isSpatial)
-document.body.classList.toggle('text-black', !isSpatial)
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)

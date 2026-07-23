@@ -73,7 +73,6 @@ const planets = [
   },
 ]
 
-const PLANET_ROTATION_DEGREES_PER_SECOND = 3
 const DOCUMENT_LAST_MODIFIED = new Date('2026-07-22T22:34:26Z').getTime()
 
 function formatElapsedTime(milliseconds: number) {
@@ -102,10 +101,10 @@ function DocumentLastModified() {
   return <p className="mt-8 text-[13px] text-neutral-500">Last modified {formatElapsedTime(now - DOCUMENT_LAST_MODIFIED)}</p>
 }
 
-function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>, enabled: boolean) {
-  useEffect(() => {
-    if (!enabled) return
+const PLANET_ROTATION_DEGREES_PER_SECOND = 12
 
+function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>) {
+  useEffect(() => {
     let mounted = true
     let animationFrame: number | undefined
     let previousTime: number | undefined
@@ -128,18 +127,22 @@ function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>, enable
       animationFrame = requestAnimationFrame(animate)
     }
 
-    animationFrame = requestAnimationFrame(animate)
+    const startAnimation = () => {
+      if (mounted) animationFrame = requestAnimationFrame(animate)
+    }
+
+    void modelRef.current?.ready?.then(startAnimation)
 
     return () => {
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [enabled, modelRef])
+  }, [modelRef])
 }
 
 function PlanetModelSlot({ planetName }: { planetName: string }) {
   const modelRef = useRef<ModelRef>(null)
-  useModelSelfRotation(modelRef, true)
+  useModelSelfRotation(modelRef)
 
   const modelProps = {
     'enable-xr': true,
