@@ -27,4 +27,13 @@ function renderApp() {
   )
 }
 
-renderApp()
+if (isSpatial || 'HTMLModelElement' in window) {
+  renderApp()
+} else {
+  const polyfill = document.createElement('script')
+  polyfill.type = 'module'
+  polyfill.src = '/model-element-polyfill.js'
+  polyfill.onload = renderApp
+  polyfill.onerror = renderApp
+  document.head.appendChild(polyfill)
+}
