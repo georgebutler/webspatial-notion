@@ -75,6 +75,7 @@ const planets = [
 ]
 
 const DOCUMENT_LAST_MODIFIED = new Date('2026-07-22T22:34:26Z').getTime()
+const VEHICLE_MODEL_SRC = '/usdz/vehicle-speedster.usdz'
 
 function formatElapsedTime(milliseconds: number) {
   const minutes = Math.max(0, Math.floor(milliseconds / 60_000))
@@ -142,11 +143,9 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
 }
 
 function PlanetModelSlot({
-  planetName,
-  src = `/usdz/${planetName}.usdz`,
+  src = VEHICLE_MODEL_SRC,
   className = '',
 }: {
-  planetName: string
   src?: string
   className?: string
 }) {
@@ -172,7 +171,7 @@ function PlanetModelSlot({
 function SolarSystemCollection() {
   return (
     <div className="notion-model-card mt-4">
-      <PlanetModelSlot planetName="Solar System" src="/usdz/Planets.usdz" />
+      <PlanetModelSlot src={VEHICLE_MODEL_SRC} />
     </div>
   )
 }
@@ -222,7 +221,7 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             <p className="mt-3 text-[16px] leading-7">{planet.note}</p>
           </NotionTextBlock>
         </article>
-        <PlanetModelSlot planetName={planet.name} className="notion-planet-detail-model" />
+        <PlanetModelSlot className="notion-planet-detail-model" />
       </div>
     </>
   )
@@ -268,7 +267,7 @@ function SolarSystemDocument() {
             }}
             aria-label={`Open ${planet.name} details`}
           >
-            <PlanetModelSlot planetName={planet.name} />
+            <PlanetModelSlot />
             <div className="notion-model-card-copy">
               <h3 className="text-lg font-semibold">{planet.name}</h3>
               <p className="mt-2 line-clamp-3 text-[15px] leading-6">{planet.description}</p>
