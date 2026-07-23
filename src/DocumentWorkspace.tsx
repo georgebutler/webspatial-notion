@@ -395,8 +395,6 @@ export default function DocumentWorkspace() {
       </aside>
 
       <div
-        enable-xr={true}
-        style={{ '--xr-background-material': 'regular' }}
         className={`notion-document-content h-full min-h-0 flex-1 overflow-auto rounded-2xl px-6 py-8 ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
       >
         <div className="w-full">
