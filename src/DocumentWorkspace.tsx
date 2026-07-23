@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ComponentProps, type PropsWithChildren, type RefObject } from 'react'
+import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } from 'react'
 import { Box, FileText, GripVertical } from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
 import type { ModelRef } from '@webspatial/react-sdk'
@@ -145,62 +145,43 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
   const modelRef = useRef<ModelRef>(null)
   useModelSelfRotation(modelRef)
 
-  const modelProps = {
-    'enable-xr': true,
-    src: `/usdz/${planetName}.usdz`,
-    className: 'webspatial-model block h-full w-full object-cover',
-  } as ComponentProps<typeof Model3D>
-
   return (
     <div className="notion-planet-model">
-      <div className="notion-model-label" aria-hidden="true">
-        <Box size={16} strokeWidth={1.8} />
-        <span>3D Model</span>
-      </div>
       <Model3D
         modelRef={modelRef}
-        {...modelProps}
+        enable-xr={true}
+        src={`/usdz/${planetName}.usdz`}
+        className="webspatial-model"
         poster="/2k_stars_milky_way.jpg"
-        style={{
-          aspectRatio: '1',
-          backgroundColor: 'transparent',
-        }}
-      >
-        <source src={`/usdz/${planetName}.usdz`} type="model/vnd.usdz+zip" />
-      </Model3D>
+        alt={`${planetName} 3D model`}
+      />
     </div>
   )
 }
 
 function SolarSystemCollection() {
   const modelRef = useRef<ModelRef>(null)
-  const modelProps = {
-    'enable-xr': true,
-    autoPlay: true,
-    loop: true,
-    src: '/glb/Planets.glb',
-    className: 'webspatial-model solar-system-collection-model block h-full w-full',
-  } as ComponentProps<typeof Model3D>
+  useModelSelfRotation(modelRef)
 
   return (
-    <div className="notion-model-surface solar-system-collection relative mt-8">
-      <div className="notion-model-label" aria-hidden="true">
-        <Box size={16} strokeWidth={1.8} />
-        <span>3D Model</span>
+    <div className="notion-model-card mt-8">
+      <div className="notion-planet-model">
+        <Model3D
+          modelRef={modelRef}
+          enable-xr={true}
+          src="/usdz/Planets.usdz"
+          className="webspatial-model"
+          poster="/2k_stars_milky_way.jpg"
+          alt="Solar system 3D model"
+        />
       </div>
-      <Model3D
-        modelRef={modelRef}
-        {...modelProps}
-        poster="/2k_stars_milky_way.jpg"
-        onLoad={() => {
-          void modelRef.current?.play()
-        }}
-        style={{
-          backgroundColor: 'transparent',
-        }}
-      >
-        <source src="/glb/Planets.glb" type="model/gltf-binary" />
-      </Model3D>
+      <div className="notion-model-card-copy">
+        <div className="notion-model-label">
+          <Box size={16} strokeWidth={1.8} />
+          <span>3D Model</span>
+        </div>
+        <p>Interactive overview of the Sun and eight planets in our solar system.</p>
+      </div>
     </div>
   )
 }
@@ -246,16 +227,18 @@ function SolarSystemDocument() {
       <h2 className="mt-8 text-2xl font-semibold">Our Solar System</h2>
       <div className="mt-4 space-y-6">
         {planets.map((planet) => (
-          <section className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)]" key={planet.name}>
-            <NotionTextBlock className="flex flex-col justify-center">
+          <section className="notion-model-card" key={planet.name}>
+            <PlanetModelSlot planetName={planet.name} />
+            <div className="notion-model-card-copy">
+              <div className="notion-model-label">
+                <Box size={16} strokeWidth={1.8} />
+                <span>3D Model</span>
+              </div>
               <h3 className="text-lg font-semibold">{planet.name}</h3>
               <p className="mt-2 text-[16px] leading-7">{planet.description}</p>
               <p className="mt-3 border-t border-black/10 pt-3 text-[15px] leading-6 text-neutral-600">
                 <span className="font-semibold text-neutral-900">Notes:</span> {planet.note}
               </p>
-            </NotionTextBlock>
-            <div className="notion-planet-model-slot">
-              <PlanetModelSlot planetName={planet.name} />
             </div>
           </section>
         ))}

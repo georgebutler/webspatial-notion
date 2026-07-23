@@ -178,81 +178,65 @@ html.isSpatial .notion-document-content {
   pointer-events: none;
 }
 
-.notion-model-surface {
-  position: relative;
-  overflow: hidden;
-  border-radius: 1rem;
-  background-color: #000;
-}
-
-.solar-system-collection {
-  aspect-ratio: 16 / 9;
-  min-height: 320px;
-  background-image: url('/2k_stars_milky_way.jpg');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.solar-system-collection-model,
 .notion-planet-model .webspatial-model {
   display: block;
   width: 100%;
-  height: 100%;
+  height: clamp(240px, 42vw, 360px);
   max-width: none;
+  --xr-depth: 150px;
 }
 
-.notion-model-poster {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+.notion-planet-model img {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
-model > img.notion-model-poster,
-model-polyfill > img.notion-model-poster {
-  display: block !important;
-}
-
-.notion-planet-model-slot {
-  min-width: 0;
-}
-
-.notion-model-surface .__model-element-fallback-canvas-f7a9c3e1__,
 .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
   background: transparent !important;
 }
 
+.notion-model-card {
+  overflow: hidden;
+  border: 1px solid var(--notion-border);
+  border-radius: 1rem;
+  background: var(--notion-surface-raised);
+}
+
+.notion-model-card-copy {
+  padding: 16px 20px 20px;
+  color: var(--notion-text);
+}
+
 .notion-model-label {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 5px 9px;
-  border-radius: 6px;
-  background: rgba(20, 22, 28, 0.72);
-  color: white;
+  margin-bottom: 12px;
+  color: var(--notion-muted);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
-  pointer-events: none;
+}
+
+.notion-model-card .notion-planet-model {
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.notion-model-card .notion-model-label {
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--notion-hover);
 }
 
 .notion-planet-model {
   position: relative;
   display: flex;
   width: 100%;
-  min-height: 260px;
-  aspect-ratio: 1;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border-radius: 12px;
-  background-color: #000;
-  color: rgba(255, 255, 255, 0.72);
+  background-color: var(--notion-surface);
 }
