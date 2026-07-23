@@ -183,7 +183,8 @@ html.isSpatial .notion-document-content {
   width: 100%;
   height: clamp(240px, 42vw, 360px);
   max-width: none;
-  --xr-depth: 150px;
+  --xr-depth: 400px;
+  --xr-back: 200px;
 }
 
 .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
