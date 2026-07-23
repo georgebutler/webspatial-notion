@@ -103,7 +103,7 @@ function DocumentLastModified() {
   return <p className="mt-8 text-[13px] text-neutral-500">Last modified {formatElapsedTime(now - DOCUMENT_LAST_MODIFIED)}</p>
 }
 
-const PLANET_ROTATION_DEGREES_PER_SECOND = 12
+const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 
 function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
   useEffect(() => {
@@ -203,7 +203,7 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
       <button
         type="button"
         onClick={onBack}
-        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
+        className="mb-6 inline-flex cursor-pointer items-center gap-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
       >
         <ArrowLeft size={16} strokeWidth={1.8} />
         Back to Solar System
