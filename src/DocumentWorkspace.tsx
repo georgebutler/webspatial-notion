@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } from 'react'
-import { Box, FileText, GripVertical } from 'lucide-react'
+import { ArrowLeft, Box, FileText, GripVertical } from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
 import type { ModelRef } from '@webspatial/react-sdk'
 
@@ -141,41 +141,39 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
   }, [modelRef])
 }
 
-function PlanetModelSlot({ planetName }: { planetName: string }) {
+function PlanetModelSlot({
+  planetName,
+  src = `/usdz/${planetName}.usdz`,
+  className = '',
+}: {
+  planetName: string
+  src?: string
+  className?: string
+}) {
   const modelRef = useRef<ModelRef>(null)
   useModelSelfRotation(modelRef)
 
   return (
-    <div className="notion-planet-model">
+    <div className={`notion-planet-model ${className}`}>
       <Model3D
         modelRef={modelRef}
         enable-xr={true}
-        src={`/usdz/${planetName}.usdz`}
+        src={src}
         className="webspatial-model"
       />
+      <div className="notion-model-label" aria-hidden="true">
+        <Box size={16} strokeWidth={1.8} />
+        <span>3D Model</span>
+      </div>
     </div>
   )
 }
 
 function SolarSystemCollection() {
-  const modelRef = useRef<ModelRef>(null)
-  useModelSelfRotation(modelRef)
-
   return (
     <div className="notion-model-card mt-8">
-      <div className="notion-planet-model">
-        <Model3D
-          modelRef={modelRef}
-          enable-xr={true}
-          src="/usdz/Planets.usdz"
-          className="webspatial-model"
-        />
-      </div>
+      <PlanetModelSlot planetName="Solar System" src="/usdz/Planets.usdz" />
       <div className="notion-model-card-copy">
-        <div className="notion-model-label">
-          <Box size={16} strokeWidth={1.8} />
-          <span>3D Model</span>
-        </div>
         <p>Interactive overview of the Sun and eight planets in our solar system.</p>
       </div>
     </div>
@@ -203,7 +201,43 @@ const documentSections = [
   { title: 'Private', items: documents.slice(2) },
 ]
 
+function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; onBack: () => void }) {
+  return (
+    <>
+      <button
+        type="button"
+        onClick={onBack}
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
+      >
+        <ArrowLeft size={16} strokeWidth={1.8} />
+        Back to Solar System
+      </button>
+      <h1 className="text-3xl font-bold">{planet.name}</h1>
+      <div className="notion-planet-detail mt-6">
+        <article className="notion-planet-detail-copy">
+          <h2 className="sr-only">Planet details</h2>
+          <NotionTextBlock>
+            <h2 className="text-xl font-semibold">Description</h2>
+            <p className="mt-3 text-[16px] leading-7">{planet.description}</p>
+          </NotionTextBlock>
+          <NotionTextBlock className="mt-6">
+            <h2 className="text-xl font-semibold">Notes</h2>
+            <p className="mt-3 text-[16px] leading-7">{planet.note}</p>
+          </NotionTextBlock>
+        </article>
+        <PlanetModelSlot planetName={planet.name} className="notion-planet-detail-model" />
+      </div>
+    </>
+  )
+}
+
 function SolarSystemDocument() {
+  const [selectedPlanet, setSelectedPlanet] = useState<(typeof planets)[number] | null>(null)
+
+  if (selectedPlanet) {
+    return <PlanetDetail planet={selectedPlanet} onBack={() => setSelectedPlanet(null)} />
+  }
+
   return (
     <>
       <h1 className="text-3xl font-bold">The Solar System</h1>
@@ -221,22 +255,28 @@ function SolarSystemDocument() {
         in our solar system.
       </NotionTextBlock>
       <h2 className="mt-8 text-2xl font-semibold">Our Solar System</h2>
-      <div className="mt-4 space-y-6">
+      <div className="notion-planet-grid mt-4">
         {planets.map((planet) => (
-          <section className="notion-model-card" key={planet.name}>
+          <article
+            className="notion-model-card notion-planet-card"
+            key={planet.name}
+            role="button"
+            tabIndex={0}
+            onClick={() => setSelectedPlanet(planet)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                setSelectedPlanet(planet)
+              }
+            }}
+            aria-label={`Open ${planet.name} details`}
+          >
             <PlanetModelSlot planetName={planet.name} />
             <div className="notion-model-card-copy">
-              <div className="notion-model-label">
-                <Box size={16} strokeWidth={1.8} />
-                <span>3D Model</span>
-              </div>
               <h3 className="text-lg font-semibold">{planet.name}</h3>
-              <p className="mt-2 text-[16px] leading-7">{planet.description}</p>
-              <p className="mt-3 border-t border-black/10 pt-3 text-[15px] leading-6 text-neutral-600">
-                <span className="font-semibold text-neutral-900">Notes:</span> {planet.note}
-              </p>
+              <p className="mt-2 line-clamp-3 text-[15px] leading-6">{planet.description}</p>
             </div>
-          </section>
+          </article>
         ))}
       </div>
       <DocumentLastModified />

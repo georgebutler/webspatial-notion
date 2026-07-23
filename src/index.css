@@ -181,10 +181,10 @@ html.isSpatial .notion-document-content {
 .notion-planet-model .webspatial-model {
   display: block;
   width: 100%;
-  height: clamp(240px, 42vw, 360px);
+  height: clamp(200px, 28vw, 280px);
   max-width: none;
-  --xr-depth: 400px;
-  --xr-back: 200px;
+  --xr-depth: 300px;
+  --xr-back: 150px;
 }
 
 .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
@@ -204,14 +204,21 @@ html.isSpatial .notion-document-content {
 }
 
 .notion-model-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 12px;
-  color: var(--notion-muted);
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: rgba(20, 22, 28, 0.78);
+  color: white;
   font-size: 14px;
   font-weight: 500;
   line-height: 1.2;
+  pointer-events: none;
 }
 
 .notion-model-card .notion-planet-model {
@@ -219,10 +226,22 @@ html.isSpatial .notion-document-content {
   background-color: #000;
 }
 
-.notion-model-card .notion-model-label {
-  padding: 5px 9px;
-  border-radius: 6px;
-  background: var(--notion-hover);
+.notion-planet-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .notion-planet-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .notion-planet-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .notion-planet-model {
@@ -242,4 +261,52 @@ html.isSpatial .notion-model-card .notion-planet-model {
 
 html.isSpatial .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
   background: transparent !important;
+}
+
+.notion-planet-card {
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.notion-planet-card:hover,
+.notion-planet-card:focus-visible {
+  border-color: rgba(32, 32, 32, 0.34);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.notion-planet-detail {
+  display: grid;
+  gap: 24px;
+}
+
+.notion-planet-detail-model {
+  width: min(100%, 360px);
+  aspect-ratio: 1;
+  align-self: start;
+  justify-self: end;
+  border-radius: 12px;
+}
+
+.notion-planet-detail-model .webspatial-model {
+  height: 100%;
+}
+
+.notion-planet-detail-copy {
+  color: var(--notion-text);
+}
+
+@media (min-width: 760px) {
+  .notion-planet-detail {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 360px);
+    align-items: start;
+  }
+}
+
+@media (max-width: 759px) {
+  .notion-planet-detail-model {
+    justify-self: start;
+  }
 }
