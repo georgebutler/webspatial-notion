@@ -105,7 +105,7 @@ function DocumentLastModified() {
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 
-function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
+function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, src: string) {
   useEffect(() => {
     let mounted = true
     let animationFrame: number | undefined
@@ -133,20 +133,36 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
       if (mounted) animationFrame = requestAnimationFrame(animate)
     }
 
-    void modelRef.current?.ready
+    const model = modelRef.current
+    console.info('[WebSpatial model] mounted', {
+      src,
+      tagName: model instanceof HTMLElement ? model.tagName : typeof model,
+      spatialHost: model instanceof HTMLElement && model.hasAttribute('data-xr-host'),
+      ready: typeof model?.ready,
+      currentSrc: model?.currentSrc,
+    })
+
+    let readyPromise: Promise<unknown> | undefined
+    try {
+      readyPromise = model?.ready
+    } catch (error: unknown) {
+      console.error('[WebSpatial model] ready access failed', { src, error })
+    }
+
+    void readyPromise
       ?.then(() => {
         console.info('[WebSpatial model] ready', modelRef.current?.currentSrc)
         startAnimation()
       })
       .catch((error: unknown) => {
-        console.error('[WebSpatial model] ready failed', error)
+        console.error('[WebSpatial model] ready failed', { src, error })
       })
 
     return () => {
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [modelRef])
+  }, [modelRef, src])
 }
 
 function PlanetModelSlot({
@@ -157,7 +173,22 @@ function PlanetModelSlot({
   className?: string
 }) {
   const modelRef = useRef<ModelRef>(null)
-  useModelSelfRotation(modelRef)
+  useModelSelfRotation(modelRef, src)
+
+  useEffect(() => {
+    const model = modelRef.current
+    if (!(model instanceof HTMLElement)) return
+
+    const handleLoaded = () => console.info('[WebSpatial model] DOM loaded', src)
+    const handleFailed = () => console.error('[WebSpatial model] DOM failed', src)
+    model.addEventListener('modelloaded', handleLoaded)
+    model.addEventListener('modelloadfailed', handleFailed)
+
+    return () => {
+      model.removeEventListener('modelloaded', handleLoaded)
+      model.removeEventListener('modelloadfailed', handleFailed)
+    }
+  }, [src])
 
   return (
     <div className={`notion-planet-model ${className}`}>
