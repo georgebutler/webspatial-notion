@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type ComponentProps, type PropsWithChildren } from 'react'
-import { Model, type ModelRef } from '@webspatial/react-sdk'
+import { useEffect, useRef, useState, type ComponentProps, type PropsWithChildren, type RefObject } from 'react'
 import { Box, FileText, GripVertical } from 'lucide-react'
+import { Model3D } from './Model3D.tsx'
+import type { ModelRef } from '@webspatial/react-sdk'
 
 type DocumentItem = {
   title: string
@@ -103,7 +104,7 @@ function DocumentLastModified() {
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 12
 
-function useModelSelfRotation(modelRef: React.RefObject<ModelRef | null>) {
+function useModelSelfRotation(modelRef: RefObject<ModelRef | null>) {
   useEffect(() => {
     let mounted = true
     let animationFrame: number | undefined
@@ -148,7 +149,7 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
     'enable-xr': true,
     src: `/usdz/${planetName}.usdz`,
     className: 'webspatial-model block h-full w-full object-cover',
-  } as ComponentProps<typeof Model>
+  } as ComponentProps<typeof Model3D>
 
   return (
     <div className="notion-planet-model">
@@ -156,16 +157,17 @@ function PlanetModelSlot({ planetName }: { planetName: string }) {
         <Box size={16} strokeWidth={1.8} />
         <span>3D Model</span>
       </div>
-      <Model
-        ref={modelRef}
+      <Model3D
+        modelRef={modelRef}
         {...modelProps}
+        poster="/2k_stars_milky_way.jpg"
         style={{
           aspectRatio: '1',
           backgroundColor: 'transparent',
         }}
       >
         <source src={`/usdz/${planetName}.usdz`} type="model/vnd.usdz+zip" />
-      </Model>
+      </Model3D>
     </div>
   )
 }
@@ -178,7 +180,7 @@ function SolarSystemCollection() {
     loop: true,
     src: '/glb/Planets.glb',
     className: 'webspatial-model solar-system-collection-model block h-full w-full',
-  } as ComponentProps<typeof Model>
+  } as ComponentProps<typeof Model3D>
 
   return (
     <div className="notion-model-surface solar-system-collection relative mt-8">
@@ -186,9 +188,10 @@ function SolarSystemCollection() {
         <Box size={16} strokeWidth={1.8} />
         <span>3D Model</span>
       </div>
-      <Model
-        ref={modelRef}
+      <Model3D
+        modelRef={modelRef}
         {...modelProps}
+        poster="/2k_stars_milky_way.jpg"
         onLoad={() => {
           void modelRef.current?.play()
         }}
@@ -197,7 +200,7 @@ function SolarSystemCollection() {
         }}
       >
         <source src="/glb/Planets.glb" type="model/gltf-binary" />
-      </Model>
+      </Model3D>
     </div>
   )
 }
@@ -251,7 +254,7 @@ function SolarSystemDocument() {
                 <span className="font-semibold text-neutral-900">Notes:</span> {planet.note}
               </p>
             </NotionTextBlock>
-            <div>
+            <div className="notion-planet-model-slot">
               <PlanetModelSlot planetName={planet.name} />
             </div>
           </section>
@@ -376,13 +379,11 @@ export default function DocumentWorkspace() {
         </div>
       </aside>
 
-      <div className={`notion-document-content h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${documents[0] ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
-        <div className="w-full">
-          {documents[0] ? <DocumentBody title={documents[0].title} /> : <h1 className="text-2xl font-semibold">Select a document to get started</h1>}
-        </div>
-      </div>
-
-      <div className={`notion-document-content hidden h-full flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+      <div
+        enable-xr={true}
+        style={{ '--xr-background-material': 'regular' }}
+        className={`notion-document-content h-full min-h-0 flex-1 overflow-auto rounded-2xl px-6 py-8 ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
+      >
         <div className="w-full">
           {selectedDocument ? <DocumentBody title={selectedDocument.title} /> : <h1 className="text-lg font-semibold text-white/90">Click a document on the left to get started</h1>}
         </div>
