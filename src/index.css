@@ -254,15 +254,6 @@ html.isSpatial .notion-document-content {
   background-color: #000;
 }
 
-html.isSpatial .notion-planet-model,
-html.isSpatial .notion-model-card .notion-planet-model {
-  background-color: transparent;
-}
-
-html.isSpatial .notion-planet-model .__model-element-fallback-canvas-f7a9c3e1__ {
-  background: transparent !important;
-}
-
 .notion-planet-card {
   cursor: pointer;
   transition:
