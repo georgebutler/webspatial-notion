@@ -243,27 +243,6 @@ html.isSpatial .notion-document-content {
   pointer-events: none;
 }
 
-.notion-model-card {
-  border: 1px solid var(--notion-border);
-  border-radius: 1rem;
-  background: var(--notion-surface-raised);
-}
-
-.notion-planet-card {
-  padding: 10px;
-}
-
-.notion-planet-card .notion-model-card-copy {
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-left: 10px;
-}
-
-.notion-model-card-copy {
-  padding: 16px 20px 20px;
-  color: var(--notion-text);
-}
-
 .notion-model-label {
   position: absolute;
   top: 12px;
@@ -282,22 +261,10 @@ html.isSpatial .notion-document-content {
   pointer-events: none;
 }
 
-.notion-planet-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
+.notion-planet-list {
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-}
-
-@media (min-width: 640px) {
-  .notion-planet-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 960px) {
-  .notion-planet-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
 }
 
 .notion-planet-model {
@@ -311,15 +278,43 @@ html.isSpatial .notion-document-content {
   background-color: #000;
 }
 
-.notion-planet-card {
+.notion-planet-row {
+  display: grid;
+  grid-template-areas: "copy model";
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 20px;
+  align-items: stretch;
   cursor: pointer;
-  transition: border-color 160ms ease;
 }
 
-.notion-planet-card:hover,
-.notion-planet-card:focus-visible {
-  border-color: rgba(32, 32, 32, 0.34);
+.notion-planet-row:focus-visible {
   outline: none;
+}
+
+.notion-planet-row:focus-visible .notion-text-block,
+.notion-planet-row:focus-visible .notion-model-block,
+.notion-planet-row:hover .notion-text-block,
+.notion-planet-row:hover .notion-model-block {
+  box-shadow: 0 0 0 1px rgba(32, 32, 32, 0.18);
+}
+
+.notion-planet-row-copy {
+  grid-area: copy;
+  min-height: 100%;
+}
+
+.notion-planet-row-model {
+  grid-area: model;
+  width: 100%;
+  aspect-ratio: 1;
+  align-self: start;
+}
+
+.notion-planet-row-model .notion-planet-model,
+.notion-planet-row-model .webspatial-model,
+.notion-planet-row-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  width: 100%;
+  height: 100%;
 }
 
 .notion-planet-detail {
@@ -335,14 +330,85 @@ html.isSpatial .notion-document-content {
   border-radius: 12px;
 }
 
+.notion-planet-detail-model .notion-planet-model,
 .notion-planet-detail-model .webspatial-model {
+  width: 100%;
   height: 100%;
+  aspect-ratio: 1;
   --xr-depth: 400px;
   --xr-back: 200px;
 }
 
+.notion-planet-detail-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .notion-planet-detail-copy {
   color: var(--notion-text);
+}
+
+.notion-planet-facts {
+  overflow: hidden;
+  border: 1px solid var(--notion-border);
+  border-radius: 8px;
+}
+
+.notion-planet-fact {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.34fr) minmax(0, 1fr);
+  min-width: 0;
+  border-bottom: 1px solid var(--notion-border);
+}
+
+.notion-planet-fact:last-child {
+  border-bottom: 0;
+}
+
+.notion-planet-fact dt {
+  padding: 9px 12px;
+  border-right: 1px solid var(--notion-border);
+  background: rgba(32, 32, 32, 0.035);
+  color: var(--notion-muted);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.notion-planet-fact dd {
+  margin: 0;
+  padding: 9px 12px;
+  color: var(--notion-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.notion-planet-card-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--notion-border);
+  border-radius: 8px;
+}
+
+.notion-planet-card-facts .notion-planet-fact {
+  display: block;
+  border-right: 1px solid var(--notion-border);
+  border-bottom: 0;
+}
+
+.notion-planet-card-facts .notion-planet-fact:last-child {
+  border-right: 0;
+}
+
+.notion-planet-card-facts .notion-planet-fact dt {
+  border-right: 0;
+  border-bottom: 1px solid var(--notion-border);
+}
+
+.notion-planet-fact-compact dd {
+  font-size: 13px;
+  font-weight: 500;
 }
 
 @media (min-width: 760px) {
@@ -353,7 +419,51 @@ html.isSpatial .notion-document-content {
 }
 
 @media (max-width: 759px) {
-  .notion-planet-detail-model {
+  .notion-planet-row {
+    grid-template-areas:
+      "model"
+      "copy";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notion-planet-row-model {
+    width: min(100%, 360px);
     justify-self: start;
+  }
+
+  .notion-planet-detail {
+    grid-template-areas:
+      "model"
+      "copy";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notion-planet-detail-copy {
+    grid-area: copy;
+  }
+
+  .notion-planet-detail-model {
+    grid-area: model;
+    justify-self: start;
+  }
+
+  .notion-planet-facts,
+  .notion-planet-card-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notion-planet-card-facts .notion-planet-fact {
+    display: grid;
+    border-right: 0;
+    border-bottom: 1px solid var(--notion-border);
+  }
+
+  .notion-planet-card-facts .notion-planet-fact:last-child {
+    border-bottom: 0;
+  }
+
+  .notion-planet-card-facts .notion-planet-fact dt {
+    border-right: 1px solid var(--notion-border);
+    border-bottom: 0;
   }
 }

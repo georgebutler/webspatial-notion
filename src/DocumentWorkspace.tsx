@@ -19,6 +19,15 @@ const planets = [
   {
     name: 'Sun',
     modelSrc: '/usdz/Sun.usdz',
+    classification: 'G-type star',
+    diameter: '1.39 million km',
+    distance: '149.6 million km from Earth',
+    orbitalPeriod: 'One galactic orbit: ~230 million years',
+    rotationPeriod: 'About 25–35 Earth days',
+    moons: '8 planets orbit it',
+    temperature: 'About 5,500°C at the surface',
+    gravity: '274 m/s²',
+    atmosphere: 'Mostly hydrogen and helium plasma',
     description:
       'The star at the center of our solar system and the source of nearly all the energy that makes life on Earth possible. The Sun is a nearly perfect sphere of hot plasma, made mostly of hydrogen and helium.',
     note:
@@ -27,6 +36,15 @@ const planets = [
   {
     name: 'Mercury',
     modelSrc: '/usdz/Mercury.usdz',
+    classification: 'Terrestrial planet',
+    diameter: '4,879 km',
+    distance: '57.9 million km from the Sun',
+    orbitalPeriod: '88 Earth days',
+    rotationPeriod: '58.6 Earth days',
+    moons: '0',
+    temperature: '−180°C to 430°C',
+    gravity: '3.7 m/s²',
+    atmosphere: 'Extremely thin exosphere',
     description:
       'The smallest planet and the closest to the Sun. Mercury has a heavily cratered, rocky surface that looks a little like the Moon, but its days and nights are far more extreme because it has almost no atmosphere to hold heat.',
     note:
@@ -35,6 +53,15 @@ const planets = [
   {
     name: 'Venus',
     modelSrc: '/usdz/Venus.usdz',
+    classification: 'Terrestrial planet',
+    diameter: '12,104 km',
+    distance: '108.2 million km from the Sun',
+    orbitalPeriod: '224.7 Earth days',
+    rotationPeriod: '243 Earth days, retrograde',
+    moons: '0',
+    temperature: 'About 465°C',
+    gravity: '8.87 m/s²',
+    atmosphere: 'Mostly carbon dioxide',
     description:
       'A hot, cloud-covered rocky planet wrapped in a thick carbon dioxide atmosphere. Its clouds contain sulfuric acid, and the intense pressure at the surface is roughly 90 times that of Earth.',
     note:
@@ -43,6 +70,15 @@ const planets = [
   {
     name: 'Earth',
     modelSrc: '/usdz/Earth.usdz',
+    classification: 'Terrestrial planet',
+    diameter: '12,742 km',
+    distance: '149.6 million km from the Sun',
+    orbitalPeriod: '365.25 days',
+    rotationPeriod: '23 hours 56 minutes',
+    moons: '1',
+    temperature: 'About 15°C average',
+    gravity: '9.81 m/s²',
+    atmosphere: 'Mostly nitrogen and oxygen',
     description:
       'Our home planet, with abundant liquid surface water and the only known life in the solar system. Earth’s atmosphere, magnetic field, and active geology work together to make the surface unusually stable and habitable.',
     note:
@@ -51,6 +87,15 @@ const planets = [
   {
     name: 'Mars',
     modelSrc: '/usdz/Mars.usdz',
+    classification: 'Terrestrial planet',
+    diameter: '6,779 km',
+    distance: '227.9 million km from the Sun',
+    orbitalPeriod: '687 Earth days',
+    rotationPeriod: '24 hours 37 minutes',
+    moons: '2',
+    temperature: 'About −63°C average',
+    gravity: '3.71 m/s²',
+    atmosphere: 'Thin, mostly carbon dioxide',
     description:
       'A cold, rocky world known for its iron-rich red surface. Mars has polar ice caps, enormous volcanoes, deep valleys, dusty plains, and two small moons named Phobos and Deimos.',
     note:
@@ -59,6 +104,15 @@ const planets = [
   {
     name: 'Jupiter',
     modelSrc: '/usdz/Jupiter.usdz',
+    classification: 'Gas giant',
+    diameter: '139,820 km',
+    distance: '778.5 million km from the Sun',
+    orbitalPeriod: '11.86 Earth years',
+    rotationPeriod: '9 hours 56 minutes',
+    moons: '95+',
+    temperature: 'About −110°C at cloud tops',
+    gravity: '24.79 m/s²',
+    atmosphere: 'Mostly hydrogen and helium',
     description:
       'The largest planet and a gas giant made mostly of hydrogen and helium. Its striped cloud bands are driven by powerful jet streams, and the Great Red Spot is a storm that has lasted for centuries.',
     note:
@@ -67,6 +121,15 @@ const planets = [
   {
     name: 'Saturn',
     modelSrc: '/usdz/Saturn.usdz',
+    classification: 'Gas giant',
+    diameter: '116,460 km',
+    distance: '1.43 billion km from the Sun',
+    orbitalPeriod: '29.45 Earth years',
+    rotationPeriod: 'About 10 hours 42 minutes',
+    moons: '140+',
+    temperature: 'About −140°C at cloud tops',
+    gravity: '10.44 m/s²',
+    atmosphere: 'Mostly hydrogen and helium',
     description:
       'A gas giant surrounded by a bright, extensive ring system made mostly of water ice and rock. Saturn is the second-largest planet, but its average density is low enough that it would float in a large enough ocean.',
     note:
@@ -75,6 +138,15 @@ const planets = [
   {
     name: 'Uranus',
     modelSrc: '/usdz/Uranus.usdz',
+    classification: 'Ice giant',
+    diameter: '50,724 km',
+    distance: '2.87 billion km from the Sun',
+    orbitalPeriod: '84 Earth years',
+    rotationPeriod: '17 hours 14 minutes, retrograde',
+    moons: '28',
+    temperature: 'About −195°C',
+    gravity: '8.69 m/s²',
+    atmosphere: 'Hydrogen, helium, and methane',
     description:
       'A pale blue ice giant that rotates on its side, likely after a massive collision early in its history. Uranus has faint rings and an atmosphere containing methane, which gives it its blue-green color.',
     note:
@@ -83,6 +155,15 @@ const planets = [
   {
     name: 'Neptune',
     modelSrc: '/usdz/Neptune.usdz',
+    classification: 'Ice giant',
+    diameter: '49,244 km',
+    distance: '4.5 billion km from the Sun',
+    orbitalPeriod: '164.8 Earth years',
+    rotationPeriod: 'About 16 hours',
+    moons: '16',
+    temperature: 'About −200°C',
+    gravity: '11.15 m/s²',
+    atmosphere: 'Hydrogen, helium, and methane',
     description:
       'The most distant planet from the Sun. Neptune is a cold, windy ice giant with a deep blue atmosphere, faint rings, and some of the fastest winds measured anywhere in the solar system.',
     note:
@@ -90,7 +171,6 @@ const planets = [
   },
 ]
 
-const DOCUMENT_LAST_MODIFIED = new Date('2026-07-22T22:34:26Z').getTime()
 const ORBIT_MODEL_FALLBACK_SRC = '/usdz/Planets.usdz'
 const SATURN_TILT_DEGREES = (0.47 * 180) / Math.PI
 
@@ -109,30 +189,8 @@ function getPlanetTiltDegrees(planetName: string) {
   return planetName === 'Saturn' ? SATURN_TILT_DEGREES : 0
 }
 
-function formatElapsedTime(milliseconds: number) {
-  const minutes = Math.max(0, Math.floor(milliseconds / 60_000))
-  if (minutes < 1) return 'just now'
-  if (minutes === 1) return '1 minute ago'
-  if (minutes < 60) return `${minutes} minutes ago`
-
-  const hours = Math.floor(minutes / 60)
-  if (hours === 1) return '1 hour ago'
-  if (hours < 24) return `${hours} hours ago`
-
-  const days = Math.floor(hours / 24)
-  if (days === 1) return '1 day ago'
-  return `${days} days ago`
-}
-
 function DocumentLastModified() {
-  const [now, setNow] = useState(() => Date.now())
-
-  useEffect(() => {
-    const interval = window.setInterval(() => setNow(Date.now()), 60_000)
-    return () => window.clearInterval(interval)
-  }, [])
-
-  return <p className="mt-8 text-[13px] text-neutral-500">Last modified {formatElapsedTime(now - DOCUMENT_LAST_MODIFIED)}</p>
+  return <p className="mt-8 text-[13px] text-neutral-500">Last modified 1 day ago</p>
 }
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
@@ -207,12 +265,14 @@ function useModelSelfRotation(
 
 function PlanetModelSlot({
   src,
+  instanceKey,
   tiltDegrees = 0,
   rotate = true,
   rotationAxis = 'y',
   className = '',
 }: {
   src: string
+  instanceKey: string
   tiltDegrees?: number
   rotate?: boolean
   rotationAxis?: 'x' | 'y' | 'z'
@@ -226,9 +286,11 @@ function PlanetModelSlot({
     <div className={`notion-model-block ${className}`}>
       <div className="notion-planet-model">
         <Model3D
+          key={instanceKey}
           modelRef={modelRef}
           src={src}
           className="webspatial-model"
+          loading="eager"
           onLoad={() => setIsLoaded(true)}
           onError={() => setIsLoaded(false)}
         />
@@ -318,6 +380,7 @@ function SolarSystemCollection() {
   ) : (
     <PlanetModelSlot
       src={ORBIT_MODEL_FALLBACK_SRC}
+      instanceKey="solar-system-overview"
       tiltDegrees={90}
       rotationAxis="z"
       className="mt-4"
@@ -346,6 +409,23 @@ const documentSections = [
   { title: 'Private', items: documents.slice(2) },
 ]
 
+function PlanetFact({
+  label,
+  value,
+  compact = false,
+}: {
+  label: string
+  value: string
+  compact?: boolean
+}) {
+  return (
+    <div className={compact ? 'notion-planet-fact notion-planet-fact-compact' : 'notion-planet-fact'}>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  )
+}
+
 function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; onBack: () => void }) {
   return (
     <>
@@ -369,9 +449,24 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             <h2 className="text-xl font-semibold">Notes</h2>
             <p className="mt-3 text-[16px] leading-7">{planet.note}</p>
           </NotionTextBlock>
+          <NotionTextBlock className="mt-6">
+            <h2 className="text-xl font-semibold">Quick facts</h2>
+            <dl className="notion-planet-facts mt-4">
+              <PlanetFact label="Type" value={planet.classification} />
+              <PlanetFact label="Diameter" value={planet.diameter} />
+              <PlanetFact label="Distance" value={planet.distance} />
+              <PlanetFact label="Year" value={planet.orbitalPeriod} />
+              <PlanetFact label="Rotation" value={planet.rotationPeriod} />
+              <PlanetFact label="Moons" value={planet.moons} />
+              <PlanetFact label="Temperature" value={planet.temperature} />
+              <PlanetFact label="Gravity" value={planet.gravity} />
+              <PlanetFact label="Atmosphere" value={planet.atmosphere} />
+            </dl>
+          </NotionTextBlock>
         </article>
         <PlanetModelSlot
           src={planet.modelSrc}
+          instanceKey={`detail-${planet.name}`}
           tiltDegrees={getPlanetTiltDegrees(planet.name)}
           className="notion-planet-detail-model"
         />
@@ -404,10 +499,10 @@ function SolarSystemDocument() {
         in our solar system.
       </NotionTextBlock>
       <h2 className="mt-8 text-2xl font-semibold">Our Solar System</h2>
-      <div className="notion-planet-grid mt-2">
+      <div className="notion-planet-list mt-2">
         {planets.map((planet) => (
           <article
-            className="notion-model-card notion-planet-card"
+            className="notion-planet-row"
             key={planet.name}
             role="button"
             tabIndex={0}
@@ -422,12 +517,23 @@ function SolarSystemDocument() {
           >
             <PlanetModelSlot
               src={planet.modelSrc}
+              instanceKey={`card-${planet.name}`}
               tiltDegrees={getPlanetTiltDegrees(planet.name)}
+              className="notion-planet-row-model"
             />
-            <div className="notion-model-card-copy">
+            <NotionTextBlock className="notion-planet-row-copy">
               <h3 className="text-lg font-semibold">{planet.name}</h3>
-              <p className="mt-2 line-clamp-3 text-[15px] leading-6">{planet.description}</p>
-            </div>
+              <p className="mt-1 text-sm font-medium text-neutral-600">{planet.classification}</p>
+              <p className="mt-2 text-[15px] leading-6">{planet.description}</p>
+              <p className="mt-3 border-t border-black/10 pt-3 text-[15px] leading-6 text-neutral-600">
+                <span className="font-semibold text-neutral-900">Notes:</span> {planet.note}
+              </p>
+              <dl className="notion-planet-card-facts mt-4">
+                <PlanetFact label="Diameter" value={planet.diameter} compact />
+                <PlanetFact label="Year" value={planet.orbitalPeriod} compact />
+                <PlanetFact label="Moons" value={planet.moons} compact />
+              </dl>
+            </NotionTextBlock>
           </article>
         ))}
       </div>
