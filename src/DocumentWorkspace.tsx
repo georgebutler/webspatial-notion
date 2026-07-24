@@ -133,30 +133,7 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, src: string)
       if (mounted) animationFrame = requestAnimationFrame(animate)
     }
 
-    const model = modelRef.current
-    console.info('[WebSpatial model] mounted', {
-      src,
-      tagName: model instanceof HTMLElement ? model.tagName : typeof model,
-      spatialHost: model instanceof HTMLElement && model.hasAttribute('data-xr-host'),
-      ready: typeof model?.ready,
-      currentSrc: model?.currentSrc,
-    })
-
-    let readyPromise: Promise<unknown> | undefined
-    try {
-      readyPromise = model?.ready
-    } catch (error: unknown) {
-      console.error('[WebSpatial model] ready access failed', { src, error })
-    }
-
-    void readyPromise
-      ?.then(() => {
-        console.info('[WebSpatial model] ready', modelRef.current?.currentSrc)
-        startAnimation()
-      })
-      .catch((error: unknown) => {
-        console.error('[WebSpatial model] ready failed', { src, error })
-      })
+    modelRef.current?.ready?.then(startAnimation).catch(() => {})
 
     return () => {
       mounted = false
@@ -175,29 +152,12 @@ function PlanetModelSlot({
   const modelRef = useRef<ModelRef>(null)
   useModelSelfRotation(modelRef, src)
 
-  useEffect(() => {
-    const model = modelRef.current
-    if (!(model instanceof HTMLElement)) return
-
-    const handleLoaded = () => console.info('[WebSpatial model] DOM loaded', src)
-    const handleFailed = () => console.error('[WebSpatial model] DOM failed', src)
-    model.addEventListener('modelloaded', handleLoaded)
-    model.addEventListener('modelloadfailed', handleFailed)
-
-    return () => {
-      model.removeEventListener('modelloaded', handleLoaded)
-      model.removeEventListener('modelloadfailed', handleFailed)
-    }
-  }, [src])
-
   return (
     <div className={`notion-planet-model ${className}`}>
       <Model3D
         modelRef={modelRef}
         src={src}
         className="webspatial-model"
-        onLoad={() => console.info('[WebSpatial model] loaded', src)}
-        onError={() => console.error('[WebSpatial model] failed', src)}
       />
       <div className="notion-model-label" aria-hidden="true">
         <Box size={16} strokeWidth={1.8} />
