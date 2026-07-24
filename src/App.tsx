@@ -12,7 +12,17 @@ function App() {
   if (pathname === '/ai') return <Ai />
   if (pathname === '/calendar') return <Calendar />
 
-  if (pathname === '/doc' || pathname.startsWith('/doc/')) return <DocumentWorkspace />
+  if (pathname === '/doc' || pathname.startsWith('/doc/')) {
+    return (
+      <div
+        enable-xr={true}
+        style={{ '--xr-background-material': 'translucent' }}
+        className="h-screen w-screen overflow-hidden"
+      >
+        <DocumentWorkspace />
+      </div>
+    )
+  }
 
   return (
     <div

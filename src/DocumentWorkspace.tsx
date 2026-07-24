@@ -393,11 +393,9 @@ export default function DocumentWorkspace() {
 
   return (
     <div
-      className="flex h-full w-full flex-col gap-6 overflow-hidden p-4 shadow sm:p-6 md:p-8 lg:flex-row lg:p-12"
+      className="flex h-full w-full flex-col gap-6 overflow-hidden p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside
-        enable-xr={true}
-        style={{ '--xr-background-material': 'translucent' }}
         className="notion-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
       >
         <div className="flex items-center gap-2 text-white/90">
