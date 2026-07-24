@@ -142,12 +142,14 @@ function useModelSelfRotation(
   isLoaded: boolean,
   src: string,
   tiltDegrees = 0,
+  enabled = true,
+  rotationAxis: 'x' | 'y' | 'z' = 'y',
 ) {
   const isSpatial = document.documentElement.classList.contains('isSpatial')
-  const shouldStart = isSpatial ? isLoaded : true
+  const shouldInitialize = isSpatial ? isLoaded : true
 
   useEffect(() => {
-    if (!shouldStart) return
+    if (!shouldInitialize) return
 
     let mounted = true
     let animationFrame: number | undefined
@@ -161,28 +163,31 @@ function useModelSelfRotation(
       previousTime = time
 
       if (model && deltaSeconds > 0) {
+        const rotationDegrees = PLANET_ROTATION_DEGREES_PER_SECOND * deltaSeconds
         model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).rotateSelf(
-          0,
-          PLANET_ROTATION_DEGREES_PER_SECOND * deltaSeconds,
-          0,
+          rotationAxis === 'x' ? rotationDegrees : 0,
+          rotationAxis === 'y' ? rotationDegrees : 0,
+          rotationAxis === 'z' ? rotationDegrees : 0,
         )
       }
 
       animationFrame = requestAnimationFrame(animate)
     }
 
-    const startAnimation = () => {
-      if (mounted && animationFrame === undefined) {
-        const model = modelRef.current
-        if (model && tiltDegrees !== 0) {
-          model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).rotateSelf(tiltDegrees, 0, 0)
-        }
+    const initializeModel = () => {
+      if (!mounted) return
+
+      const model = modelRef.current
+      if (model && tiltDegrees !== 0) {
+        model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).rotateSelf(tiltDegrees, 0, 0)
+      }
+      if (enabled && animationFrame === undefined) {
         animationFrame = requestAnimationFrame(animate)
       }
     }
 
     if (isSpatial) {
-      startAnimation()
+      initializeModel()
     } else {
       let readyPromise: Promise<unknown> | undefined
       try {
@@ -190,28 +195,32 @@ function useModelSelfRotation(
       } catch {
         readyPromise = undefined
       }
-      void readyPromise?.then(startAnimation).catch(() => {})
+      void readyPromise?.then(initializeModel).catch(() => {})
     }
 
     return () => {
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [isSpatial, modelRef, shouldStart, src, tiltDegrees])
+  }, [enabled, isSpatial, modelRef, rotationAxis, shouldInitialize, src, tiltDegrees])
 }
 
 function PlanetModelSlot({
   src,
   tiltDegrees = 0,
+  rotate = true,
+  rotationAxis = 'y',
   className = '',
 }: {
   src: string
   tiltDegrees?: number
+  rotate?: boolean
+  rotationAxis?: 'x' | 'y' | 'z'
   className?: string
 }) {
   const modelRef = useRef<ModelRef>(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  useModelSelfRotation(modelRef, isLoaded, src, tiltDegrees)
+  useModelSelfRotation(modelRef, isLoaded, src, tiltDegrees, rotate, rotationAxis)
 
   return (
     <div className={`notion-model-block ${className}`}>
@@ -310,6 +319,7 @@ function SolarSystemCollection() {
     <PlanetModelSlot
       src={ORBIT_MODEL_FALLBACK_SRC}
       tiltDegrees={90}
+      rotationAxis="z"
       className="mt-4"
     />
   )
