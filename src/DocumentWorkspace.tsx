@@ -105,8 +105,10 @@ function DocumentLastModified() {
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 
-function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, src: string) {
+function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: boolean, src: string) {
   useEffect(() => {
+    if (!isLoaded) return
+
     let mounted = true
     let animationFrame: number | undefined
     let previousTime: number | undefined
@@ -129,17 +131,13 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, src: string)
       animationFrame = requestAnimationFrame(animate)
     }
 
-    const startAnimation = () => {
-      if (mounted) animationFrame = requestAnimationFrame(animate)
-    }
-
-    modelRef.current?.ready?.then(startAnimation).catch(() => {})
+    animationFrame = requestAnimationFrame(animate)
 
     return () => {
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [modelRef, src])
+  }, [isLoaded, modelRef, src])
 }
 
 function PlanetModelSlot({
@@ -150,7 +148,8 @@ function PlanetModelSlot({
   className?: string
 }) {
   const modelRef = useRef<ModelRef>(null)
-  useModelSelfRotation(modelRef, src)
+  const [isLoaded, setIsLoaded] = useState(false)
+  useModelSelfRotation(modelRef, isLoaded, src)
 
   return (
     <div className={`notion-planet-model ${className}`}>
@@ -158,6 +157,8 @@ function PlanetModelSlot({
         modelRef={modelRef}
         src={src}
         className="webspatial-model"
+        onLoad={() => setIsLoaded(true)}
+        onError={() => setIsLoaded(false)}
       />
       <div className="notion-model-label" aria-hidden="true">
         <Box size={16} strokeWidth={1.8} />
