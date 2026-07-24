@@ -307,7 +307,11 @@ function SolarSystemCollection() {
   return isSpatial ? (
     <SolarSystemOrbitScene />
   ) : (
-    <PlanetModelSlot src={ORBIT_MODEL_FALLBACK_SRC} className="mt-4" />
+    <PlanetModelSlot
+      src={ORBIT_MODEL_FALLBACK_SRC}
+      tiltDegrees={90}
+      className="mt-4"
+    />
   )
 }
 
