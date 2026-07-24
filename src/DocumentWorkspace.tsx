@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } from 'react'
-import { ArrowLeft, Box, FileText, GripVertical } from 'lucide-react'
+import { ArrowLeft, Box, FileText, GripVertical, Image as ImageIcon } from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
 import {
   Entity,
@@ -202,9 +202,11 @@ function useModelSelfRotation(
   tiltDegrees = 0,
   enabled = true,
   rotationAxis: 'x' | 'y' | 'z' = 'y',
+  positionZ = 0,
 ) {
   const isSpatial = document.documentElement.classList.contains('isSpatial')
   const shouldInitialize = isSpatial ? isLoaded : true
+  const baseTransformRef = useRef<{ src: string; matrix: DOMMatrix } | null>(null)
 
   useEffect(() => {
     if (!shouldInitialize) return
@@ -236,8 +238,18 @@ function useModelSelfRotation(
       if (!mounted) return
 
       const model = modelRef.current
-      if (model && tiltDegrees !== 0) {
-        model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).rotateSelf(tiltDegrees, 0, 0)
+      if (model) {
+        if (!baseTransformRef.current || baseTransformRef.current.src !== src) {
+          const baseTransform = DOMMatrix.fromMatrix(model.entityTransform)
+          if (tiltDegrees !== 0) {
+            baseTransform.rotateSelf(tiltDegrees, 0, 0)
+          }
+          baseTransformRef.current = { src, matrix: baseTransform }
+        }
+
+        const transformed = DOMMatrix.fromMatrix(baseTransformRef.current.matrix)
+        transformed.m43 += positionZ
+        model.entityTransform = transformed
       }
       if (enabled && animationFrame === undefined) {
         animationFrame = requestAnimationFrame(animate)
@@ -260,27 +272,57 @@ function useModelSelfRotation(
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [enabled, isSpatial, modelRef, rotationAxis, shouldInitialize, src, tiltDegrees])
+  }, [
+    enabled,
+    isSpatial,
+    modelRef,
+    positionZ,
+    rotationAxis,
+    shouldInitialize,
+    src,
+    tiltDegrees,
+  ])
 }
 
 function PlanetModelSlot({
   src,
+  browserSrc,
   instanceKey,
   tiltDegrees = 0,
+  browserTiltDegrees,
   rotate = true,
   rotationAxis = 'y',
+  autoPlay = false,
+  loop = false,
+  positionZ = 0,
   className = '',
 }: {
   src: string
+  browserSrc?: string
   instanceKey: string
   tiltDegrees?: number
+  browserTiltDegrees?: number
   rotate?: boolean
   rotationAxis?: 'x' | 'y' | 'z'
+  autoPlay?: boolean
+  loop?: boolean
+  positionZ?: number
   className?: string
 }) {
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  const resolvedSrc = isSpatial ? src : (browserSrc ?? src)
+  const resolvedTiltDegrees = isSpatial ? tiltDegrees : (browserTiltDegrees ?? tiltDegrees)
   const modelRef = useRef<ModelRef>(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  useModelSelfRotation(modelRef, isLoaded, src, tiltDegrees, rotate, rotationAxis)
+  useModelSelfRotation(
+    modelRef,
+    isLoaded,
+    resolvedSrc,
+    resolvedTiltDegrees,
+    rotate,
+    rotationAxis,
+    positionZ,
+  )
 
   return (
     <div className={`notion-model-block ${className}`}>
@@ -288,9 +330,11 @@ function PlanetModelSlot({
         <Model3D
           key={instanceKey}
           modelRef={modelRef}
-          src={src}
+          src={resolvedSrc}
           className="webspatial-model"
           loading="eager"
+          autoPlay={autoPlay}
+          loop={loop}
           onLoad={() => setIsLoaded(true)}
           onError={() => setIsLoaded(false)}
         />
@@ -397,8 +441,32 @@ function NotionTextBlock({ children, className = '' }: PropsWithChildren<{ class
   )
 }
 
+function NotionImageBlock({
+  src,
+  alt,
+}: {
+  src: string
+  alt: string
+}) {
+  return (
+    <figure className="notion-image-block">
+      <div className="notion-image-viewport">
+        <img src={src} alt={alt} />
+        <div className="notion-model-label" aria-hidden="true">
+          <ImageIcon size={16} strokeWidth={1.8} />
+          <span>Image</span>
+        </div>
+        <div className="notion-model-block-handle" aria-hidden="true">
+          <GripVertical size={16} strokeWidth={2} />
+        </div>
+      </div>
+    </figure>
+  )
+}
+
 const documents: DocumentItem[] = [
   { title: 'The Solar System', slug: 'the-solar-system' },
+  { title: "Newton's Cradle", slug: 'newtons-cradle' },
   { title: 'Q3 Product Development', slug: 'q3-product-development' },
   { title: 'Feature Specification', slug: 'feature-specification' },
   { title: 'Product Roadmap Q1', slug: 'product-roadmap-q1' },
@@ -542,8 +610,83 @@ function SolarSystemDocument() {
   )
 }
 
+function NewtonsCradleDocument() {
+  return (
+    <>
+      <h1 className="text-3xl font-bold">Newton&apos;s Cradle</h1>
+      <NotionTextBlock className="mt-4 text-[16px] leading-7">
+        Newton&apos;s cradle is a compact demonstration of momentum, kinetic energy, and elastic collisions.
+        When one ball is lifted and released, its motion travels through the aligned center balls and causes
+        the ball at the opposite end to swing outward.
+      </NotionTextBlock>
+
+      <div className="newtons-cradle-media mt-4">
+        <NotionImageBlock
+          src="/images/newtons-cradle-diagram.svg"
+          alt="Diagram of a Newton's cradle showing a released ball transferring motion through five suspended metal balls"
+        />
+        <PlanetModelSlot
+          src="/usdz/NewtonsCradle.usdz"
+          browserSrc="/usdz/NewtonsCradle-browser.usdz"
+          instanceKey="newtons-cradle-document"
+          rotate={false}
+          autoPlay
+          loop
+          positionZ={-0.2}
+          className="newtons-cradle-model"
+        />
+      </div>
+
+      <h2 className="mt-8 text-2xl font-semibold">How it works</h2>
+      <NotionTextBlock className="mt-3 text-[16px] leading-7">
+        The released ball accelerates as gravitational potential energy becomes kinetic energy. At impact,
+        the first collision compresses the touching balls by a tiny amount. That compression creates a force
+        pulse that travels through the row and pushes the final ball away with nearly the incoming speed.
+      </NotionTextBlock>
+
+      <h2 className="mt-8 text-2xl font-semibold">Momentum and energy</h2>
+      <NotionTextBlock className="mt-3 text-[16px] leading-7">
+        Momentum is conserved across the full system, and an ideal elastic collision also preserves kinetic
+        energy. Those two requirements explain why releasing one ball usually sends one ball from the other
+        side, while releasing two balls usually sends two. A single heavier or faster response would not
+        satisfy both conservation laws at once.
+      </NotionTextBlock>
+
+      <NotionTextBlock className="mt-6">
+        <h2 className="text-xl font-semibold">Key observations</h2>
+        <dl className="notion-planet-facts mt-4">
+          <PlanetFact label="Momentum" value="Transferred through the touching balls and conserved across the system." />
+          <PlanetFact label="Kinetic energy" value="Approximately conserved while the collisions remain highly elastic." />
+          <PlanetFact label="Center balls" value="Move only slightly as the compression pulse passes through them." />
+          <PlanetFact label="Pendulum period" value="Depends mainly on string length and gravity for small swing angles." />
+          <PlanetFact label="Ideal assumptions" value="Equal masses, aligned centers, taut strings, and elastic impacts." />
+          <PlanetFact label="Observed losses" value="Sound, heat, air drag, string friction, and material deformation." />
+        </dl>
+      </NotionTextBlock>
+
+      <h2 className="mt-8 text-2xl font-semibold">Experiments to try</h2>
+      <NotionTextBlock className="mt-3 text-[16px] leading-7">
+        Release one, two, and three balls from the same height and compare the number that leave the opposite
+        side. Then change the release height to compare speed and swing amplitude. Small misalignments,
+        unequal balls, or tangled strings make the transfer less clean and reveal where the ideal model
+        breaks down.
+      </NotionTextBlock>
+
+      <h2 className="mt-8 text-2xl font-semibold">Why it eventually stops</h2>
+      <NotionTextBlock className="mt-3 text-[16px] leading-7">
+        A real cradle is not perfectly elastic. Every collision loses a little mechanical energy to sound,
+        microscopic deformation, heat, air resistance, and friction at the suspension points. The swings
+        therefore become smaller until the remaining motion is no longer visible.
+      </NotionTextBlock>
+
+      <DocumentLastModified />
+    </>
+  )
+}
+
 function DocumentBody({ title }: { title: string }) {
   if (title === 'The Solar System') return <SolarSystemDocument />
+  if (title === "Newton's Cradle") return <NewtonsCradleDocument />
 
   return (
     <>

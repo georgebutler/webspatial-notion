@@ -228,6 +228,17 @@ html.isSpatial .notion-document-content {
   background: var(--notion-surface-raised);
 }
 
+.notion-model-block::after,
+.notion-image-block::after {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border: 1px solid var(--notion-border);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+
 .notion-model-block-handle {
   position: absolute;
   top: 12px;
@@ -259,6 +270,61 @@ html.isSpatial .notion-document-content {
   font-weight: 500;
   line-height: 1.2;
   pointer-events: none;
+}
+
+.newtons-cradle-media {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.notion-image-block {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  border-radius: 12px;
+  background: var(--notion-surface-raised);
+}
+
+.notion-image-viewport {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  background: #f1f1ef;
+}
+
+.notion-image-viewport img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.newtons-cradle-model {
+  aspect-ratio: 1;
+}
+
+.newtons-cradle-model .notion-planet-model,
+.newtons-cradle-model .webspatial-model,
+.newtons-cradle-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+}
+
+.newtons-cradle-model .webspatial-model {
+  --xr-depth: 400px;
+  --xr-back: 200px;
+}
+
+.newtons-cradle-model .notion-planet-model,
+.newtons-cradle-model .webspatial-model,
+.newtons-cradle-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  background: #f1f1ef !important;
 }
 
 .notion-planet-list {
@@ -419,6 +485,10 @@ html.isSpatial .notion-document-content {
 }
 
 @media (max-width: 759px) {
+  .newtons-cradle-media {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .notion-planet-row {
     grid-template-areas:
       "model"

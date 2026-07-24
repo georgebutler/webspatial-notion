@@ -105,11 +105,12 @@ const daysAgo = (days: number) => {
 }
 
 const workspaceItems: WorkspaceItem[] = [
-  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(0) },
-  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(1) },
-  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(2) },
-  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(3) },
-  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(4) },
+  { title: "Newton's Cradle", type: 'Document', lastAccessed: daysAgo(0) },
+  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(1) },
+  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(2) },
+  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(3) },
+  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(4) },
+  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(5) },
   { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(13) },
 ]
 
