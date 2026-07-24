@@ -194,7 +194,6 @@ function PlanetModelSlot({
     <div className={`notion-planet-model ${className}`}>
       <Model3D
         modelRef={modelRef}
-        enable-xr={true}
         src={src}
         className="webspatial-model"
         onLoad={() => console.info('[WebSpatial model] loaded', src)}
@@ -370,6 +369,14 @@ export default function DocumentWorkspace() {
   const selectedDocument = selectedIndex >= 0 ? documents[selectedIndex] : null
 
   useEffect(() => {
+    const url = new URL(window.location.href)
+    const normalizedPathname = url.pathname.replace(/\/+$/, '')
+
+    if (normalizedPathname === '/doc') {
+      url.pathname = `/doc/${documents[0].slug}`
+      window.history.replaceState({}, '', url)
+    }
+
     const handlePopState = () => setSelectedIndex(getSelectedIndex())
     window.addEventListener('popstate', handlePopState)
     return () => window.removeEventListener('popstate', handlePopState)

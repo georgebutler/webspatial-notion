@@ -4,7 +4,7 @@ import iconTodo from './assets/sidebar-icons/todo.svg'
 import iconCalendar from './assets/sidebar-icons/calendar.svg'
 
 const items = [
-  { label: 'Documents', iconSrc: iconLibrary, path: '/doc' },
+  { label: 'Documents', iconSrc: iconLibrary, path: '/doc/the-solar-system' },
   { label: 'Notion AI', iconSrc: iconAi, path: '/ai' },
   { label: 'Todo list', iconSrc: iconTodo, path: '/todo' },
   { label: 'Calendar', iconSrc: iconCalendar, path: '/calendar' },
