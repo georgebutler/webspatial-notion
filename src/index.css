@@ -160,6 +160,24 @@ html.isSpatial .notion-document-content {
   color: var(--notion-text);
 }
 
+html.isSpatial,
+html.isSpatial body,
+html.isSpatial #root {
+  height: auto;
+  min-height: 100%;
+}
+
+html.isSpatial .notion-document-workspace {
+  min-height: 100vh;
+  height: auto;
+  overflow: visible;
+}
+
+html.isSpatial .notion-document-content {
+  height: auto;
+  overflow: visible;
+}
+
 .notion-text-block {
   position: relative;
   border: 1px solid var(--notion-border);
@@ -190,10 +208,45 @@ html.isSpatial .notion-document-content {
   background: #000 !important;
 }
 
+.notion-model-block {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: var(--notion-surface-raised);
+  padding: 10px;
+}
+
+.notion-model-block-handle {
+  position: absolute;
+  top: 22px;
+  right: 24px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: rgba(20, 22, 28, 0.78);
+  color: white;
+  line-height: 1.2;
+  pointer-events: none;
+}
+
 .notion-model-card {
   border: 1px solid var(--notion-border);
   border-radius: 1rem;
   background: var(--notion-surface-raised);
+}
+
+.notion-planet-card {
+  padding: 10px;
+}
+
+.notion-planet-card .notion-model-card-copy {
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
 }
 
 .notion-model-card-copy {
@@ -217,11 +270,6 @@ html.isSpatial .notion-document-content {
   font-weight: 500;
   line-height: 1.2;
   pointer-events: none;
-}
-
-.notion-model-card .notion-planet-model {
-  border-radius: 0;
-  background-color: #000;
 }
 
 .notion-planet-grid {
@@ -248,21 +296,20 @@ html.isSpatial .notion-document-content {
   width: 100%;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
   background-color: #000;
 }
 
 .notion-planet-card {
   cursor: pointer;
-  transition:
-    border-color 160ms ease,
-    transform 160ms ease;
+  transition: border-color 160ms ease;
 }
 
 .notion-planet-card:hover,
 .notion-planet-card:focus-visible {
   border-color: rgba(32, 32, 32, 0.34);
   outline: none;
-  transform: translateY(-2px);
 }
 
 .notion-planet-detail {

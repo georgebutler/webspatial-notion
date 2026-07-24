@@ -11,6 +11,7 @@ type DocumentItem = {
 const planets = [
   {
     name: 'Sun',
+    modelSrc: '/usdz/Incandescent_Light_Bulb.usdz',
     description:
       'The star at the center of our solar system and the source of nearly all the energy that makes life on Earth possible. The Sun is a nearly perfect sphere of hot plasma, made mostly of hydrogen and helium.',
     note:
@@ -18,6 +19,7 @@ const planets = [
   },
   {
     name: 'Mercury',
+    modelSrc: '/usdz/iPhone_Air.usdz',
     description:
       'The smallest planet and the closest to the Sun. Mercury has a heavily cratered, rocky surface that looks a little like the Moon, but its days and nights are far more extreme because it has almost no atmosphere to hold heat.',
     note:
@@ -25,6 +27,7 @@ const planets = [
   },
   {
     name: 'Venus',
+    modelSrc: '/usdz/Mario_Lego.usdz',
     description:
       'A hot, cloud-covered rocky planet wrapped in a thick carbon dioxide atmosphere. Its clouds contain sulfuric acid, and the intense pressure at the surface is roughly 90 times that of Earth.',
     note:
@@ -32,6 +35,7 @@ const planets = [
   },
   {
     name: 'Earth',
+    modelSrc: '/usdz/iPhone_17_Pro_Max_Concept.usdz',
     description:
       'Our home planet, with abundant liquid surface water and the only known life in the solar system. Earth’s atmosphere, magnetic field, and active geology work together to make the surface unusually stable and habitable.',
     note:
@@ -39,6 +43,7 @@ const planets = [
   },
   {
     name: 'Mars',
+    modelSrc: '/usdz/Phone_17_Pro_Max.usdz',
     description:
       'A cold, rocky world known for its iron-rich red surface. Mars has polar ice caps, enormous volcanoes, deep valleys, dusty plains, and two small moons named Phobos and Deimos.',
     note:
@@ -46,6 +51,7 @@ const planets = [
   },
   {
     name: 'Jupiter',
+    modelSrc: '/usdz/Realistic_Laptop_Concept.usdz',
     description:
       'The largest planet and a gas giant made mostly of hydrogen and helium. Its striped cloud bands are driven by powerful jet streams, and the Great Red Spot is a storm that has lasted for centuries.',
     note:
@@ -53,6 +59,7 @@ const planets = [
   },
   {
     name: 'Saturn',
+    modelSrc: '/usdz/iPhone_17_Pro.usdz',
     description:
       'A gas giant surrounded by a bright, extensive ring system made mostly of water ice and rock. Saturn is the second-largest planet, but its average density is low enough that it would float in a large enough ocean.',
     note:
@@ -60,6 +67,7 @@ const planets = [
   },
   {
     name: 'Uranus',
+    modelSrc: '/usdz/12_Vinyl_Record.usdz',
     description:
       'A pale blue ice giant that rotates on its side, likely after a massive collision early in its history. Uranus has faint rings and an atmosphere containing methane, which gives it its blue-green color.',
     note:
@@ -67,6 +75,7 @@ const planets = [
   },
   {
     name: 'Neptune',
+    modelSrc: '/usdz/Steam_Controller_2025_GabeCube.usdz',
     description:
       'The most distant planet from the Sun. Neptune is a cold, windy ice giant with a deep blue atmosphere, faint rings, and some of the fastest winds measured anywhere in the solar system.',
     note:
@@ -107,7 +116,8 @@ const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 
 function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: boolean, src: string) {
   useEffect(() => {
-    if (!isLoaded) return
+    const isSpatial = document.documentElement.classList.contains('isSpatial')
+    if (isSpatial && !isLoaded) return
 
     let mounted = true
     let animationFrame: number | undefined
@@ -131,7 +141,23 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: bo
       animationFrame = requestAnimationFrame(animate)
     }
 
-    animationFrame = requestAnimationFrame(animate)
+    const startAnimation = () => {
+      if (mounted && animationFrame === undefined) {
+        animationFrame = requestAnimationFrame(animate)
+      }
+    }
+
+    if (isSpatial) {
+      startAnimation()
+    } else {
+      let readyPromise: Promise<unknown> | undefined
+      try {
+        readyPromise = modelRef.current?.ready
+      } catch {
+        readyPromise = undefined
+      }
+      void readyPromise?.then(startAnimation).catch(() => {})
+    }
 
     return () => {
       mounted = false
@@ -152,28 +178,29 @@ function PlanetModelSlot({
   useModelSelfRotation(modelRef, isLoaded, src)
 
   return (
-    <div className={`notion-planet-model ${className}`}>
-      <Model3D
-        modelRef={modelRef}
-        src={src}
-        className="webspatial-model"
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setIsLoaded(false)}
-      />
-      <div className="notion-model-label" aria-hidden="true">
-        <Box size={16} strokeWidth={1.8} />
-        <span>3D Model</span>
+    <div className={`notion-model-block ${className}`}>
+      <div className="notion-planet-model">
+        <Model3D
+          modelRef={modelRef}
+          src={src}
+          className="webspatial-model"
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setIsLoaded(false)}
+        />
+        <div className="notion-model-label" aria-hidden="true">
+          <Box size={16} strokeWidth={1.8} />
+          <span>3D Model</span>
+        </div>
+      </div>
+      <div className="notion-model-block-handle" aria-hidden="true">
+        <GripVertical size={16} strokeWidth={2} />
       </div>
     </div>
   )
 }
 
 function SolarSystemCollection() {
-  return (
-    <div className="notion-model-card mt-4">
-      <PlanetModelSlot src={VEHICLE_MODEL_SRC} />
-    </div>
-  )
+  return <PlanetModelSlot src={VEHICLE_MODEL_SRC} className="mt-4" />
 }
 
 function NotionTextBlock({ children, className = '' }: PropsWithChildren<{ className?: string }>) {
@@ -209,7 +236,7 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
         Back to Solar System
       </button>
       <h1 className="text-3xl font-bold">{planet.name}</h1>
-      <div className="notion-planet-detail mt-6">
+      <div className="notion-planet-detail mt-4">
         <article className="notion-planet-detail-copy">
           <h2 className="sr-only">Planet details</h2>
           <NotionTextBlock>
@@ -221,7 +248,7 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             <p className="mt-3 text-[16px] leading-7">{planet.note}</p>
           </NotionTextBlock>
         </article>
-        <PlanetModelSlot className="notion-planet-detail-model" />
+        <PlanetModelSlot src={planet.modelSrc} className="notion-planet-detail-model" />
       </div>
     </>
   )
@@ -251,7 +278,7 @@ function SolarSystemDocument() {
         in our solar system.
       </NotionTextBlock>
       <h2 className="mt-8 text-2xl font-semibold">Our Solar System</h2>
-      <div className="notion-planet-grid mt-4">
+      <div className="notion-planet-grid mt-2">
         {planets.map((planet) => (
           <article
             className="notion-model-card notion-planet-card"
@@ -267,7 +294,7 @@ function SolarSystemDocument() {
             }}
             aria-label={`Open ${planet.name} details`}
           >
-            <PlanetModelSlot />
+            <PlanetModelSlot src={planet.modelSrc} />
             <div className="notion-model-card-copy">
               <h3 className="text-lg font-semibold">{planet.name}</h3>
               <p className="mt-2 line-clamp-3 text-[15px] leading-6">{planet.description}</p>
@@ -354,7 +381,7 @@ export default function DocumentWorkspace() {
 
   return (
     <div
-      className="flex h-full w-full flex-col gap-6 overflow-hidden p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12"
+      className="notion-document-workspace flex h-full w-full flex-col gap-6 overflow-hidden p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside
         className="notion-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
@@ -401,7 +428,6 @@ export default function DocumentWorkspace() {
       </aside>
 
       <div
-        enable-xr={true}
         className={`notion-document-content h-full min-h-0 flex-1 overflow-auto rounded-2xl px-6 py-8 ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
       >
         <div className="w-full">
