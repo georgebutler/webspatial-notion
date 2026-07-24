@@ -208,6 +208,17 @@ html.isSpatial .notion-document-content {
   background: #000 !important;
 }
 
+.notion-orbit-scene {
+  height: 320px;
+}
+
+.notion-orbit-reality {
+  display: block;
+  width: 100%;
+  height: 100%;
+  --xr-depth: 400px;
+}
+
 .notion-model-block {
   position: relative;
   width: 100%;
@@ -215,13 +226,12 @@ html.isSpatial .notion-document-content {
   box-sizing: border-box;
   border-radius: 12px;
   background: var(--notion-surface-raised);
-  padding: 10px;
 }
 
 .notion-model-block-handle {
   position: absolute;
-  top: 22px;
-  right: 24px;
+  top: 12px;
+  right: 14px;
   z-index: 3;
   display: inline-flex;
   align-items: center;

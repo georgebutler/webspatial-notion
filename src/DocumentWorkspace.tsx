@@ -1,6 +1,13 @@
 import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } from 'react'
 import { ArrowLeft, Box, FileText, GripVertical } from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
+import {
+  Entity,
+  ModelAsset,
+  ModelEntity,
+  Reality,
+  SceneGraph,
+} from '@webspatial/react-sdk/default'
 import type { ModelRef } from '@webspatial/react-sdk'
 
 type DocumentItem = {
@@ -11,7 +18,7 @@ type DocumentItem = {
 const planets = [
   {
     name: 'Sun',
-    modelSrc: '/usdz/Incandescent_Light_Bulb.usdz',
+    modelSrc: '/usdz/Sun.usdz',
     description:
       'The star at the center of our solar system and the source of nearly all the energy that makes life on Earth possible. The Sun is a nearly perfect sphere of hot plasma, made mostly of hydrogen and helium.',
     note:
@@ -19,7 +26,7 @@ const planets = [
   },
   {
     name: 'Mercury',
-    modelSrc: '/usdz/iPhone_Air.usdz',
+    modelSrc: '/usdz/Mercury.usdz',
     description:
       'The smallest planet and the closest to the Sun. Mercury has a heavily cratered, rocky surface that looks a little like the Moon, but its days and nights are far more extreme because it has almost no atmosphere to hold heat.',
     note:
@@ -27,7 +34,7 @@ const planets = [
   },
   {
     name: 'Venus',
-    modelSrc: '/usdz/Mario_Lego.usdz',
+    modelSrc: '/usdz/Venus.usdz',
     description:
       'A hot, cloud-covered rocky planet wrapped in a thick carbon dioxide atmosphere. Its clouds contain sulfuric acid, and the intense pressure at the surface is roughly 90 times that of Earth.',
     note:
@@ -35,7 +42,7 @@ const planets = [
   },
   {
     name: 'Earth',
-    modelSrc: '/usdz/iPhone_17_Pro_Max_Concept.usdz',
+    modelSrc: '/usdz/Earth.usdz',
     description:
       'Our home planet, with abundant liquid surface water and the only known life in the solar system. Earth’s atmosphere, magnetic field, and active geology work together to make the surface unusually stable and habitable.',
     note:
@@ -43,7 +50,7 @@ const planets = [
   },
   {
     name: 'Mars',
-    modelSrc: '/usdz/Phone_17_Pro_Max.usdz',
+    modelSrc: '/usdz/Mars.usdz',
     description:
       'A cold, rocky world known for its iron-rich red surface. Mars has polar ice caps, enormous volcanoes, deep valleys, dusty plains, and two small moons named Phobos and Deimos.',
     note:
@@ -51,7 +58,7 @@ const planets = [
   },
   {
     name: 'Jupiter',
-    modelSrc: '/usdz/Realistic_Laptop_Concept.usdz',
+    modelSrc: '/usdz/Jupiter.usdz',
     description:
       'The largest planet and a gas giant made mostly of hydrogen and helium. Its striped cloud bands are driven by powerful jet streams, and the Great Red Spot is a storm that has lasted for centuries.',
     note:
@@ -59,7 +66,7 @@ const planets = [
   },
   {
     name: 'Saturn',
-    modelSrc: '/usdz/iPhone_17_Pro.usdz',
+    modelSrc: '/usdz/Saturn.usdz',
     description:
       'A gas giant surrounded by a bright, extensive ring system made mostly of water ice and rock. Saturn is the second-largest planet, but its average density is low enough that it would float in a large enough ocean.',
     note:
@@ -67,7 +74,7 @@ const planets = [
   },
   {
     name: 'Uranus',
-    modelSrc: '/usdz/12_Vinyl_Record.usdz',
+    modelSrc: '/usdz/Uranus.usdz',
     description:
       'A pale blue ice giant that rotates on its side, likely after a massive collision early in its history. Uranus has faint rings and an atmosphere containing methane, which gives it its blue-green color.',
     note:
@@ -75,7 +82,7 @@ const planets = [
   },
   {
     name: 'Neptune',
-    modelSrc: '/usdz/Steam_Controller_2025_GabeCube.usdz',
+    modelSrc: '/usdz/Neptune.usdz',
     description:
       'The most distant planet from the Sun. Neptune is a cold, windy ice giant with a deep blue atmosphere, faint rings, and some of the fastest winds measured anywhere in the solar system.',
     note:
@@ -84,7 +91,23 @@ const planets = [
 ]
 
 const DOCUMENT_LAST_MODIFIED = new Date('2026-07-22T22:34:26Z').getTime()
-const VEHICLE_MODEL_SRC = '/usdz/vehicle-speedster.usdz'
+const ORBIT_MODEL_FALLBACK_SRC = '/usdz/Planets.usdz'
+const SATURN_TILT_DEGREES = (0.47 * 180) / Math.PI
+
+const orbitBodies = [
+  { name: 'Mercury', distance: 0.18, scale: 0.008, speed: 4.15, spin: 0.04, tilt: 0.01 },
+  { name: 'Venus', distance: 0.26, scale: 0.012, speed: 1.62, spin: -0.01, tilt: 3.1 },
+  { name: 'Earth', distance: 0.34, scale: 0.013, speed: 1, spin: 0.3, tilt: 0.41 },
+  { name: 'Mars', distance: 0.42, scale: 0.011, speed: 0.53, spin: 0.3, tilt: 0.44 },
+  { name: 'Jupiter', distance: 0.55, scale: 0.028, speed: 0.084, spin: 0.7, tilt: 0.05 },
+  { name: 'Saturn', distance: 0.7, scale: 0.024, speed: 0.034, spin: 0.65, tilt: 0.47 },
+  { name: 'Uranus', distance: 0.84, scale: 0.018, speed: 0.012, spin: 0.4, tilt: 1.71 },
+  { name: 'Neptune', distance: 0.96, scale: 0.018, speed: 0.006, spin: 0.45, tilt: 0.49 },
+]
+
+function getPlanetTiltDegrees(planetName: string) {
+  return planetName === 'Saturn' ? SATURN_TILT_DEGREES : 0
+}
 
 function formatElapsedTime(milliseconds: number) {
   const minutes = Math.max(0, Math.floor(milliseconds / 60_000))
@@ -114,10 +137,17 @@ function DocumentLastModified() {
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 
-function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: boolean, src: string) {
+function useModelSelfRotation(
+  modelRef: RefObject<ModelRef | null>,
+  isLoaded: boolean,
+  src: string,
+  tiltDegrees = 0,
+) {
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  const shouldStart = isSpatial ? isLoaded : true
+
   useEffect(() => {
-    const isSpatial = document.documentElement.classList.contains('isSpatial')
-    if (isSpatial && !isLoaded) return
+    if (!shouldStart) return
 
     let mounted = true
     let animationFrame: number | undefined
@@ -143,6 +173,10 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: bo
 
     const startAnimation = () => {
       if (mounted && animationFrame === undefined) {
+        const model = modelRef.current
+        if (model && tiltDegrees !== 0) {
+          model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).rotateSelf(tiltDegrees, 0, 0)
+        }
         animationFrame = requestAnimationFrame(animate)
       }
     }
@@ -163,19 +197,21 @@ function useModelSelfRotation(modelRef: RefObject<ModelRef | null>, isLoaded: bo
       mounted = false
       if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
     }
-  }, [isLoaded, modelRef, src])
+  }, [isSpatial, modelRef, shouldStart, src, tiltDegrees])
 }
 
 function PlanetModelSlot({
-  src = VEHICLE_MODEL_SRC,
+  src,
+  tiltDegrees = 0,
   className = '',
 }: {
-  src?: string
+  src: string
+  tiltDegrees?: number
   className?: string
 }) {
   const modelRef = useRef<ModelRef>(null)
   const [isLoaded, setIsLoaded] = useState(false)
-  useModelSelfRotation(modelRef, isLoaded, src)
+  useModelSelfRotation(modelRef, isLoaded, src, tiltDegrees)
 
   return (
     <div className={`notion-model-block ${className}`}>
@@ -199,8 +235,80 @@ function PlanetModelSlot({
   )
 }
 
+function SolarSystemOrbitScene() {
+  const [time, setTime] = useState(0)
+
+  useEffect(() => {
+    let animationFrame: number
+
+    const animate = () => {
+      setTime((current) => current + 0.005)
+      animationFrame = requestAnimationFrame(animate)
+    }
+
+    animationFrame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationFrame)
+  }, [])
+
+  return (
+    <div className="notion-model-block mt-4">
+      <div className="notion-planet-model notion-orbit-scene">
+        <Reality className="notion-orbit-reality">
+          <ModelAsset id="orbitSun" src="/usdz/Sun.usdz" />
+          {orbitBodies.map((body) => (
+            <ModelAsset
+              key={body.name}
+              id={`orbit${body.name}`}
+              src={`/usdz/${body.name}.usdz`}
+            />
+          ))}
+          <SceneGraph>
+            <ModelEntity
+              model="orbitSun"
+              position={{ x: 0, y: 0, z: 0 }}
+              rotation={{ x: 0, y: time * 0.05, z: 0 }}
+              scale={{ x: 0.04, y: 0.04, z: 0.04 }}
+            />
+            {orbitBodies.map((body) => {
+              const angle = time * body.speed
+              return (
+                <Entity
+                  key={body.name}
+                  position={{
+                    x: Math.cos(angle) * body.distance,
+                    y: 0,
+                    z: Math.sin(angle) * body.distance,
+                  }}
+                >
+                  <ModelEntity
+                    model={`orbit${body.name}`}
+                    rotation={{ x: 0, y: time * body.spin, z: body.tilt }}
+                    scale={{ x: body.scale, y: body.scale, z: body.scale }}
+                  />
+                </Entity>
+              )
+            })}
+          </SceneGraph>
+        </Reality>
+        <div className="notion-model-label" aria-hidden="true">
+          <Box size={16} strokeWidth={1.8} />
+          <span>3D Model</span>
+        </div>
+      </div>
+      <div className="notion-model-block-handle" aria-hidden="true">
+        <GripVertical size={16} strokeWidth={2} />
+      </div>
+    </div>
+  )
+}
+
 function SolarSystemCollection() {
-  return <PlanetModelSlot src={VEHICLE_MODEL_SRC} className="mt-4" />
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  return isSpatial ? (
+    <SolarSystemOrbitScene />
+  ) : (
+    <PlanetModelSlot src={ORBIT_MODEL_FALLBACK_SRC} className="mt-4" />
+  )
 }
 
 function NotionTextBlock({ children, className = '' }: PropsWithChildren<{ className?: string }>) {
@@ -248,7 +356,11 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             <p className="mt-3 text-[16px] leading-7">{planet.note}</p>
           </NotionTextBlock>
         </article>
-        <PlanetModelSlot src={planet.modelSrc} className="notion-planet-detail-model" />
+        <PlanetModelSlot
+          src={planet.modelSrc}
+          tiltDegrees={getPlanetTiltDegrees(planet.name)}
+          className="notion-planet-detail-model"
+        />
       </div>
     </>
   )
@@ -294,7 +406,10 @@ function SolarSystemDocument() {
             }}
             aria-label={`Open ${planet.name} details`}
           >
-            <PlanetModelSlot src={planet.modelSrc} />
+            <PlanetModelSlot
+              src={planet.modelSrc}
+              tiltDegrees={getPlanetTiltDegrees(planet.name)}
+            />
             <div className="notion-model-card-copy">
               <h3 className="text-lg font-semibold">{planet.name}</h3>
               <p className="mt-2 line-clamp-3 text-[15px] leading-6">{planet.description}</p>
