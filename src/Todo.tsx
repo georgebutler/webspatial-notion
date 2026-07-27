@@ -1,4 +1,4 @@
-import { ListChecks, ListTodo } from 'lucide-react'
+import { GripVertical, ListChecks, ListTodo } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 type TodoItem = { id: number; text: string; done: boolean }
@@ -25,23 +25,26 @@ function getItems(title: string) {
 
 function Checklist({ items, onToggle }: { items: TodoItem[]; onToggle?: (id: number) => void }) {
   return (
-    <ul className="space-y-1">
-      {items.map((item) => (
-        <li key={item.id} className="flex items-start gap-2">
-          <input
-            type="checkbox"
-            checked={item.done}
-            onChange={() => onToggle?.(item.id)}
-            readOnly={!onToggle}
-            aria-label={`todo-${item.id}`}
-            className="mt-1.5 h-4 w-4 shrink-0 accent-cyan-500"
-          />
-          <span className={`break-words text-[16px] leading-7 ${item.done ? 'text-neutral-700 line-through' : 'text-neutral-900'}`}>
-            {item.text}
-          </span>
-        </li>
-      ))}
-    </ul>
+    <div className="notion-text-block">
+      <GripVertical className="notion-text-block-handle" size={16} strokeWidth={2} aria-hidden="true" />
+      <ul className="space-y-1">
+        {items.map((item) => (
+          <li key={item.id} className="flex items-start gap-2">
+            <input
+              type="checkbox"
+              checked={item.done}
+              onChange={() => onToggle?.(item.id)}
+              readOnly={!onToggle}
+              aria-label={`todo-${item.id}`}
+              className="mt-1.5 h-4 w-4 shrink-0 accent-cyan-500"
+            />
+            <span className={`break-words text-[16px] leading-7 ${item.done ? 'text-neutral-700 line-through' : 'text-neutral-900'}`}>
+              {item.text}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
