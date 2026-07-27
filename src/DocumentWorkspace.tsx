@@ -218,6 +218,8 @@ function DocumentLastModified() {
 }
 
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
+const MIN_INTERACTIVE_MODEL_SCALE = 0.25
+const MAX_INTERACTIVE_MODEL_SCALE = 4
 
 function useModelSelfRotation(
   modelRef: RefObject<ModelRef | null>,
@@ -342,6 +344,8 @@ function PlanetModelSlot({
   const resolvedTiltDegrees = isSpatial ? tiltDegrees : (browserTiltDegrees ?? tiltDegrees)
   const modelRef = useRef<ModelRef>(null)
   const dragBaseRef = useRef({ x: 0, y: 0, z: 0 })
+  const magnificationBaseRef = useRef(1)
+  const modelScaleRef = useRef(1)
   const [isLoaded, setIsLoaded] = useState(false)
   useModelSelfRotation(
     modelRef,
@@ -384,6 +388,23 @@ function PlanetModelSlot({
             )
             model.entityTransform = transform
             dragBaseRef.current = { x, y, z }
+          } : undefined}
+          onSpatialMagnify={interactive ? (event) => {
+            const model = modelRef.current
+            if (!model || event.magnification <= 0) return
+
+            const scaleDelta = event.magnification / magnificationBaseRef.current
+            const nextScale = Math.min(
+              MAX_INTERACTIVE_MODEL_SCALE,
+              Math.max(MIN_INTERACTIVE_MODEL_SCALE, modelScaleRef.current * scaleDelta),
+            )
+            const appliedScale = nextScale / modelScaleRef.current
+            model.entityTransform = DOMMatrix.fromMatrix(model.entityTransform).scaleSelf(appliedScale)
+            modelScaleRef.current = nextScale
+            magnificationBaseRef.current = event.magnification
+          } : undefined}
+          onSpatialMagnifyEnd={interactive ? () => {
+            magnificationBaseRef.current = 1
           } : undefined}
         />
         <div className="notion-model-label" aria-hidden="true">
