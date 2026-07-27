@@ -291,6 +291,7 @@ function PlanetModelSlot({
   tiltDegrees = 0,
   browserTiltDegrees,
   rotate = true,
+  interactive = false,
   rotationAxis = 'y',
   autoPlay = false,
   loop = false,
@@ -303,6 +304,7 @@ function PlanetModelSlot({
   tiltDegrees?: number
   browserTiltDegrees?: number
   rotate?: boolean
+  interactive?: boolean
   rotationAxis?: 'x' | 'y' | 'z'
   autoPlay?: boolean
   loop?: boolean
@@ -313,6 +315,7 @@ function PlanetModelSlot({
   const resolvedSrc = isSpatial ? src : (browserSrc ?? src)
   const resolvedTiltDegrees = isSpatial ? tiltDegrees : (browserTiltDegrees ?? tiltDegrees)
   const modelRef = useRef<ModelRef>(null)
+  const dragBaseRef = useRef({ x: 0, y: 0, z: 0 })
   const [isLoaded, setIsLoaded] = useState(false)
   useModelSelfRotation(
     modelRef,
@@ -337,6 +340,25 @@ function PlanetModelSlot({
           loop={loop}
           onLoad={() => setIsLoaded(true)}
           onError={() => setIsLoaded(false)}
+          onSpatialDragStart={interactive ? () => {
+            dragBaseRef.current = { x: 0, y: 0, z: 0 }
+          } : undefined}
+          onSpatialDrag={interactive ? (event) => {
+            const model = modelRef.current
+            if (!model) return
+
+            const x = event.translationX
+            const y = event.translationY
+            const z = event.translationZ
+            const transform = DOMMatrix.fromMatrix(model.entityTransform)
+            transform.translateSelf(
+              x - dragBaseRef.current.x,
+              y - dragBaseRef.current.y,
+              z - dragBaseRef.current.z,
+            )
+            model.entityTransform = transform
+            dragBaseRef.current = { x, y, z }
+          } : undefined}
         />
         <div className="notion-model-label" aria-hidden="true">
           <Box size={16} strokeWidth={1.8} />
@@ -536,6 +558,8 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
           src={planet.modelSrc}
           instanceKey={`detail-${planet.name}`}
           tiltDegrees={getPlanetTiltDegrees(planet.name)}
+          rotate={false}
+          interactive
           className="notion-planet-detail-model"
         />
       </div>
@@ -630,6 +654,7 @@ function NewtonsCradleDocument() {
           browserSrc="/usdz/NewtonsCradle-browser.usdz"
           instanceKey="newtons-cradle-document"
           rotate={false}
+          interactive
           autoPlay
           loop
           positionZ={-0.2}
