@@ -246,7 +246,7 @@ html.isSpatial .notion-document-content {
   z-index: 3;
   display: inline-flex;
   align-items: center;
-  padding: 5px 9px;
+  padding: 5px;
   border-radius: 6px;
   background: rgba(20, 22, 28, 0.78);
   color: white;
