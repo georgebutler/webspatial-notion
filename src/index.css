@@ -140,6 +140,29 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+.notion-ai-sidebar,
+.notion-ai-chat,
+.notion-ai-greeting {
+  border: 1px solid var(--notion-border);
+}
+
+.notion-ai-greeting::before {
+  position: absolute;
+  bottom: 10px;
+  left: -7px;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1px solid var(--notion-border);
+  border-left: 1px solid var(--notion-border);
+  background: rgba(255, 255, 255, 0.1);
+  content: "";
+  transform: rotate(45deg);
+}
+
+html.is-web .notion-ai-greeting::before {
+  background: var(--notion-surface);
+}
+
 .dashboard-pagination-dot {
   background: rgba(255, 255, 255, 0.3);
 }

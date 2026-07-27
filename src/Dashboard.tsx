@@ -100,6 +100,7 @@ type WorkspaceItem = {
   title: string
   type: 'Document' | 'List' | 'Database'
   lastAccessed: Date
+  path?: string
 }
 
 type EventGuest = {
@@ -124,12 +125,12 @@ const daysAgo = (days: number) => {
 }
 
 const workspaceItems: WorkspaceItem[] = [
-  { title: "Newton's Cradle", type: 'Document', lastAccessed: daysAgo(0) },
-  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(1) },
-  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(2) },
-  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(3) },
-  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(4) },
-  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(5) },
+  { title: "Newton's Cradle", type: 'Document', lastAccessed: daysAgo(0), path: '/doc/newtons-cradle' },
+  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(1), path: '/doc/the-solar-system' },
+  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(2), path: '/doc/q3-product-development' },
+  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(3), path: '/doc/feature-specification' },
+  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(4), path: '/doc/product-roadmap-q1' },
+  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(5), path: '/todo' },
   { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(13) },
 ]
 
@@ -221,10 +222,8 @@ function ItemIcon({ type }: { type: WorkspaceItem['type'] }) {
 
 function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
   const openItem = () => {
-    if (item.type === 'Database') return
-    const slug = item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-    const path = item.type === 'List' ? '/todo' : `/doc/${slug}`
-    const url = new URL(path, window.location.origin)
+    if (!item.path) return
+    const url = new URL(item.path, window.location.origin)
     window.open(url.toString(), '_blank', 'noopener,noreferrer')
   }
 
@@ -245,7 +244,7 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
         <img
           src={userAvatar}
           alt=""
-          className="h-6 w-6 rounded-full object-cover"
+          className="h-6 w-6 rounded-full border-2 border-black/20 object-cover"
         />
         <div className="text-right text-[13px] font-medium text-neutral-400">
           {item.lastAccessed.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
