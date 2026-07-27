@@ -146,6 +146,11 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+.notion-todo-sidebar,
+.notion-todo-content {
+  border: 1px solid var(--notion-border);
+}
+
 .notion-ai-greeting::before {
   position: absolute;
   bottom: 10px;
