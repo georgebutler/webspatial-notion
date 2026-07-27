@@ -181,6 +181,13 @@ html.isSpatial .notion-document-workspace {
   overflow: visible;
 }
 
+html.isSpatial .notion-document-workspace > .notion-sidebar {
+  position: sticky;
+  top: 3rem;
+  align-self: flex-start;
+  height: calc(100vh - 6rem);
+}
+
 html.isSpatial .notion-document-content {
   height: auto;
   overflow: visible;

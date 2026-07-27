@@ -320,6 +320,7 @@ function PlanetModelSlot({
   autoPlay = false,
   loop = false,
   positionZ = 0,
+  label = '3D Model',
   className = '',
 }: {
   src: string
@@ -333,6 +334,7 @@ function PlanetModelSlot({
   autoPlay?: boolean
   loop?: boolean
   positionZ?: number
+  label?: string
   className?: string
 }) {
   const isSpatial = document.documentElement.classList.contains('isSpatial')
@@ -386,7 +388,7 @@ function PlanetModelSlot({
         />
         <div className="notion-model-label" aria-hidden="true">
           <Box size={16} strokeWidth={1.8} />
-          <span>3D Model</span>
+          <span>{label}</span>
         </div>
       </div>
       <div className="notion-model-block-handle" aria-hidden="true">
@@ -682,6 +684,7 @@ function NewtonsCradleDocument() {
           autoPlay
           loop
           positionZ={-0.2}
+          label="3D Model (Animated)"
           className="newtons-cradle-model"
         />
       </div>
