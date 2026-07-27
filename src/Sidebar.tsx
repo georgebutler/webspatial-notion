@@ -1,7 +1,7 @@
-import iconLibrary from './assets/sidebar-icons/library.svg'
-import iconAi from './assets/sidebar-icons/ai.svg'
-import iconTodo from './assets/sidebar-icons/todo.svg'
-import iconCalendar from './assets/sidebar-icons/calendar.svg'
+import iconAi from './assets/icons/sidebar-ai.svg'
+import iconCalendar from './assets/icons/sidebar-calendar.svg'
+import iconLibrary from './assets/icons/sidebar-documents.svg'
+import iconTodo from './assets/icons/sidebar-todo.svg'
 
 const items = [
   { label: 'Documents', iconSrc: iconLibrary, path: '/doc/the-solar-system' },

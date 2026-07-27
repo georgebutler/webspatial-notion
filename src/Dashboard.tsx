@@ -1,4 +1,4 @@
-import userAvatar from './assets/user.png'
+import userAvatar from './assets/images/dashboard-avatar.webp'
 
 type IconProps = { size?: number; strokeWidth?: number; className?: string }
 

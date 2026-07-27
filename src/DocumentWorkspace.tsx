@@ -15,10 +15,34 @@ type DocumentItem = {
   slug: string
 }
 
+const planetModelSources = {
+  sun: '/usdz/planet-sun.usdz',
+  mercury: '/usdz/planet-mercury.usdz',
+  venus: '/usdz/planet-venus.usdz',
+  earth: '/usdz/planet-earth.usdz',
+  mars: '/usdz/planet-mars.usdz',
+  jupiter: '/usdz/planet-jupiter.usdz',
+  saturn: '/usdz/planet-saturn.usdz',
+  uranus: '/usdz/planet-uranus.usdz',
+  neptune: '/usdz/planet-neptune.usdz',
+} as const
+
+const orbitModelSources = {
+  sun: '/usdz/orbit-sun.usdz',
+  mercury: '/usdz/orbit-mercury.usdz',
+  venus: '/usdz/orbit-venus.usdz',
+  earth: '/usdz/orbit-earth.usdz',
+  mars: '/usdz/orbit-mars.usdz',
+  jupiter: '/usdz/orbit-jupiter.usdz',
+  saturn: '/usdz/orbit-saturn.usdz',
+  uranus: '/usdz/orbit-uranus.usdz',
+  neptune: '/usdz/orbit-neptune.usdz',
+} as const
+
 const planets = [
   {
     name: 'Sun',
-    modelSrc: '/usdz/Sun.usdz',
+    modelSrc: planetModelSources.sun,
     classification: 'G-type star',
     diameter: '1.39 million km',
     distance: '149.6 million km from Earth',
@@ -35,7 +59,7 @@ const planets = [
   },
   {
     name: 'Mercury',
-    modelSrc: '/usdz/Mercury.usdz',
+    modelSrc: planetModelSources.mercury,
     classification: 'Terrestrial planet',
     diameter: '4,879 km',
     distance: '57.9 million km from the Sun',
@@ -52,7 +76,7 @@ const planets = [
   },
   {
     name: 'Venus',
-    modelSrc: '/usdz/Venus.usdz',
+    modelSrc: planetModelSources.venus,
     classification: 'Terrestrial planet',
     diameter: '12,104 km',
     distance: '108.2 million km from the Sun',
@@ -69,7 +93,7 @@ const planets = [
   },
   {
     name: 'Earth',
-    modelSrc: '/usdz/Earth.usdz',
+    modelSrc: planetModelSources.earth,
     classification: 'Terrestrial planet',
     diameter: '12,742 km',
     distance: '149.6 million km from the Sun',
@@ -86,7 +110,7 @@ const planets = [
   },
   {
     name: 'Mars',
-    modelSrc: '/usdz/Mars.usdz',
+    modelSrc: planetModelSources.mars,
     classification: 'Terrestrial planet',
     diameter: '6,779 km',
     distance: '227.9 million km from the Sun',
@@ -103,7 +127,7 @@ const planets = [
   },
   {
     name: 'Jupiter',
-    modelSrc: '/usdz/Jupiter.usdz',
+    modelSrc: planetModelSources.jupiter,
     classification: 'Gas giant',
     diameter: '139,820 km',
     distance: '778.5 million km from the Sun',
@@ -120,7 +144,7 @@ const planets = [
   },
   {
     name: 'Saturn',
-    modelSrc: '/usdz/Saturn.usdz',
+    modelSrc: planetModelSources.saturn,
     classification: 'Gas giant',
     diameter: '116,460 km',
     distance: '1.43 billion km from the Sun',
@@ -137,7 +161,7 @@ const planets = [
   },
   {
     name: 'Uranus',
-    modelSrc: '/usdz/Uranus.usdz',
+    modelSrc: planetModelSources.uranus,
     classification: 'Ice giant',
     diameter: '50,724 km',
     distance: '2.87 billion km from the Sun',
@@ -154,7 +178,7 @@ const planets = [
   },
   {
     name: 'Neptune',
-    modelSrc: '/usdz/Neptune.usdz',
+    modelSrc: planetModelSources.neptune,
     classification: 'Ice giant',
     diameter: '49,244 km',
     distance: '4.5 billion km from the Sun',
@@ -171,18 +195,18 @@ const planets = [
   },
 ]
 
-const ORBIT_MODEL_FALLBACK_SRC = '/usdz/Planets.usdz'
+const ORBIT_MODEL_FALLBACK_SRC = '/usdz/orbit-solar-system-browser.usdz'
 const SATURN_TILT_DEGREES = (0.47 * 180) / Math.PI
 
 const orbitBodies = [
-  { name: 'Mercury', distance: 0.18, scale: 0.008, speed: 4.15, spin: 0.04, tilt: 0.01 },
-  { name: 'Venus', distance: 0.26, scale: 0.012, speed: 1.62, spin: -0.01, tilt: 3.1 },
-  { name: 'Earth', distance: 0.34, scale: 0.013, speed: 1, spin: 0.3, tilt: 0.41 },
-  { name: 'Mars', distance: 0.42, scale: 0.011, speed: 0.53, spin: 0.3, tilt: 0.44 },
-  { name: 'Jupiter', distance: 0.55, scale: 0.028, speed: 0.084, spin: 0.7, tilt: 0.05 },
-  { name: 'Saturn', distance: 0.7, scale: 0.024, speed: 0.034, spin: 0.65, tilt: 0.47 },
-  { name: 'Uranus', distance: 0.84, scale: 0.018, speed: 0.012, spin: 0.4, tilt: 1.71 },
-  { name: 'Neptune', distance: 0.96, scale: 0.018, speed: 0.006, spin: 0.45, tilt: 0.49 },
+  { name: 'Mercury', modelSrc: orbitModelSources.mercury, distance: 0.18, scale: 0.008, speed: 4.15, spin: 0.04, tilt: 0.01 },
+  { name: 'Venus', modelSrc: orbitModelSources.venus, distance: 0.26, scale: 0.012, speed: 1.62, spin: -0.01, tilt: 3.1 },
+  { name: 'Earth', modelSrc: orbitModelSources.earth, distance: 0.34, scale: 0.013, speed: 1, spin: 0.3, tilt: 0.41 },
+  { name: 'Mars', modelSrc: orbitModelSources.mars, distance: 0.42, scale: 0.011, speed: 0.53, spin: 0.3, tilt: 0.44 },
+  { name: 'Jupiter', modelSrc: orbitModelSources.jupiter, distance: 0.55, scale: 0.028, speed: 0.084, spin: 0.7, tilt: 0.05 },
+  { name: 'Saturn', modelSrc: orbitModelSources.saturn, distance: 0.7, scale: 0.024, speed: 0.034, spin: 0.65, tilt: 0.47 },
+  { name: 'Uranus', modelSrc: orbitModelSources.uranus, distance: 0.84, scale: 0.018, speed: 0.012, spin: 0.4, tilt: 1.71 },
+  { name: 'Neptune', modelSrc: orbitModelSources.neptune, distance: 0.96, scale: 0.018, speed: 0.006, spin: 0.45, tilt: 0.49 },
 ]
 
 function getPlanetTiltDegrees(planetName: string) {
@@ -391,12 +415,12 @@ function SolarSystemOrbitScene() {
     <div className="notion-model-block mt-4">
       <div className="notion-planet-model notion-orbit-scene">
         <Reality className="notion-orbit-reality">
-          <ModelAsset id="orbitSun" src="/usdz/Sun.usdz" />
+          <ModelAsset id="orbitSun" src={orbitModelSources.sun} />
           {orbitBodies.map((body) => (
             <ModelAsset
               key={body.name}
               id={`orbit${body.name}`}
-              src={`/usdz/${body.name}.usdz`}
+              src={body.modelSrc}
             />
           ))}
           <SceneGraph>
@@ -646,12 +670,12 @@ function NewtonsCradleDocument() {
 
       <div className="newtons-cradle-media mt-4">
         <NotionImageBlock
-          src="/images/notes.jpg"
+          src="/images/newtons-cradle-notes.jpg"
           alt="Notebook notes illustrating Newton's cradle and the conservation of momentum and energy"
         />
         <PlanetModelSlot
-          src="/usdz/NewtonsCradle.usdz"
-          browserSrc="/usdz/NewtonsCradle-browser.usdz"
+          src="/usdz/newtons-cradle-spatial.usdz"
+          browserSrc="/usdz/newtons-cradle-browser.usdz"
           instanceKey="newtons-cradle-document"
           rotate={false}
           interactive
@@ -811,7 +835,7 @@ export default function DocumentWorkspace() {
                           type="button"
                           onClick={() => selectDocument(index)}
                           title={document.title}
-                          className={`flex w-full items-center gap-2 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
+                          className={`flex w-full cursor-pointer items-center gap-2 truncate rounded-lg px-3 py-2 text-left text-[15px] transition-colors ${
                             selectedIndex === index
                               ? 'bg-white/10 text-white'
                               : 'text-white/90 hover:bg-white/10'
