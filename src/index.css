@@ -164,18 +164,25 @@ html.is-web .dashboard-pagination-dot.is-active {
   background: var(--notion-text);
 }
 
-html.isSpatial .dashboard-event-card {
+.dashboard-event-card {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+html.is-web .dashboard-event-card {
   border-color: var(--notion-border);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+html.isSpatial .dashboard-event-card {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+html.is-web .dashboard-event-card .text-white\/95 {
   color: var(--notion-text);
 }
 
-html.isSpatial .dashboard-event-card .text-white\/95 {
-  color: var(--notion-text);
-}
-
-html.isSpatial .dashboard-event-card .text-white\/70,
-html.isSpatial .dashboard-event-card .text-neutral-400 {
+html.is-web .dashboard-event-card .text-white\/70,
+html.is-web .dashboard-event-card .text-neutral-400 {
   color: var(--notion-muted);
 }
 
