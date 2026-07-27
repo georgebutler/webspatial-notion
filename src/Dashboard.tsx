@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
 import userAvatar from './assets/images/dashboard-avatar.webp'
 import alexAvatar from './assets/images/guest-alex-rivera.webp'
 import mayaAvatar from './assets/images/guest-maya-chen.webp'
@@ -254,6 +255,101 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
   )
 }
 
+function RecentlyVisited() {
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const [itemsPerPage, setItemsPerPage] = useState(workspaceItems.length)
+  const [activePage, setActivePage] = useState(0)
+  const pages = useMemo(() => {
+    const nextPages: WorkspaceItem[][] = []
+
+    for (let index = 0; index < workspaceItems.length; index += itemsPerPage) {
+      nextPages.push(workspaceItems.slice(index, index + itemsPerPage))
+    }
+
+    return nextPages
+  }, [itemsPerPage])
+  const currentPage = Math.min(activePage, pages.length - 1)
+
+  useEffect(() => {
+    const viewport = viewportRef.current
+    if (!viewport) return
+
+    const updateItemsPerPage = () => {
+      const width = viewport.clientWidth
+      const cardWidth = 180
+      const gap = 12
+      const nextItemsPerPage = Math.max(1, Math.floor((width + gap) / (cardWidth + gap)))
+      setItemsPerPage(Math.min(workspaceItems.length, nextItemsPerPage))
+    }
+
+    updateItemsPerPage()
+    const resizeObserver = new ResizeObserver(updateItemsPerPage)
+    resizeObserver.observe(viewport)
+    return () => resizeObserver.disconnect()
+  }, [])
+
+  const scrollToPage = (page: number) => {
+    const viewport = viewportRef.current
+    if (!viewport) return
+
+    viewport.scrollTo({
+      left: viewport.clientWidth * page,
+      behavior: 'smooth',
+    })
+    setActivePage(page)
+  }
+
+  const handleScroll = () => {
+    const viewport = viewportRef.current
+    if (!viewport || viewport.clientWidth === 0) return
+    setActivePage(Math.min(pages.length - 1, Math.round(viewport.scrollLeft / viewport.clientWidth)))
+  }
+
+  return (
+    <section className="shrink-0">
+      <div className="flex items-center gap-2 text-white/90">
+        <IconClock size={20} />
+        <p className="text-lg font-semibold">Recently visited</p>
+      </div>
+      <div
+        ref={viewportRef}
+        onScroll={handleScroll}
+        className="mt-3 w-full snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none]"
+      >
+        <div className="flex">
+          {pages.map((page, pageIndex) => (
+            <div
+              key={pageIndex}
+              className="grid w-full shrink-0 snap-start items-stretch gap-3"
+              style={{ gridTemplateColumns: `repeat(${itemsPerPage}, minmax(0, 1fr))` }}
+            >
+              {page.map((item) => (
+                <RecentlyVisitedCard key={item.title} item={item} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+      {pages.length > 1 && (
+        <div className="mt-1 flex justify-center gap-2" aria-label="Recently visited pages">
+          {pages.map((_, page) => (
+            <button
+              key={page}
+              type="button"
+              onClick={() => scrollToPage(page)}
+              className={`dashboard-pagination-dot h-2 w-2 cursor-pointer rounded-full transition-colors ${
+                currentPage === page ? 'is-active' : ''
+              }`}
+              aria-label={`Show recently visited page ${page + 1}`}
+              aria-current={currentPage === page ? 'page' : undefined}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  )
+}
+
 function EventGuests({ guests }: { guests: EventGuest[] }) {
   return (
     <div
@@ -280,7 +376,7 @@ function EventRow({ index, event }: { index: number; event: DashboardEvent }) {
   }
 
   return (
-    <div className="relative flex min-w-0 flex-1 items-stretch gap-3 rounded-xl border border-white/10 p-4">
+    <div className="dashboard-event-card relative flex min-w-0 flex-1 items-stretch gap-3 rounded-xl border border-white/10 p-4">
       <div className={`w-1 shrink-0 rounded ${eventColors[index % eventColors.length]}`} />
       <div className="min-w-0 flex-1">
         <div className="min-w-0 pr-20">
@@ -304,19 +400,7 @@ export default function Dashboard() {
   return (
     <div className="flex h-full w-full flex-col overflow-hidden">
       <div className="relative flex min-h-0 w-full flex-1 flex-col gap-6 overflow-hidden">
-        <section className="shrink-0">
-          <div className="flex items-center gap-2 text-white/90">
-            <IconClock size={20} />
-            <p className="text-lg font-semibold">Recently visited</p>
-          </div>
-          <div className="mt-3 w-full overflow-x-auto pb-2 [scrollbar-width:none]">
-            <div className="grid min-w-full grid-flow-col auto-cols-[minmax(180px,1fr)] items-stretch gap-3">
-              {workspaceItems.map((item) => (
-                <RecentlyVisitedCard key={item.title} item={item} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <RecentlyVisited />
 
         <section className="flex min-h-0 flex-1 flex-col">
           <div className="flex items-center gap-2 text-white/90">
@@ -327,7 +411,7 @@ export default function Dashboard() {
             <div className="space-y-4">
               {upcomingEvents.map((event, index) => (
                 <div key={index} className="flex items-start gap-4">
-                  <p className={`mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${index === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
+                  <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${index === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
                     {index === 0
                       ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
                       : new Date(today.getTime() + index * 86400000).toLocaleDateString(undefined, {

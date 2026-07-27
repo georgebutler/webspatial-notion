@@ -140,6 +140,49 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+.dashboard-pagination-dot {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.dashboard-pagination-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.dashboard-pagination-dot.is-active {
+  background: #ffffff;
+}
+
+html.is-web .dashboard-pagination-dot {
+  background: rgba(32, 32, 32, 0.22);
+}
+
+html.is-web .dashboard-pagination-dot:hover {
+  background: rgba(32, 32, 32, 0.42);
+}
+
+html.is-web .dashboard-pagination-dot.is-active {
+  background: var(--notion-text);
+}
+
+html.isSpatial .dashboard-event-card {
+  border-color: var(--notion-border);
+  background: #ffffff;
+  color: var(--notion-text);
+}
+
+html.isSpatial .dashboard-event-card .text-white\/95 {
+  color: var(--notion-text);
+}
+
+html.isSpatial .dashboard-event-card .text-white\/70,
+html.isSpatial .dashboard-event-card .text-neutral-400 {
+  color: var(--notion-muted);
+}
+
+html.isSpatial .dashboard-event-date {
+  color: #ffffff;
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
