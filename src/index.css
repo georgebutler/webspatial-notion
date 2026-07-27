@@ -132,6 +132,10 @@ html.is-web .notion-sidebar {
   background-color: rgba(245, 245, 245, 0.96);
 }
 
+.notion-sidebar {
+  border: 1px solid var(--notion-border);
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
@@ -277,6 +281,10 @@ html.isSpatial .notion-document-content {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
   align-items: start;
+}
+
+.newtons-cradle-media .notion-image-viewport img {
+  object-fit: cover;
 }
 
 .notion-image-block {

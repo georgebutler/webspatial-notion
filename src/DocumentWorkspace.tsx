@@ -646,8 +646,8 @@ function NewtonsCradleDocument() {
 
       <div className="newtons-cradle-media mt-4">
         <NotionImageBlock
-          src="/images/newtons-cradle-diagram.svg"
-          alt="Diagram of a Newton's cradle showing a released ball transferring motion through five suspended metal balls"
+          src="/images/notes.jpg"
+          alt="Notebook notes illustrating Newton's cradle and the conservation of momentum and energy"
         />
         <PlanetModelSlot
           src="/usdz/NewtonsCradle.usdz"
