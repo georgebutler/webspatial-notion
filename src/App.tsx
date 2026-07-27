@@ -28,7 +28,7 @@ function App() {
           <div
             enable-xr={true}
             style={{ '--xr-background-material': 'translucent' }}
-            className="h-full w-full overflow-hidden rounded-[28px] bg-white/10 p-4 shadow sm:p-6 md:p-8"
+            className="notion-dashboard-main h-full w-full overflow-hidden rounded-[28px] bg-white/10 p-4 sm:p-6 md:p-8"
           >
             <div className="h-full w-full overflow-hidden">
               <Dashboard />

@@ -136,6 +136,10 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+.notion-dashboard-main {
+  border: 1px solid var(--notion-border);
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
