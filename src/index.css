@@ -146,6 +146,21 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+html.isSpatial .notion-ai-window {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+html.isSpatial .notion-ai-greeting {
+  border-color: var(--notion-border);
+  background: #ffffff;
+  color: var(--notion-text);
+}
+
+html.isSpatial .notion-ai-greeting::before {
+  background: #ffffff;
+}
+
 .notion-todo-sidebar,
 .notion-todo-content {
   border: 1px solid var(--notion-border);

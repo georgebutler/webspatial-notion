@@ -4,11 +4,15 @@ export default function Ai() {
   return (
     <div
       enable-xr={true}
-      style={{ '--xr-background-material': 'regular' }}
-      className="flex h-full w-full flex-col items-start overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:p-12"
+      style={{ '--xr-background-material': 'transparent' }}
+      className="notion-ai-window flex h-full w-full flex-col items-start overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:p-12"
     >
       <div className="relative flex min-h-0 w-full flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
-        <aside className="notion-ai-sidebar hidden h-full w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
+        <aside
+          enable-xr={true}
+          style={{ '--xr-background-material': 'translucent' }}
+          className="notion-ai-sidebar hidden h-full w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
+        >
           <div className="flex items-center gap-2 text-white/90">
             <Sparkles size={20} strokeWidth={1.8} aria-hidden="true" />
             <h1 className="text-lg font-semibold">Notion AI</h1>
@@ -31,7 +35,11 @@ export default function Ai() {
         </aside>
 
         <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-2xl">
-          <div className="notion-ai-chat flex min-h-0 w-full min-w-0 flex-1 flex-col rounded-2xl px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4 md:px-6 md:pt-6 md:pb-4">
+          <div
+            enable-xr={true}
+            style={{ '--xr-background-material': 'translucent' }}
+            className="notion-ai-chat flex min-h-0 w-full min-w-0 flex-1 flex-col rounded-2xl px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4 md:px-6 md:pt-6 md:pb-4"
+          >
             <div className="mt-2 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
               <div className="w-full space-y-3">
                 <div className="flex max-w-[90%] items-end gap-3 md:max-w-[75%]">
