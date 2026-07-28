@@ -1,5 +1,13 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+  BoxEntity,
+  Entity,
+  Reality,
+  SceneGraph,
+  UnlitMaterial,
+  WebSpatialRuntime,
+} from '@webspatial/react-sdk/default'
 import userAvatar from './assets/images/dashboard-avatar.webp'
 import alexAvatar from './assets/images/guest-alex-rivera.webp'
 import mayaAvatar from './assets/images/guest-maya-chen.webp'
@@ -222,6 +230,117 @@ function ItemIcon({ type }: { type: WorkspaceItem['type'] }) {
   return <IconDoc size={32} className="text-neutral-200" />
 }
 
+const SPATIAL_ICON_MATERIAL_ID = 'workspace-icon-white'
+
+function SpatialWorkspaceGeometry({ type }: { type: WorkspaceItem['type'] }) {
+  if (type === 'List') {
+    return (
+      <Entity>
+        <BoxEntity
+          width={0.045}
+          height={0.056}
+          depth={0.004}
+          cornerRadius={0.003}
+          materials={[SPATIAL_ICON_MATERIAL_ID]}
+        />
+        {[-0.014, 0, 0.014].map((positionY) => (
+          <Entity key={positionY}>
+            <BoxEntity
+              width={0.007}
+              height={0.007}
+              depth={0.003}
+              cornerRadius={0.001}
+              position={{ x: -0.013, y: positionY, z: 0.0035 }}
+              materials={[SPATIAL_ICON_MATERIAL_ID]}
+            />
+            <BoxEntity
+              width={0.021}
+              height={0.004}
+              depth={0.003}
+              cornerRadius={0.001}
+              position={{ x: 0.007, y: positionY, z: 0.0035 }}
+              materials={[SPATIAL_ICON_MATERIAL_ID]}
+            />
+          </Entity>
+        ))}
+      </Entity>
+    )
+  }
+
+  if (type === 'Database') {
+    return (
+      <Entity>
+        {[
+          { y: -0.015, z: -0.003 },
+          { y: 0, z: 0 },
+          { y: 0.015, z: 0.003 },
+        ].map(({ y, z }) => (
+          <BoxEntity
+            key={y}
+            width={0.045}
+            height={0.014}
+            depth={0.004}
+            cornerRadius={0.003}
+            position={{ x: 0, y, z }}
+            materials={[SPATIAL_ICON_MATERIAL_ID]}
+          />
+        ))}
+      </Entity>
+    )
+  }
+
+  return (
+    <Entity>
+      <BoxEntity
+        width={0.045}
+        height={0.056}
+        depth={0.004}
+        cornerRadius={0.003}
+        materials={[SPATIAL_ICON_MATERIAL_ID]}
+      />
+      <BoxEntity
+        width={0.014}
+        height={0.014}
+        depth={0.003}
+        cornerRadius={0.002}
+        position={{ x: 0.0125, y: 0.018, z: 0.0035 }}
+        materials={[SPATIAL_ICON_MATERIAL_ID]}
+      />
+    </Entity>
+  )
+}
+
+function SpatialWorkspaceIcon({ type }: { type: WorkspaceItem['type'] }) {
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  const supportsSpatialIcon = isSpatial
+    && WebSpatialRuntime.supports('Reality')
+    && WebSpatialRuntime.supports('SceneGraph')
+    && WebSpatialRuntime.supports('Entity')
+    && WebSpatialRuntime.supports('BoxEntity')
+    && WebSpatialRuntime.supports('UnlitMaterial')
+
+  if (!supportsSpatialIcon) {
+    return <ItemIcon type={type} />
+  }
+
+  return (
+    <div className="h-8 w-8" aria-hidden="true">
+      <Reality
+        className="pointer-events-none h-12 w-12 -translate-x-2 -translate-y-2"
+        style={{
+          '--xr-depth': '40px',
+          '--xr-back': '20px',
+        }}
+      >
+        <UnlitMaterial id={SPATIAL_ICON_MATERIAL_ID} color="#ffffff" />
+        <SceneGraph>
+          <SpatialWorkspaceGeometry type={type} />
+        </SceneGraph>
+      </Reality>
+    </div>
+  )
+}
+
 function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
   const openItem = () => {
     if (!item.path) return
@@ -237,7 +356,7 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
       className="flex min-w-0 cursor-pointer flex-col rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition-colors hover:bg-white/15"
     >
       <div>
-        <ItemIcon type={item.type} />
+        <SpatialWorkspaceIcon type={item.type} />
       </div>
       <div className="my-3 max-w-[220px] truncate text-[15px] leading-5 font-semibold text-neutral-100">
         {item.title}
@@ -316,6 +435,7 @@ function RecentlyVisited() {
         <div
           ref={viewportRef}
           onScroll={handleScroll}
+          enable-xr={true}
           className="min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none] sm:w-full"
         >
           <div className="flex">
@@ -421,10 +541,38 @@ function EventRow({ index, event }: { index: number; event: DashboardEvent }) {
 
 export default function Dashboard() {
   const today = new Date()
+  const eventViewportRef = useRef<HTMLDivElement>(null)
   const [activeEventPage, setActiveEventPage] = useState(0)
   const eventPageCount = Math.ceil(upcomingEvents.length / EVENTS_PER_PAGE)
-  const eventPageStart = activeEventPage * EVENTS_PER_PAGE
-  const visibleEvents = upcomingEvents.slice(eventPageStart, eventPageStart + EVENTS_PER_PAGE)
+  const currentEventPage = Math.min(activeEventPage, eventPageCount - 1)
+  const eventPages = useMemo(() => {
+    const pages: DashboardEvent[][] = []
+
+    for (let index = 0; index < upcomingEvents.length; index += EVENTS_PER_PAGE) {
+      pages.push(upcomingEvents.slice(index, index + EVENTS_PER_PAGE))
+    }
+
+    return pages
+  }, [])
+
+  const scrollToEventPage = (page: number) => {
+    const viewport = eventViewportRef.current
+    if (!viewport) return
+
+    viewport.scrollTo({
+      top: viewport.clientHeight * page,
+      behavior: 'smooth',
+    })
+    setActiveEventPage(page)
+  }
+
+  const handleEventScroll = () => {
+    const viewport = eventViewportRef.current
+    if (!viewport || viewport.clientHeight === 0) return
+    setActiveEventPage(
+      Math.min(eventPageCount - 1, Math.round(viewport.scrollTop / viewport.clientHeight)),
+    )
+  }
 
   return (
     <div className="flex h-full w-full flex-col overflow-y-auto [scrollbar-width:none] sm:overflow-hidden">
@@ -437,23 +585,35 @@ export default function Dashboard() {
             <p className="text-lg font-semibold">Upcoming Events</p>
           </div>
           <div className="mt-2 flex min-h-0 w-full items-center gap-2 sm:flex-1 sm:items-stretch">
-            <div className="min-h-0 min-w-0 flex-1 overflow-y-auto rounded-2xl bg-white/10 px-4 py-3 backdrop-blur [scrollbar-width:none]">
-              <div className="space-y-2">
-                {visibleEvents.map((event, index) => {
-                  const eventIndex = eventPageStart + index
+            <div
+              ref={eventViewportRef}
+              onScroll={handleEventScroll}
+              className="min-h-0 min-w-0 flex-1 snap-y snap-mandatory overflow-y-auto rounded-2xl bg-white/10 px-4 py-3 backdrop-blur [scrollbar-width:none]"
+            >
+              <div className="flex h-full flex-col">
+                {eventPages.map((page, pageIndex) => {
+                  const eventPageStart = pageIndex * EVENTS_PER_PAGE
 
                   return (
-                    <div key={event.title} className="flex items-start gap-4">
-                      <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${eventIndex === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
-                        {eventIndex === 0
-                          ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
-                          : new Date(today.getTime() + eventIndex * 86400000).toLocaleDateString(undefined, {
-                              weekday: 'long',
-                              month: 'long',
-                              day: 'numeric',
-                            })}
-                      </p>
-                      <EventRow index={eventIndex} event={event} />
+                    <div key={pageIndex} className="min-h-full w-full shrink-0 snap-start space-y-2">
+                      {page.map((event, index) => {
+                        const eventIndex = eventPageStart + index
+
+                        return (
+                          <div key={event.title} className="flex items-start gap-4">
+                            <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${eventIndex === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
+                              {eventIndex === 0
+                                ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+                                : new Date(today.getTime() + eventIndex * 86400000).toLocaleDateString(undefined, {
+                                    weekday: 'long',
+                                    month: 'long',
+                                    day: 'numeric',
+                                  })}
+                            </p>
+                            <EventRow index={eventIndex} event={event} />
+                          </div>
+                        )
+                      })}
                     </div>
                   )
                 })}
@@ -463,8 +623,8 @@ export default function Dashboard() {
               <div className="flex shrink-0 flex-col items-center justify-center gap-2" aria-label="Upcoming event pages">
                 <button
                   type="button"
-                  onClick={() => setActiveEventPage((page) => page - 1)}
-                  disabled={activeEventPage === 0}
+                  onClick={() => scrollToEventPage(currentEventPage - 1)}
+                  disabled={currentEventPage === 0}
                   className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
                   aria-label="Show previous upcoming events page"
                 >
@@ -475,19 +635,19 @@ export default function Dashboard() {
                     <button
                       key={page}
                       type="button"
-                      onClick={() => setActiveEventPage(page)}
+                      onClick={() => scrollToEventPage(page)}
                       className={`dashboard-pagination-dot h-2 w-2 cursor-pointer rounded-full transition-colors ${
-                        activeEventPage === page ? 'is-active' : ''
+                        currentEventPage === page ? 'is-active' : ''
                       }`}
                       aria-label={`Show upcoming events page ${page + 1}`}
-                      aria-current={activeEventPage === page ? 'page' : undefined}
+                      aria-current={currentEventPage === page ? 'page' : undefined}
                     />
                   ))}
                 </div>
                 <button
                   type="button"
-                  onClick={() => setActiveEventPage((page) => page + 1)}
-                  disabled={activeEventPage === eventPageCount - 1}
+                  onClick={() => scrollToEventPage(currentEventPage + 1)}
+                  disabled={currentEventPage === eventPageCount - 1}
                   className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
                   aria-label="Show next upcoming events page"
                 >
