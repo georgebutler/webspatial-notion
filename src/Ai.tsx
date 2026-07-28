@@ -18,10 +18,10 @@ export default function Ai() {
               <History size={16} strokeWidth={1.8} aria-hidden="true" />
               <h2 className="text-sm font-medium">Recents</h2>
             </div>
-            <ul className="mt-2 space-y-2">
+            <ul className="mt-2 space-y-1">
               {['Roadmap brainstorming', 'Project sync notes', 'Bug triage 04/10', 'Marketing copy ideas', 'Sprint 12 planning', 'User feedback summary'].map((chat) => (
                 <li key={chat}>
-                  <button type="button" title={chat} className="w-full truncate rounded-lg px-3 py-2 text-left text-[15px] text-white/90 transition-colors hover:bg-white/10">
+                  <button type="button" title={chat} className="w-full cursor-pointer truncate rounded-md px-3 py-1.5 text-left text-[15px] text-white/90 transition-colors hover:bg-white/10">
                     {chat}
                   </button>
                 </li>

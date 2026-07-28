@@ -1,3 +1,4 @@
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import userAvatar from './assets/images/dashboard-avatar.webp'
 import alexAvatar from './assets/images/guest-alex-rivera.webp'
@@ -135,6 +136,7 @@ const workspaceItems: WorkspaceItem[] = [
 ]
 
 const eventColors = ['bg-cyan-400', 'bg-emerald-400', 'bg-yellow-400', 'bg-fuchsia-400']
+const EVENTS_PER_PAGE = 5
 const upcomingEvents: DashboardEvent[] = [
   {
     title: 'Research',
@@ -237,7 +239,7 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
       <div>
         <ItemIcon type={item.type} />
       </div>
-      <div className="my-3 max-w-[220px] text-[15px] leading-5 font-semibold text-neutral-100">
+      <div className="my-3 max-w-[220px] truncate text-[15px] leading-5 font-semibold text-neutral-100">
         {item.title}
       </div>
       <div className="mt-auto flex items-center justify-between gap-4">
@@ -246,8 +248,8 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
           alt=""
           className="h-6 w-6 rounded-full border-2 border-black/20 object-cover"
         />
-        <div className="text-right text-[13px] font-medium text-neutral-400">
-          {item.lastAccessed.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+        <div className="whitespace-nowrap text-right text-[12px] font-medium text-neutral-400">
+          Updated · {item.lastAccessed.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
         </div>
       </div>
     </button>
@@ -310,41 +312,65 @@ function RecentlyVisited() {
         <IconClock size={20} />
         <p className="text-lg font-semibold">Recently visited</p>
       </div>
-      <div
-        ref={viewportRef}
-        onScroll={handleScroll}
-        className="mt-3 w-full snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none]"
-      >
-        <div className="flex">
-          {pages.map((page, pageIndex) => (
-            <div
-              key={pageIndex}
-              className="grid w-full shrink-0 snap-start items-stretch gap-3"
-              style={{ gridTemplateColumns: `repeat(${itemsPerPage}, minmax(0, 1fr))` }}
+      <div className="mt-3 flex min-w-0 items-center gap-2 sm:block">
+        <div
+          ref={viewportRef}
+          onScroll={handleScroll}
+          className="min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none] sm:w-full"
+        >
+          <div className="flex">
+            {pages.map((page, pageIndex) => (
+              <div
+                key={pageIndex}
+                className="grid w-full shrink-0 snap-start items-stretch gap-3"
+                style={{ gridTemplateColumns: `repeat(${itemsPerPage}, minmax(0, 1fr))` }}
+              >
+                {page.map((item) => (
+                  <RecentlyVisitedCard key={item.title} item={item} />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+        {pages.length > 1 && (
+          <div className="flex shrink-0 flex-col items-center justify-center gap-2 sm:mt-1 sm:flex-row" aria-label="Recently visited pages">
+            <button
+              type="button"
+              onClick={() => scrollToPage(currentPage - 1)}
+              disabled={currentPage === 0}
+              className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
+              aria-label="Show previous recently visited page"
             >
-              {page.map((item) => (
-                <RecentlyVisitedCard key={item.title} item={item} />
+              <ChevronUp className="sm:hidden" size={16} strokeWidth={1.8} aria-hidden="true" />
+              <ChevronLeft className="hidden sm:block" size={16} strokeWidth={1.8} aria-hidden="true" />
+            </button>
+            <div className="flex flex-col items-center gap-2 sm:flex-row">
+              {pages.map((_, page) => (
+                <button
+                  key={page}
+                  type="button"
+                  onClick={() => scrollToPage(page)}
+                  className={`dashboard-pagination-dot h-2 w-2 cursor-pointer rounded-full transition-colors ${
+                    currentPage === page ? 'is-active' : ''
+                  }`}
+                  aria-label={`Show recently visited page ${page + 1}`}
+                  aria-current={currentPage === page ? 'page' : undefined}
+                />
               ))}
             </div>
-          ))}
-        </div>
-      </div>
-      {pages.length > 1 && (
-        <div className="mt-1 flex justify-center gap-2" aria-label="Recently visited pages">
-          {pages.map((_, page) => (
             <button
-              key={page}
               type="button"
-              onClick={() => scrollToPage(page)}
-              className={`dashboard-pagination-dot h-2 w-2 cursor-pointer rounded-full transition-colors ${
-                currentPage === page ? 'is-active' : ''
-              }`}
-              aria-label={`Show recently visited page ${page + 1}`}
-              aria-current={currentPage === page ? 'page' : undefined}
-            />
-          ))}
-        </div>
-      )}
+              onClick={() => scrollToPage(currentPage + 1)}
+              disabled={currentPage === pages.length - 1}
+              className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
+              aria-label="Show next recently visited page"
+            >
+              <ChevronDown className="sm:hidden" size={16} strokeWidth={1.8} aria-hidden="true" />
+              <ChevronRight className="hidden sm:block" size={16} strokeWidth={1.8} aria-hidden="true" />
+            </button>
+          </div>
+        )}
+      </div>
     </section>
   )
 }
@@ -375,15 +401,15 @@ function EventRow({ index, event }: { index: number; event: DashboardEvent }) {
   }
 
   return (
-    <div className="dashboard-event-card relative flex min-w-0 flex-1 items-stretch gap-3 rounded-xl border border-white/10 p-4">
+    <div className="dashboard-event-card relative flex min-w-0 flex-1 items-stretch gap-3 rounded-xl border border-white/10 px-3 py-2.5">
       <div className={`w-1 shrink-0 rounded ${eventColors[index % eventColors.length]}`} />
       <div className="min-w-0 flex-1">
         <div className="min-w-0 pr-20">
           <div className="text-[15px] font-semibold text-white/95">{event.title}</div>
-          <div className="mt-1 text-[13px] font-medium text-neutral-400">
+          <div className="mt-0.5 text-[13px] font-medium text-neutral-400">
             {formatTime(event.start, event.startMinute)} - {formatTime(event.end, event.endMinute)}
           </div>
-          <p className="mt-2 max-w-[480px] text-[13px] leading-5 text-white/70">
+          <p className="mt-1 line-clamp-2 text-[12px] leading-[18px] text-white/70">
             {event.description}
           </p>
         </div>
@@ -395,34 +421,80 @@ function EventRow({ index, event }: { index: number; event: DashboardEvent }) {
 
 export default function Dashboard() {
   const today = new Date()
+  const [activeEventPage, setActiveEventPage] = useState(0)
+  const eventPageCount = Math.ceil(upcomingEvents.length / EVENTS_PER_PAGE)
+  const eventPageStart = activeEventPage * EVENTS_PER_PAGE
+  const visibleEvents = upcomingEvents.slice(eventPageStart, eventPageStart + EVENTS_PER_PAGE)
 
   return (
-    <div className="flex h-full w-full flex-col overflow-hidden">
-      <div className="relative flex min-h-0 w-full flex-1 flex-col gap-6 overflow-hidden">
+    <div className="flex h-full w-full flex-col overflow-y-auto [scrollbar-width:none] sm:overflow-hidden">
+      <div className="relative flex min-h-full w-full flex-col gap-6 sm:min-h-0 sm:flex-1 sm:overflow-hidden">
         <RecentlyVisited />
 
-        <section className="flex min-h-0 flex-1 flex-col">
+        <section className="flex shrink-0 flex-col sm:min-h-0 sm:flex-1">
           <div className="flex items-center gap-2 text-white/90">
             <IconCalendar size={20} />
             <p className="text-lg font-semibold">Upcoming Events</p>
           </div>
-          <div className="mt-3 min-h-0 w-full flex-1 overflow-y-auto rounded-2xl bg-white/10 px-4 py-6 backdrop-blur [scrollbar-width:none]">
-            <div className="space-y-4">
-              {upcomingEvents.map((event, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${index === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
-                    {index === 0
-                      ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
-                      : new Date(today.getTime() + index * 86400000).toLocaleDateString(undefined, {
-                          weekday: 'long',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                  </p>
-                  <EventRow index={index} event={event} />
-                </div>
-              ))}
+          <div className="mt-2 flex min-h-0 w-full items-center gap-2 sm:flex-1 sm:items-stretch">
+            <div className="min-h-0 min-w-0 flex-1 overflow-y-auto rounded-2xl bg-white/10 px-4 py-3 backdrop-blur [scrollbar-width:none]">
+              <div className="space-y-2">
+                {visibleEvents.map((event, index) => {
+                  const eventIndex = eventPageStart + index
+
+                  return (
+                    <div key={event.title} className="flex items-start gap-4">
+                      <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${eventIndex === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
+                        {eventIndex === 0
+                          ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
+                          : new Date(today.getTime() + eventIndex * 86400000).toLocaleDateString(undefined, {
+                              weekday: 'long',
+                              month: 'long',
+                              day: 'numeric',
+                            })}
+                      </p>
+                      <EventRow index={eventIndex} event={event} />
+                    </div>
+                  )
+                })}
+              </div>
             </div>
+            {eventPageCount > 1 && (
+              <div className="flex shrink-0 flex-col items-center justify-center gap-2" aria-label="Upcoming event pages">
+                <button
+                  type="button"
+                  onClick={() => setActiveEventPage((page) => page - 1)}
+                  disabled={activeEventPage === 0}
+                  className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
+                  aria-label="Show previous upcoming events page"
+                >
+                  <ChevronUp size={16} strokeWidth={1.8} aria-hidden="true" />
+                </button>
+                <div className="flex flex-col items-center gap-2">
+                  {Array.from({ length: eventPageCount }, (_, page) => (
+                    <button
+                      key={page}
+                      type="button"
+                      onClick={() => setActiveEventPage(page)}
+                      className={`dashboard-pagination-dot h-2 w-2 cursor-pointer rounded-full transition-colors ${
+                        activeEventPage === page ? 'is-active' : ''
+                      }`}
+                      aria-label={`Show upcoming events page ${page + 1}`}
+                      aria-current={activeEventPage === page ? 'page' : undefined}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveEventPage((page) => page + 1)}
+                  disabled={activeEventPage === eventPageCount - 1}
+                  className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
+                  aria-label="Show next upcoming events page"
+                >
+                  <ChevronDown size={16} strokeWidth={1.8} aria-hidden="true" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
       </div>

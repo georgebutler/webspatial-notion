@@ -1,4 +1,5 @@
 import { GripVertical, ListChecks, ListTodo } from 'lucide-react'
+import type { PropsWithChildren } from 'react'
 import { useMemo, useState } from 'react'
 
 type TodoItem = { id: number; text: string; done: boolean }
@@ -23,11 +24,20 @@ function getItems(title: string) {
   return defaultItems
 }
 
-function Checklist({ items, onToggle }: { items: TodoItem[]; onToggle?: (id: number) => void }) {
+function TodoBlock({ children }: PropsWithChildren) {
   return (
     <div className="notion-text-block">
       <GripVertical className="notion-text-block-handle" size={16} strokeWidth={2} aria-hidden="true" />
-      <ul className="space-y-1">
+      {children}
+    </div>
+  )
+}
+
+function Checklist({ items, onToggle }: { items: TodoItem[]; onToggle?: (id: number) => void }) {
+  return (
+    <TodoBlock>
+      <h2 className="text-xl font-semibold">Task Checklist</h2>
+      <ul className="mt-2 space-y-1">
         {items.map((item) => (
           <li key={item.id} className="flex items-start gap-2">
             <input
@@ -44,7 +54,7 @@ function Checklist({ items, onToggle }: { items: TodoItem[]; onToggle?: (id: num
           </li>
         ))}
       </ul>
-    </div>
+    </TodoBlock>
   )
 }
 
@@ -52,8 +62,38 @@ function ListContent({ title, items, onToggle }: { title: string; items: TodoIte
   return (
     <>
       <h1 className="text-3xl font-bold">{title}</h1>
-      <div className="mt-4">
+      <div className="mt-4 space-y-3">
+        <TodoBlock>
+          <h2 className="text-xl font-semibold">Overview</h2>
+          <p className="mt-2 text-[16px] leading-7">
+            Map the primary user journey, define the interaction states for each step, and prepare the flow
+            for a focused product and engineering review.
+          </p>
+        </TodoBlock>
+        <TodoBlock>
+          <h2 className="text-xl font-semibold">Goals</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-[16px] leading-7">
+            <li>Keep the core screens easy to scan and understand.</li>
+            <li>Make primary and secondary actions predictable.</li>
+            <li>Cover empty, loading, success, and error states.</li>
+          </ul>
+        </TodoBlock>
         <Checklist items={items} onToggle={onToggle} />
+        <TodoBlock>
+          <h2 className="text-xl font-semibold">Open Questions</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-[16px] leading-7">
+            <li>Where should users land after completing the primary flow?</li>
+            <li>Which actions need confirmation or a short undo window?</li>
+            <li>Which in-progress choices should persist between sessions?</li>
+          </ul>
+        </TodoBlock>
+        <TodoBlock>
+          <h2 className="text-xl font-semibold">Review Notes</h2>
+          <p className="mt-2 text-[16px] leading-7">
+            Keep labels concise, verify keyboard and spatial interaction states, and review the final flow
+            with product and engineering before handoff.
+          </p>
+        </TodoBlock>
       </div>
       <p className="mt-4 text-[14px] text-neutral-600">Last updated: Today — Checklist</p>
     </>
@@ -62,7 +102,7 @@ function ListContent({ title, items, onToggle }: { title: string; items: TodoIte
 
 export default function Todo() {
   const selectedTitle = new URLSearchParams(window.location.search).get('title')
-  const initialIndex = selectedTitle ? lists.findIndex((title) => title === selectedTitle) : -1
+  const initialIndex = selectedTitle ? lists.findIndex((title) => title === selectedTitle) : 0
   const [selectedIndex, setSelectedIndex] = useState(initialIndex)
   const [items, setItems] = useState<TodoItem[]>(() =>
     initialIndex >= 0 ? getItems(lists[initialIndex]) : [],

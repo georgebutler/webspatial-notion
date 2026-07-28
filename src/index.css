@@ -192,6 +192,24 @@ html.is-web .dashboard-pagination-dot.is-active {
   background: var(--notion-text);
 }
 
+.dashboard-pagination-arrow {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.dashboard-pagination-arrow:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+html.is-web .dashboard-pagination-arrow {
+  color: var(--notion-muted);
+}
+
+html.is-web .dashboard-pagination-arrow:not(:disabled):hover {
+  background: var(--notion-hover);
+  color: var(--notion-text);
+}
+
 .dashboard-event-card {
   background: rgba(255, 255, 255, 0.08);
 }
