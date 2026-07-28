@@ -286,6 +286,23 @@ html.isSpatial .dashboard-updated-label {
   color: #ffffff;
 }
 
+@media (max-width: 639px) {
+  html.is-web .dashboard-event-row {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  html.is-web .dashboard-event-date {
+    width: 100%;
+    margin-top: 0;
+  }
+
+  html.is-web .dashboard-event-row .dashboard-event-card {
+    width: 100%;
+    flex: none;
+  }
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
@@ -323,20 +340,20 @@ html.isSpatial #root {
 
 html.isSpatial .notion-document-workspace {
   min-height: 100vh;
-  height: auto;
-  overflow: visible;
+  height: 100vh;
+  overflow: hidden;
 }
 
 html.isSpatial .notion-document-workspace > .notion-sidebar {
-  position: sticky;
-  top: 3rem;
-  align-self: flex-start;
-  height: calc(100vh - 6rem);
+  position: static;
+  align-self: stretch;
+  height: 100%;
 }
 
 html.isSpatial .notion-document-content {
-  height: auto;
-  overflow: visible;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
 }
 
 .notion-text-block {

@@ -13,14 +13,8 @@ function renderApp() {
   document.body.classList.toggle('is-web', !isSpatial)
 
   if (isSpatial) {
-    const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
-    const isDocumentRoute = pathname === '/doc' || pathname.startsWith('/doc/')
-
     document.documentElement.classList.add('bg-transparent')
-    document.documentElement.style.setProperty(
-      '--xr-background-material',
-      isDocumentRoute ? 'translucent' : 'transparent',
-    )
+    document.documentElement.style.setProperty('--xr-background-material', 'transparent')
   }
 
   document.body.classList.toggle('text-white', isSpatial)

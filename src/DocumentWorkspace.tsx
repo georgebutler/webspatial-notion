@@ -1120,9 +1120,13 @@ export default function DocumentWorkspace() {
 
   return (
     <div
+      enable-xr={true}
+      style={{ '--xr-background-material': 'transparent' }}
       className="notion-document-workspace flex h-full w-full flex-col gap-6 overflow-hidden p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside
+        enable-xr={true}
+        style={{ '--xr-background-material': 'translucent' }}
         className="notion-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
       >
         <div className="flex items-center gap-2 text-white/90">
@@ -1167,6 +1171,8 @@ export default function DocumentWorkspace() {
       </aside>
 
       <div
+        enable-xr={true}
+        style={{ '--xr-background-material': 'regular' }}
         className={`notion-document-content h-full min-h-0 flex-1 overflow-auto rounded-2xl px-6 py-8 ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
       >
         <div className="w-full">

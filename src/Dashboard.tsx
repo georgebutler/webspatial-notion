@@ -480,7 +480,7 @@ export default function Dashboard() {
                         const eventIndex = eventPageStart + index
 
                         return (
-                          <div key={event.title} className="flex items-start gap-4">
+                          <div key={event.title} className="dashboard-event-row flex items-start gap-4">
                             <p className={`dashboard-event-date mt-0.5 w-[132px] shrink-0 text-[13px] font-medium sm:w-[164px] ${eventIndex === 0 ? 'text-orange-400' : 'text-neutral-400'}`}>
                               {eventIndex === 0
                                 ? today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
