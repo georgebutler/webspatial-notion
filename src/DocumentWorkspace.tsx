@@ -2,17 +2,39 @@ import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } f
 import { ArrowLeft, Box, FileText, GripVertical, Image as ImageIcon } from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
 import {
+  AttachmentAsset,
+  AttachmentEntity,
   Entity,
   ModelAsset,
   ModelEntity,
   Reality,
   SceneGraph,
+  WebSpatialRuntime,
 } from '@webspatial/react-sdk/default'
-import type { ModelRef } from '@webspatial/react-sdk'
+import type { EntityRef, ModelRef } from '@webspatial/react-sdk'
 
 type DocumentItem = {
   title: string
   slug: string
+}
+
+type PlanetAnnotation = {
+  id: string
+  title: string
+  description: string
+  position: [number, number, number]
+}
+
+type PlanetAnnotations = [PlanetAnnotation, PlanetAnnotation]
+
+const defaultAnnotationPositions = {
+  first: [-0.62, 0.28, 0.3] as [number, number, number],
+  second: [0.62, -0.22, 0.3] as [number, number, number],
+}
+
+const saturnAnnotationPositions = {
+  first: [-0.72, 0.22, 0.3] as [number, number, number],
+  second: [0.72, -0.18, 0.3] as [number, number, number],
 }
 
 const planetModelSources = {
@@ -56,6 +78,20 @@ const planets = [
       'The star at the center of our solar system and the source of nearly all the energy that makes life on Earth possible. The Sun is a nearly perfect sphere of hot plasma, made mostly of hydrogen and helium.',
     note:
       'The Sun contains about 99.8% of the solar system’s total mass. Its gravity keeps the planets, dwarf planets, asteroids, comets, and other debris in orbit, while its light takes about eight minutes to reach Earth.',
+    annotations: [
+      {
+        id: 'sunspots',
+        title: 'Sunspots',
+        description: 'Cooler, magnetically active regions that appear dark against the surrounding photosphere.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'solar-prominences',
+        title: 'Solar Prominences',
+        description: 'Huge loops of plasma held above the surface by the Sun’s magnetic field.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Mercury',
@@ -73,6 +109,20 @@ const planets = [
       'The smallest planet and the closest to the Sun. Mercury has a heavily cratered, rocky surface that looks a little like the Moon, but its days and nights are far more extreme because it has almost no atmosphere to hold heat.',
     note:
       'A year lasts only 88 Earth days, while one sunrise-to-sunrise day lasts 176 Earth days. Despite being closest to the Sun, Mercury is not the hottest planet.',
+    annotations: [
+      {
+        id: 'caloris-basin',
+        title: 'Caloris Basin',
+        description: 'A roughly 1,550 km-wide impact basin and one of the largest visible features on Mercury.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'discovery-rupes',
+        title: 'Discovery Rupes',
+        description: 'A giant cliff formed as Mercury’s interior cooled and the planet contracted.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Venus',
@@ -90,6 +140,20 @@ const planets = [
       'A hot, cloud-covered rocky planet wrapped in a thick carbon dioxide atmosphere. Its clouds contain sulfuric acid, and the intense pressure at the surface is roughly 90 times that of Earth.',
     note:
       'Venus rotates backward compared with most planets, so the Sun would rise in the west and set in the east. Its runaway greenhouse effect makes it the hottest planet in the solar system.',
+    annotations: [
+      {
+        id: 'maat-mons',
+        title: 'Maat Mons',
+        description: 'One of Venus’s tallest shield volcanoes, rising above the surrounding volcanic plains.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'sulfuric-cloud-deck',
+        title: 'Sulfuric Cloud Deck',
+        description: 'Thick reflective clouds that hide the surface and help sustain the runaway greenhouse effect.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Earth',
@@ -107,6 +171,20 @@ const planets = [
       'Our home planet, with abundant liquid surface water and the only known life in the solar system. Earth’s atmosphere, magnetic field, and active geology work together to make the surface unusually stable and habitable.',
     note:
       'The oceans cover most of the planet, and the Moon helps steady Earth’s rotation and creates the tides. Earth is the densest and largest of the four rocky planets.',
+    annotations: [
+      {
+        id: 'pacific-ocean',
+        title: 'Pacific Ocean',
+        description: 'Earth’s largest and deepest ocean basin, covering nearly one-third of the planet.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'himalayas',
+        title: 'Himalayas',
+        description: 'A major mountain range created by the continuing collision of the Indian and Eurasian plates.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Mars',
@@ -124,6 +202,20 @@ const planets = [
       'A cold, rocky world known for its iron-rich red surface. Mars has polar ice caps, enormous volcanoes, deep valleys, dusty plains, and two small moons named Phobos and Deimos.',
     note:
       'Evidence shows that ancient Mars once had flowing water on its surface. Its atmosphere is thin today, but the planet remains one of the best places to look for clues about past environments beyond Earth.',
+    annotations: [
+      {
+        id: 'olympus-mons',
+        title: 'Olympus Mons',
+        description: 'The largest known volcano in the solar system.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'valles-marineris',
+        title: 'Valles Marineris',
+        description: 'A canyon system stretching roughly 4,000 km across the Martian surface.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Jupiter',
@@ -141,6 +233,20 @@ const planets = [
       'The largest planet and a gas giant made mostly of hydrogen and helium. Its striped cloud bands are driven by powerful jet streams, and the Great Red Spot is a storm that has lasted for centuries.',
     note:
       'Jupiter has a faint ring system and dozens of moons, including volcanic Io, icy Europa, and Ganymede—the largest moon in the solar system. Its enormous gravity also shapes the paths of many smaller bodies.',
+    annotations: [
+      {
+        id: 'great-red-spot',
+        title: 'Great Red Spot',
+        description: 'A massive long-lived anticyclonic storm larger than Earth.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'equatorial-belts',
+        title: 'Equatorial Belts',
+        description: 'Alternating dark belts and bright zones shaped by powerful atmospheric jet streams.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Saturn',
@@ -158,6 +264,20 @@ const planets = [
       'A gas giant surrounded by a bright, extensive ring system made mostly of water ice and rock. Saturn is the second-largest planet, but its average density is low enough that it would float in a large enough ocean.',
     note:
       'The rings are broad but surprisingly thin, divided into many bands and gaps by Saturn’s moons. Titan, Saturn’s largest moon, has a thick atmosphere and lakes made of liquid methane.',
+    annotations: [
+      {
+        id: 'main-ring-system',
+        title: 'Main Ring System',
+        description: 'Vast bands of ice and rock organized into the A, B, and C rings with visible gaps.',
+        position: saturnAnnotationPositions.first,
+      },
+      {
+        id: 'north-polar-hexagon',
+        title: 'North Polar Hexagon',
+        description: 'A persistent six-sided jet stream surrounding Saturn’s north pole.',
+        position: saturnAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Uranus',
@@ -175,6 +295,20 @@ const planets = [
       'A pale blue ice giant that rotates on its side, likely after a massive collision early in its history. Uranus has faint rings and an atmosphere containing methane, which gives it its blue-green color.',
     note:
       'Because of its extreme tilt, each pole can face the Sun for about 42 Earth years at a time. Uranus is also one of the coldest planetary atmospheres in the solar system.',
+    annotations: [
+      {
+        id: 'extreme-axial-tilt',
+        title: 'Extreme Axial Tilt',
+        description: 'Uranus rotates nearly on its side, producing unusually long seasons.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'faint-ring-system',
+        title: 'Faint Ring System',
+        description: 'Narrow, dark rings composed primarily of larger particles and dust.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
   {
     name: 'Neptune',
@@ -192,6 +326,20 @@ const planets = [
       'The most distant planet from the Sun. Neptune is a cold, windy ice giant with a deep blue atmosphere, faint rings, and some of the fastest winds measured anywhere in the solar system.',
     note:
       'Neptune was the first planet discovered through mathematical prediction rather than direct observation. Its large moon Triton orbits backward and may be a captured object from the distant Kuiper Belt.',
+    annotations: [
+      {
+        id: 'great-dark-spots',
+        title: 'Great Dark Spots',
+        description: 'Large transient storm systems that appear and disappear in Neptune’s atmosphere.',
+        position: defaultAnnotationPositions.first,
+      },
+      {
+        id: 'methane-cloud-bands',
+        title: 'Methane Cloud Bands',
+        description: 'High-altitude clouds and fast-moving bands shaped by the solar system’s strongest planetary winds.',
+        position: defaultAnnotationPositions.second,
+      },
+    ] satisfies PlanetAnnotations,
   },
 ]
 
@@ -220,6 +368,9 @@ function DocumentLastModified() {
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 const MIN_INTERACTIVE_MODEL_SCALE = 0.25
 const MAX_INTERACTIVE_MODEL_SCALE = 4
+const DETAIL_MODEL_SCALE = 0.46
+const COMPACT_ATTACHMENT_SIZE = { width: 156, height: 44 }
+const EXPANDED_ATTACHMENT_SIZE = { width: 232, height: 112 }
 
 function useModelSelfRotation(
   modelRef: RefObject<ModelRef | null>,
@@ -419,6 +570,139 @@ function PlanetModelSlot({
   )
 }
 
+function PlanetAnnotationCard({
+  annotation,
+  expanded,
+  onToggle,
+}: {
+  annotation: PlanetAnnotation
+  expanded: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`planet-annotation-card ${expanded ? 'is-expanded' : ''}`}
+      aria-expanded={expanded}
+    >
+      <span className="planet-annotation-title">{annotation.title}</span>
+      {expanded ? <span className="planet-annotation-description">{annotation.description}</span> : null}
+    </button>
+  )
+}
+
+function AnnotatedPlanetModel({
+  planet,
+}: {
+  planet: (typeof planets)[number]
+}) {
+  const groupRef = useRef<EntityRef>(null)
+  const dragOriginRef = useRef({ x: 0, y: 0, z: 0 })
+  const magnificationBaseRef = useRef(1)
+  const magnificationFactorRef = useRef(1)
+  const [magnificationFactor, setMagnificationFactor] = useState(1)
+  const [expandedAnnotationId, setExpandedAnnotationId] = useState<string | null>(null)
+  const modelAssetId = `detail-${planet.name.toLowerCase()}-asset`
+  const tiltRadians = (getPlanetTiltDegrees(planet.name) * Math.PI) / 180
+
+  return (
+    <div className="notion-model-block notion-planet-detail-model">
+      <div className="notion-planet-model">
+        <Reality className="notion-planet-detail-reality">
+          <ModelAsset id={modelAssetId} src={planet.modelSrc} />
+          {planet.annotations.map((annotation) => {
+            const attachmentName = `${planet.name.toLowerCase()}-${annotation.id}`
+
+            return (
+              <AttachmentAsset key={attachmentName} name={attachmentName}>
+                <PlanetAnnotationCard
+                  annotation={annotation}
+                  expanded={expandedAnnotationId === annotation.id}
+                  onToggle={() => {
+                    setExpandedAnnotationId((current) => current === annotation.id ? null : annotation.id)
+                  }}
+                />
+              </AttachmentAsset>
+            )
+          })}
+          <SceneGraph>
+            <Entity ref={groupRef}>
+              <ModelEntity
+                model={modelAssetId}
+                rotation={{ x: tiltRadians, y: 0, z: 0 }}
+                scale={{
+                  x: DETAIL_MODEL_SCALE * magnificationFactor,
+                  y: DETAIL_MODEL_SCALE * magnificationFactor,
+                  z: DETAIL_MODEL_SCALE * magnificationFactor,
+                }}
+                onSpatialDragStart={() => {
+                  const position = groupRef.current?.entity?.position
+                  dragOriginRef.current = position
+                    ? { x: position.x, y: position.y, z: position.z }
+                    : { x: 0, y: 0, z: 0 }
+                }}
+                onSpatialDrag={(event) => {
+                  const group = groupRef.current?.entity
+                  if (!group) return
+
+                  void group.setPosition({
+                    x: dragOriginRef.current.x + event.translationX,
+                    y: dragOriginRef.current.y + event.translationY,
+                    z: dragOriginRef.current.z + event.translationZ,
+                  })
+                }}
+                onSpatialMagnify={(event) => {
+                  if (event.magnification <= 0) return
+
+                  const scaleDelta = event.magnification / magnificationBaseRef.current
+                  const nextMagnification = Math.min(
+                    MAX_INTERACTIVE_MODEL_SCALE,
+                    Math.max(
+                      MIN_INTERACTIVE_MODEL_SCALE,
+                      magnificationFactorRef.current * scaleDelta,
+                    ),
+                  )
+                  magnificationFactorRef.current = nextMagnification
+                  magnificationBaseRef.current = event.magnification
+                  setMagnificationFactor(nextMagnification)
+                }}
+                onSpatialMagnifyEnd={() => {
+                  magnificationBaseRef.current = 1
+                }}
+              />
+              {planet.annotations.map((annotation) => {
+                const attachmentName = `${planet.name.toLowerCase()}-${annotation.id}`
+                const expanded = expandedAnnotationId === annotation.id
+
+                return (
+                  <AttachmentEntity
+                    key={attachmentName}
+                    attachment={attachmentName}
+                    position={[
+                      annotation.position[0] * magnificationFactor,
+                      annotation.position[1] * magnificationFactor,
+                      annotation.position[2] * magnificationFactor,
+                    ]}
+                    size={expanded ? EXPANDED_ATTACHMENT_SIZE : COMPACT_ATTACHMENT_SIZE}
+                  />
+                )
+              })}
+            </Entity>
+          </SceneGraph>
+        </Reality>
+        <div className="notion-model-label" aria-hidden="true">
+          <Box size={16} strokeWidth={1.8} />
+          <span>3D Model</span>
+        </div>
+      </div>
+      <div className="notion-model-block-handle" aria-hidden="true">
+        <GripVertical size={16} strokeWidth={2} />
+      </div>
+    </div>
+  )
+}
+
 function SolarSystemOrbitScene() {
   const [time, setTime] = useState(0)
 
@@ -564,6 +848,16 @@ function PlanetFact({
 }
 
 function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; onBack: () => void }) {
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  const supportsAttachments = isSpatial
+    && WebSpatialRuntime.supports('Reality')
+    && WebSpatialRuntime.supports('SceneGraph')
+    && WebSpatialRuntime.supports('Entity')
+    && WebSpatialRuntime.supports('ModelAsset')
+    && WebSpatialRuntime.supports('ModelEntity')
+    && WebSpatialRuntime.supports('AttachmentAsset')
+    && WebSpatialRuntime.supports('AttachmentEntity')
+
   return (
     <>
       <button
@@ -601,14 +895,18 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             </dl>
           </NotionTextBlock>
         </article>
-        <PlanetModelSlot
-          src={planet.modelSrc}
-          instanceKey={`detail-${planet.name}`}
-          tiltDegrees={getPlanetTiltDegrees(planet.name)}
-          rotate={false}
-          interactive
-          className="notion-planet-detail-model"
-        />
+        {supportsAttachments ? (
+          <AnnotatedPlanetModel planet={planet} />
+        ) : (
+          <PlanetModelSlot
+            src={planet.modelSrc}
+            instanceKey={`detail-${planet.name}`}
+            tiltDegrees={getPlanetTiltDegrees(planet.name)}
+            rotate={false}
+            interactive
+            className="notion-planet-detail-model"
+          />
+        )}
       </div>
     </>
   )
