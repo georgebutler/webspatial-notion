@@ -178,6 +178,11 @@ html.isSpatial .notion-ai-input {
   --tw-ring-color: var(--notion-border);
 }
 
+html.isSpatial .notion-ai-submit-button {
+  border: 1px solid var(--notion-border);
+  --tw-ring-color: var(--notion-border);
+}
+
 html.isSpatial .notion-ai-attachment-button:hover {
   background: #f2f2f2;
   color: var(--notion-text);

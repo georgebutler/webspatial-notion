@@ -72,7 +72,7 @@ export default function Ai() {
                 type="button"
                 aria-label="Submit prompt"
                 title="Submit prompt"
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-neutral-900 ring-1 ring-white/10 transition-colors hover:bg-white/85"
+                className="notion-ai-submit-button flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-neutral-900 ring-1 ring-white/10 transition-colors hover:bg-white/85"
               >
                 <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
               </button>
