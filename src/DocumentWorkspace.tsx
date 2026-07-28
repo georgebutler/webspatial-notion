@@ -11,7 +11,7 @@ import {
   SceneGraph,
   WebSpatialRuntime,
 } from '@webspatial/react-sdk/default'
-import type { ModelRef } from '@webspatial/react-sdk'
+import type { EntityRef, ModelRef } from '@webspatial/react-sdk'
 
 type DocumentItem = {
   title: string
@@ -470,6 +470,7 @@ function PlanetModelSlot({
   browserTiltDegrees,
   rotate = true,
   interactive = false,
+  magnifiable = interactive,
   rotationAxis = 'y',
   autoPlay = false,
   loop = false,
@@ -485,6 +486,7 @@ function PlanetModelSlot({
   browserTiltDegrees?: number
   rotate?: boolean
   interactive?: boolean
+  magnifiable?: boolean
   rotationAxis?: 'x' | 'y' | 'z'
   autoPlay?: boolean
   loop?: boolean
@@ -544,7 +546,7 @@ function PlanetModelSlot({
             model.entityTransform = transform
             dragBaseRef.current = { x, y, z }
           } : undefined}
-          onSpatialMagnify={interactive ? (event) => {
+          onSpatialMagnify={magnifiable ? (event) => {
             const model = modelRef.current
             if (!model || event.magnification <= 0) return
 
@@ -558,7 +560,7 @@ function PlanetModelSlot({
             modelScaleRef.current = nextScale
             magnificationBaseRef.current = event.magnification
           } : undefined}
-          onSpatialMagnifyEnd={interactive ? () => {
+          onSpatialMagnifyEnd={magnifiable ? () => {
             magnificationBaseRef.current = 1
           } : undefined}
         />
@@ -601,9 +603,8 @@ function AnnotatedPlanetModel({
 }: {
   planet: (typeof planets)[number]
 }) {
-  const magnificationBaseRef = useRef(1)
-  const magnificationFactorRef = useRef(1)
-  const [magnificationFactor, setMagnificationFactor] = useState(1)
+  const groupRef = useRef<EntityRef>(null)
+  const dragOriginRef = useRef({ x: 0, y: 0, z: 0 })
   const [expandedAnnotationId, setExpandedAnnotationId] = useState<string | null>(null)
   const modelAssetId = `detail-${planet.name.toLowerCase()}-asset`
   const tiltRadians = (getPlanetTiltDegrees(planet.name) * Math.PI) / 180
@@ -629,32 +630,30 @@ function AnnotatedPlanetModel({
             )
           })}
           <SceneGraph>
-            <Entity>
+            <Entity ref={groupRef}>
               <ModelEntity
                 model={modelAssetId}
                 rotation={{ x: tiltRadians, y: 0, z: 0 }}
                 scale={{
-                  x: DETAIL_MODEL_SCALE * magnificationFactor,
-                  y: DETAIL_MODEL_SCALE * magnificationFactor,
-                  z: DETAIL_MODEL_SCALE * magnificationFactor,
+                  x: DETAIL_MODEL_SCALE,
+                  y: DETAIL_MODEL_SCALE,
+                  z: DETAIL_MODEL_SCALE,
                 }}
-                onSpatialMagnify={(event) => {
-                  if (event.magnification <= 0) return
+                onSpatialDragStart={() => {
+                  const position = groupRef.current?.entity?.position
+                  dragOriginRef.current = position
+                    ? { x: position.x, y: position.y, z: position.z }
+                    : { x: 0, y: 0, z: 0 }
+                }}
+                onSpatialDrag={(event) => {
+                  const group = groupRef.current?.entity
+                  if (!group) return
 
-                  const scaleDelta = event.magnification / magnificationBaseRef.current
-                  const nextMagnification = Math.min(
-                    MAX_INTERACTIVE_MODEL_SCALE,
-                    Math.max(
-                      MIN_INTERACTIVE_MODEL_SCALE,
-                      magnificationFactorRef.current * scaleDelta,
-                    ),
-                  )
-                  magnificationFactorRef.current = nextMagnification
-                  magnificationBaseRef.current = event.magnification
-                  setMagnificationFactor(nextMagnification)
-                }}
-                onSpatialMagnifyEnd={() => {
-                  magnificationBaseRef.current = 1
+                  void group.setPosition({
+                    x: dragOriginRef.current.x + event.translationX,
+                    y: dragOriginRef.current.y + event.translationY,
+                    z: dragOriginRef.current.z + event.translationZ,
+                  })
                 }}
               />
               {planet.annotations.map((annotation) => {
@@ -666,9 +665,9 @@ function AnnotatedPlanetModel({
                     key={attachmentName}
                     attachment={attachmentName}
                     position={[
-                      annotation.position[0] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
-                      annotation.position[1] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
-                      annotation.position[2] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
+                      annotation.position[0] * DETAIL_ATTACHMENT_POSITION_SCALE,
+                      annotation.position[1] * DETAIL_ATTACHMENT_POSITION_SCALE,
+                      annotation.position[2] * DETAIL_ATTACHMENT_POSITION_SCALE,
                     ]}
                     size={expanded ? EXPANDED_ATTACHMENT_SIZE : COMPACT_ATTACHMENT_SIZE}
                   />
@@ -888,8 +887,9 @@ function PlanetDetail({ planet, onBack }: { planet: (typeof planets)[number]; on
             src={planet.modelSrc}
             instanceKey={`detail-${planet.name}`}
             tiltDegrees={getPlanetTiltDegrees(planet.name)}
-            rotate={false}
+            rotate={!isSpatial}
             interactive
+            magnifiable={false}
             className="notion-planet-detail-model"
           />
         )}
