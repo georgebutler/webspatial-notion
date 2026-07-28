@@ -369,7 +369,8 @@ const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 const MIN_INTERACTIVE_MODEL_SCALE = 0.25
 const MAX_INTERACTIVE_MODEL_SCALE = 4
 const DETAIL_MODEL_SCALE = 0.23
-const DETAIL_ATTACHMENT_POSITION_SCALE = 0.15
+const DETAIL_ATTACHMENT_HORIZONTAL_SCALE = 0.25
+const DETAIL_ATTACHMENT_VERTICAL_DEPTH_SCALE = 0.15
 const COMPACT_ATTACHMENT_SIZE = { width: 156, height: 44 }
 const EXPANDED_ATTACHMENT_SIZE = { width: 232, height: 112 }
 
@@ -668,9 +669,9 @@ function AnnotatedPlanetModel({
                     key={attachmentName}
                     attachment={attachmentName}
                     position={[
-                      annotation.position[0] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
-                      annotation.position[1] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
-                      annotation.position[2] * magnificationFactor * DETAIL_ATTACHMENT_POSITION_SCALE,
+                      annotation.position[0] * magnificationFactor * DETAIL_ATTACHMENT_HORIZONTAL_SCALE,
+                      annotation.position[1] * magnificationFactor * DETAIL_ATTACHMENT_VERTICAL_DEPTH_SCALE,
+                      annotation.position[2] * magnificationFactor * DETAIL_ATTACHMENT_VERTICAL_DEPTH_SCALE,
                     ]}
                     size={expanded ? EXPANDED_ATTACHMENT_SIZE : COMPACT_ATTACHMENT_SIZE}
                   />
