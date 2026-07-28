@@ -11,7 +11,7 @@ import {
   SceneGraph,
   WebSpatialRuntime,
 } from '@webspatial/react-sdk/default'
-import type { EntityRef, ModelRef } from '@webspatial/react-sdk'
+import type { ModelRef } from '@webspatial/react-sdk'
 
 type DocumentItem = {
   title: string
@@ -598,8 +598,6 @@ function AnnotatedPlanetModel({
 }: {
   planet: (typeof planets)[number]
 }) {
-  const groupRef = useRef<EntityRef>(null)
-  const dragOriginRef = useRef({ x: 0, y: 0, z: 0 })
   const magnificationBaseRef = useRef(1)
   const magnificationFactorRef = useRef(1)
   const [magnificationFactor, setMagnificationFactor] = useState(1)
@@ -628,7 +626,7 @@ function AnnotatedPlanetModel({
             )
           })}
           <SceneGraph>
-            <Entity ref={groupRef}>
+            <Entity>
               <ModelEntity
                 model={modelAssetId}
                 rotation={{ x: tiltRadians, y: 0, z: 0 }}
@@ -636,22 +634,6 @@ function AnnotatedPlanetModel({
                   x: DETAIL_MODEL_SCALE * magnificationFactor,
                   y: DETAIL_MODEL_SCALE * magnificationFactor,
                   z: DETAIL_MODEL_SCALE * magnificationFactor,
-                }}
-                onSpatialDragStart={() => {
-                  const position = groupRef.current?.entity?.position
-                  dragOriginRef.current = position
-                    ? { x: position.x, y: position.y, z: position.z }
-                    : { x: 0, y: 0, z: 0 }
-                }}
-                onSpatialDrag={(event) => {
-                  const group = groupRef.current?.entity
-                  if (!group) return
-
-                  void group.setPosition({
-                    x: dragOriginRef.current.x + event.translationX,
-                    y: dragOriginRef.current.y + event.translationY,
-                    z: dragOriginRef.current.z + event.translationZ,
-                  })
                 }}
                 onSpatialMagnify={(event) => {
                   if (event.magnification <= 0) return
