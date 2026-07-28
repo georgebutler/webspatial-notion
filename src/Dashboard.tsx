@@ -248,7 +248,7 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
           alt=""
           className="h-6 w-6 rounded-full border-2 border-black/20 object-cover"
         />
-        <div className="whitespace-nowrap text-right text-[12px] font-medium text-neutral-400">
+        <div className="dashboard-updated-label whitespace-nowrap text-right text-[12px] font-medium text-neutral-400">
           Updated · {item.lastAccessed.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
         </div>
       </div>

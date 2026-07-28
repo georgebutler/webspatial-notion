@@ -240,6 +240,10 @@ html.isSpatial .dashboard-event-card .text-neutral-400 {
   color: #ffffff;
 }
 
+html.isSpatial .dashboard-updated-label {
+  color: #ffffff;
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
