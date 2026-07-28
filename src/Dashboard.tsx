@@ -234,15 +234,15 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
       type="button"
       onClick={openItem}
       title={item.type === 'Database' ? 'No action' : 'Open document'}
-      className="flex min-w-0 cursor-pointer flex-col rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition-colors hover:bg-white/15"
+      className="recently-visited-card flex min-w-0 cursor-pointer flex-col rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition-colors hover:bg-white/15"
     >
-      <div>
+      <div className="recently-visited-icon">
         <ItemIcon type={item.type} />
       </div>
-      <div className="my-3 max-w-[220px] truncate text-[15px] leading-5 font-semibold text-neutral-100">
+      <div className="recently-visited-title my-3 max-w-[220px] truncate text-[15px] leading-5 font-semibold text-neutral-100">
         {item.title}
       </div>
-      <div className="mt-auto flex items-center justify-between gap-4">
+      <div className="recently-visited-meta mt-auto flex items-center justify-between gap-4">
         <img
           src={userAvatar}
           alt=""
@@ -312,11 +312,11 @@ function RecentlyVisited() {
         <IconClock size={20} />
         <p className="text-lg font-semibold">Recently visited</p>
       </div>
-      <div className="mt-3 flex min-w-0 items-center gap-2 sm:block">
+      <div className="mt-3 flex min-w-0 flex-col gap-2 sm:block">
         <div
           ref={viewportRef}
           onScroll={handleScroll}
-          className="min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none] sm:w-full"
+          className="w-full min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none]"
         >
           <div className="flex">
             {pages.map((page, pageIndex) => (
@@ -333,7 +333,7 @@ function RecentlyVisited() {
           </div>
         </div>
         {pages.length > 1 && (
-          <div className="flex shrink-0 flex-col items-center justify-center gap-2 sm:mt-1 sm:flex-row" aria-label="Recently visited pages">
+          <div className="mt-1 flex shrink-0 flex-row items-center justify-center gap-2" aria-label="Recently visited pages">
             <button
               type="button"
               onClick={() => scrollToPage(currentPage - 1)}
@@ -341,10 +341,9 @@ function RecentlyVisited() {
               className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
               aria-label="Show previous recently visited page"
             >
-              <ChevronUp className="sm:hidden" size={16} strokeWidth={1.8} aria-hidden="true" />
-              <ChevronLeft className="hidden sm:block" size={16} strokeWidth={1.8} aria-hidden="true" />
+              <ChevronLeft size={16} strokeWidth={1.8} aria-hidden="true" />
             </button>
-            <div className="flex flex-col items-center gap-2 sm:flex-row">
+            <div className="flex flex-row items-center gap-2">
               {pages.map((_, page) => (
                 <button
                   key={page}
@@ -365,8 +364,7 @@ function RecentlyVisited() {
               className="dashboard-pagination-arrow flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors disabled:cursor-default disabled:opacity-30"
               aria-label="Show next recently visited page"
             >
-              <ChevronDown className="sm:hidden" size={16} strokeWidth={1.8} aria-hidden="true" />
-              <ChevronRight className="hidden sm:block" size={16} strokeWidth={1.8} aria-hidden="true" />
+              <ChevronRight size={16} strokeWidth={1.8} aria-hidden="true" />
             </button>
           </div>
         )}

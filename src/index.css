@@ -287,6 +287,37 @@ html.isSpatial .dashboard-updated-label {
 }
 
 @media (max-width: 639px) {
+  html.is-web .recently-visited-card {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: center;
+  }
+
+  html.is-web .recently-visited-icon {
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+
+  html.is-web .recently-visited-title {
+    grid-column: 2;
+    margin: 0;
+    max-width: none;
+  }
+
+  html.is-web .recently-visited-meta {
+    grid-column: 2;
+    margin-top: 0;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  html.is-web .recently-visited-meta .dashboard-updated-label {
+    text-align: left;
+  }
+
   html.is-web .dashboard-event-row {
     flex-direction: column;
     gap: 6px;
