@@ -474,6 +474,7 @@ function PlanetModelSlot({
   autoPlay = false,
   loop = false,
   positionZ = 0,
+  onActivate,
   label = '3D Model',
   className = '',
 }: {
@@ -488,6 +489,7 @@ function PlanetModelSlot({
   autoPlay?: boolean
   loop?: boolean
   positionZ?: number
+  onActivate?: () => void
   label?: string
   className?: string
 }) {
@@ -522,6 +524,7 @@ function PlanetModelSlot({
           loop={loop}
           onLoad={() => setIsLoaded(true)}
           onError={() => setIsLoaded(false)}
+          onSpatialTap={onActivate ? () => onActivate() : undefined}
           onSpatialDragStart={interactive ? () => {
             dragBaseRef.current = { x: 0, y: 0, z: 0 }
           } : undefined}
@@ -939,6 +942,7 @@ function SolarSystemDocument() {
               src={planet.modelSrc}
               instanceKey={`card-${planet.name}`}
               tiltDegrees={getPlanetTiltDegrees(planet.name)}
+              onActivate={() => setSelectedPlanet(planet)}
               className="notion-planet-row-model"
             />
             <NotionTextBlock className="notion-planet-row-copy">
