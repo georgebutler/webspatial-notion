@@ -371,20 +371,20 @@ html.isSpatial #root {
 
 html.isSpatial .notion-document-workspace {
   min-height: 100vh;
-  height: 100vh;
-  overflow: hidden;
+  height: auto;
+  overflow: visible;
 }
 
 html.isSpatial .notion-document-workspace > .notion-sidebar {
-  position: static;
-  align-self: stretch;
-  height: 100%;
+  position: sticky;
+  top: 3rem;
+  align-self: flex-start;
+  height: calc(100vh - 6rem);
 }
 
 html.isSpatial .notion-document-content {
-  min-height: 0;
-  height: 100%;
-  overflow: auto;
+  height: auto;
+  overflow: visible;
 }
 
 .notion-text-block {
@@ -479,6 +479,33 @@ html.isSpatial .notion-document-content {
   font-weight: 500;
   line-height: 1.2;
   pointer-events: none;
+}
+
+.notion-model-capability {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  background: rgba(20, 22, 28, 0.78);
+  color: #ffffff;
+  line-height: 1;
+  pointer-events: none;
+}
+
+html.is-web .notion-model-capability {
+  border: 1px solid var(--notion-border);
+  background: rgba(245, 245, 245, 0.94);
+  color: var(--notion-subtle);
+  opacity: 0.72;
+}
+
+html.isSpatial .notion-model-capability {
+  color: #ffffff;
 }
 
 .newtons-cradle-media {

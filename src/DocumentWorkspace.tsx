@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState, type PropsWithChildren, type RefObject } from 'react'
-import { ArrowLeft, Box, FileText, GripVertical, Image as ImageIcon } from 'lucide-react'
+import {
+  ArrowLeft,
+  Box,
+  FileText,
+  GripVertical,
+  HandGrab,
+  Image as ImageIcon,
+  Move3d,
+  Scaling,
+} from 'lucide-react'
 import { Model3D } from './Model3D.tsx'
 import {
   AttachmentAsset,
@@ -365,6 +374,34 @@ function DocumentLastModified() {
   return <p className="mt-8 text-[13px] text-neutral-500">Last modified 1 day ago</p>
 }
 
+function ModelCapabilityIcon({
+  grabbable = false,
+  resizable = false,
+}: {
+  grabbable?: boolean
+  resizable?: boolean
+}) {
+  if (!grabbable && !resizable) return null
+
+  const label = grabbable && resizable
+    ? 'Grabbable and resizable in spatial mode'
+    : grabbable
+      ? 'Grabbable in spatial mode'
+      : 'Resizable in spatial mode'
+
+  return (
+    <div className="notion-model-capability" role="img" aria-label={label}>
+      {grabbable && resizable ? (
+        <Move3d size={17} strokeWidth={1.9} aria-hidden="true" />
+      ) : grabbable ? (
+        <HandGrab size={17} strokeWidth={1.9} aria-hidden="true" />
+      ) : (
+        <Scaling size={17} strokeWidth={1.9} aria-hidden="true" />
+      )}
+    </div>
+  )
+}
+
 const PLANET_ROTATION_DEGREES_PER_SECOND = 30
 const MIN_INTERACTIVE_MODEL_SCALE = 0.25
 const MAX_INTERACTIVE_MODEL_SCALE = 4
@@ -573,6 +610,7 @@ function PlanetModelSlot({
       <div className="notion-model-block-handle" aria-hidden="true">
         <GripVertical size={16} strokeWidth={2} />
       </div>
+      <ModelCapabilityIcon grabbable={interactive} resizable={magnifiable} />
     </div>
   )
 }
@@ -688,6 +726,7 @@ function AnnotatedPlanetModel({
       <div className="notion-model-block-handle" aria-hidden="true">
         <GripVertical size={16} strokeWidth={2} />
       </div>
+      <ModelCapabilityIcon resizable />
     </div>
   )
 }
@@ -1120,13 +1159,9 @@ export default function DocumentWorkspace() {
 
   return (
     <div
-      enable-xr={true}
-      style={{ '--xr-background-material': 'transparent' }}
       className="notion-document-workspace flex h-full w-full flex-col gap-6 overflow-hidden p-4 sm:p-6 md:p-8 lg:flex-row lg:p-12"
     >
       <aside
-        enable-xr={true}
-        style={{ '--xr-background-material': 'translucent' }}
         className="notion-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
       >
         <div className="flex items-center gap-2 text-white/90">
@@ -1171,8 +1206,6 @@ export default function DocumentWorkspace() {
       </aside>
 
       <div
-        enable-xr={true}
-        style={{ '--xr-background-material': 'regular' }}
         className={`notion-document-content h-full min-h-0 flex-1 overflow-auto rounded-2xl px-6 py-8 ${selectedDocument ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
       >
         <div className="w-full">
