@@ -146,6 +146,17 @@ html.is-web .notion-sidebar {
   border: 1px solid var(--notion-border);
 }
 
+.notion-ai-chat {
+  background: #ffffff;
+  color: var(--notion-text);
+}
+
+.notion-ai-greeting {
+  border-color: var(--notion-border);
+  background: #f2f2f2;
+  color: var(--notion-text);
+}
+
 html.isSpatial .notion-ai-window {
   min-height: 100vh;
   height: 100vh;
@@ -153,14 +164,11 @@ html.isSpatial .notion-ai-window {
   box-shadow: none;
 }
 
-html.isSpatial .notion-ai-greeting {
-  border-color: var(--notion-border);
-  background: #ffffff;
-  color: var(--notion-text);
-}
-
-html.isSpatial .notion-ai-greeting::before {
-  background: #ffffff;
+html.isSpatial .notion-todo-window {
+  min-height: 100vh;
+  height: 100vh;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 html.isSpatial .notion-ai-attachment-button,
@@ -192,13 +200,9 @@ html.isSpatial .notion-ai-input::placeholder {
   height: 12px;
   border-bottom: 1px solid var(--notion-border);
   border-left: 1px solid var(--notion-border);
-  background: rgba(255, 255, 255, 0.1);
+  background: #f2f2f2;
   content: "";
   transform: rotate(45deg);
-}
-
-html.is-web .notion-ai-greeting::before {
-  background: var(--notion-surface);
 }
 
 .dashboard-pagination-dot {

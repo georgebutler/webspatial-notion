@@ -37,7 +37,7 @@ export default function Ai() {
         <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col rounded-2xl">
           <div
             enable-xr={true}
-            style={{ '--xr-background-material': 'translucent' }}
+            style={{ '--xr-background-material': 'regular' }}
             className="notion-ai-chat flex min-h-0 w-full min-w-0 flex-1 flex-col rounded-2xl px-4 pt-4 pb-3 sm:px-5 sm:pt-5 sm:pb-4 md:px-6 md:pt-6 md:pb-4"
           >
             <div className="mt-2 min-h-0 flex-1 overflow-y-auto [scrollbar-width:none]">
@@ -48,7 +48,7 @@ export default function Ai() {
                     alt=""
                     className="h-8 w-8 shrink-0 rounded-full border-2 border-black/20 bg-white object-contain p-1"
                   />
-                  <div className="notion-ai-greeting relative rounded-xl bg-white/10 px-4 py-3 text-white">
+                  <div className="notion-ai-greeting relative rounded-xl px-4 py-3">
                     <p className="text-[16px] leading-7">Hi! I&apos;m here to help. What would you like to work on today?</p>
                   </div>
                 </div>

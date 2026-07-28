@@ -123,11 +123,15 @@ export default function Todo() {
   return (
     <div
       enable-xr={true}
-      style={{ '--xr-background-material': 'regular' }}
-      className="flex h-full w-full flex-col items-start overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:p-12"
+      style={{ '--xr-background-material': 'transparent' }}
+      className="notion-todo-window flex h-full w-full flex-col items-start overflow-hidden border border-white/10 p-4 shadow sm:p-6 md:p-8 lg:p-12"
     >
       <div className="relative flex min-h-0 w-full flex-1 flex-col gap-4 lg:flex-row lg:gap-6">
-        <aside className="notion-todo-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex">
+        <aside
+          enable-xr={true}
+          style={{ '--xr-background-material': 'translucent' }}
+          className="notion-todo-sidebar hidden h-full min-h-0 w-1/5 min-w-[240px] flex-col rounded-2xl bg-white/5 px-5 py-6 lg:flex"
+        >
           <div className="flex items-center gap-2 text-white/90">
             <ListTodo size={20} strokeWidth={1.8} aria-hidden="true" />
             <h1 className="text-lg font-semibold">Todo List</h1>
@@ -156,13 +160,21 @@ export default function Todo() {
           </div>
         </aside>
 
-        <div className={`notion-todo-content h-full min-h-0 w-full min-w-0 flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${mobileItems.length ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+        <div
+          enable-xr={true}
+          style={{ '--xr-background-material': 'regular' }}
+          className={`notion-todo-content h-full min-h-0 w-full min-w-0 flex-1 overflow-auto rounded-2xl px-6 py-8 lg:hidden ${mobileItems.length ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
+        >
           <div className="w-full">
             {mobileItems.length ? <ListContent title={lists[0]} items={mobileItems} /> : <h1 className="text-2xl font-semibold">Select a list to get started</h1>}
           </div>
         </div>
 
-        <div className={`notion-todo-content hidden h-full min-h-0 min-w-0 flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedTitleForView ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}>
+        <div
+          enable-xr={true}
+          style={{ '--xr-background-material': 'regular' }}
+          className={`notion-todo-content hidden h-full min-h-0 min-w-0 flex-1 overflow-auto rounded-2xl px-6 py-8 lg:block ${selectedTitleForView ? 'bg-white text-neutral-900' : 'bg-white/10 text-neutral-200'}`}
+        >
           <div className="w-full">
             {selectedTitleForView ? (
               <ListContent title={selectedTitleForView} items={items} onToggle={toggleItem} />
