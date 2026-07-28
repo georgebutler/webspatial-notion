@@ -1,13 +1,5 @@
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  BoxEntity,
-  Entity,
-  Reality,
-  SceneGraph,
-  UnlitMaterial,
-  WebSpatialRuntime,
-} from '@webspatial/react-sdk/default'
 import userAvatar from './assets/images/dashboard-avatar.webp'
 import alexAvatar from './assets/images/guest-alex-rivera.webp'
 import mayaAvatar from './assets/images/guest-maya-chen.webp'
@@ -230,117 +222,6 @@ function ItemIcon({ type }: { type: WorkspaceItem['type'] }) {
   return <IconDoc size={32} className="text-neutral-200" />
 }
 
-const SPATIAL_ICON_MATERIAL_ID = 'workspace-icon-white'
-
-function SpatialWorkspaceGeometry({ type }: { type: WorkspaceItem['type'] }) {
-  if (type === 'List') {
-    return (
-      <Entity>
-        <BoxEntity
-          width={0.045}
-          height={0.056}
-          depth={0.004}
-          cornerRadius={0.003}
-          materials={[SPATIAL_ICON_MATERIAL_ID]}
-        />
-        {[-0.014, 0, 0.014].map((positionY) => (
-          <Entity key={positionY}>
-            <BoxEntity
-              width={0.007}
-              height={0.007}
-              depth={0.003}
-              cornerRadius={0.001}
-              position={{ x: -0.013, y: positionY, z: 0.0035 }}
-              materials={[SPATIAL_ICON_MATERIAL_ID]}
-            />
-            <BoxEntity
-              width={0.021}
-              height={0.004}
-              depth={0.003}
-              cornerRadius={0.001}
-              position={{ x: 0.007, y: positionY, z: 0.0035 }}
-              materials={[SPATIAL_ICON_MATERIAL_ID]}
-            />
-          </Entity>
-        ))}
-      </Entity>
-    )
-  }
-
-  if (type === 'Database') {
-    return (
-      <Entity>
-        {[
-          { y: -0.015, z: -0.003 },
-          { y: 0, z: 0 },
-          { y: 0.015, z: 0.003 },
-        ].map(({ y, z }) => (
-          <BoxEntity
-            key={y}
-            width={0.045}
-            height={0.014}
-            depth={0.004}
-            cornerRadius={0.003}
-            position={{ x: 0, y, z }}
-            materials={[SPATIAL_ICON_MATERIAL_ID]}
-          />
-        ))}
-      </Entity>
-    )
-  }
-
-  return (
-    <Entity>
-      <BoxEntity
-        width={0.045}
-        height={0.056}
-        depth={0.004}
-        cornerRadius={0.003}
-        materials={[SPATIAL_ICON_MATERIAL_ID]}
-      />
-      <BoxEntity
-        width={0.014}
-        height={0.014}
-        depth={0.003}
-        cornerRadius={0.002}
-        position={{ x: 0.0125, y: 0.018, z: 0.0035 }}
-        materials={[SPATIAL_ICON_MATERIAL_ID]}
-      />
-    </Entity>
-  )
-}
-
-function SpatialWorkspaceIcon({ type }: { type: WorkspaceItem['type'] }) {
-  const isSpatial = document.documentElement.classList.contains('isSpatial')
-  const supportsSpatialIcon = isSpatial
-    && WebSpatialRuntime.supports('Reality')
-    && WebSpatialRuntime.supports('SceneGraph')
-    && WebSpatialRuntime.supports('Entity')
-    && WebSpatialRuntime.supports('BoxEntity')
-    && WebSpatialRuntime.supports('UnlitMaterial')
-
-  if (!supportsSpatialIcon) {
-    return <ItemIcon type={type} />
-  }
-
-  return (
-    <div className="h-8 w-8" aria-hidden="true">
-      <Reality
-        className="pointer-events-none h-12 w-12 -translate-x-2 -translate-y-2"
-        style={{
-          '--xr-depth': '40px',
-          '--xr-back': '20px',
-        }}
-      >
-        <UnlitMaterial id={SPATIAL_ICON_MATERIAL_ID} color="#ffffff" />
-        <SceneGraph>
-          <SpatialWorkspaceGeometry type={type} />
-        </SceneGraph>
-      </Reality>
-    </div>
-  )
-}
-
 function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
   const openItem = () => {
     if (!item.path) return
@@ -356,7 +237,7 @@ function RecentlyVisitedCard({ item }: { item: WorkspaceItem }) {
       className="flex min-w-0 cursor-pointer flex-col rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition-colors hover:bg-white/15"
     >
       <div>
-        <SpatialWorkspaceIcon type={item.type} />
+        <ItemIcon type={item.type} />
       </div>
       <div className="my-3 max-w-[220px] truncate text-[15px] leading-5 font-semibold text-neutral-100">
         {item.title}
@@ -435,7 +316,6 @@ function RecentlyVisited() {
         <div
           ref={viewportRef}
           onScroll={handleScroll}
-          enable-xr={true}
           className="min-w-0 flex-1 snap-x snap-mandatory overflow-x-auto pb-2 [scrollbar-width:none] sm:w-full"
         >
           <div className="flex">
