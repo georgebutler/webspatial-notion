@@ -59,14 +59,14 @@ export default function Ai() {
                 type="button"
                 aria-label="Add attachment"
                 title="Add attachment"
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white/70 ring-1 ring-white/10 transition-colors hover:bg-white/15 hover:text-white"
+                className="notion-ai-attachment-button flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white/70 ring-1 ring-white/10 transition-colors hover:bg-white/15 hover:text-white"
               >
                 <Plus size={20} strokeWidth={1.8} aria-hidden="true" />
               </button>
               <input
                 type="text"
                 placeholder="Ask, search, or make anything..."
-                className="h-12 min-w-0 flex-1 rounded-xl bg-white/10 px-3 text-white/90 ring-1 ring-white/10 outline-none placeholder:text-white/60"
+                className="notion-ai-input h-12 min-w-0 flex-1 rounded-xl bg-white/10 px-3 text-white/90 ring-1 ring-white/10 outline-none placeholder:text-white/60"
               />
               <button
                 type="button"
