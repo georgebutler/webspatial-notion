@@ -236,6 +236,10 @@ html.isSpatial .dashboard-event-date {
   color: #ffffff;
 }
 
+html.isSpatial .dashboard-event-card .text-neutral-400 {
+  color: #ffffff;
+}
+
 html.is-web .notion-model-surface {
   color: white;
 }
