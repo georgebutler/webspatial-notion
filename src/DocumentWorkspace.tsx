@@ -1042,17 +1042,17 @@ function NotionImageBlock({
 const documents: DocumentItem[] = [
   { title: 'The Solar System', slug: 'the-solar-system' },
   { title: "Newton's Cradle", slug: 'newtons-cradle' },
+  { title: 'Chinese Art Collection', slug: 'chinese-art-collection' },
   { title: 'Q3 Product Development', slug: 'q3-product-development' },
   { title: 'Feature Specification', slug: 'feature-specification' },
   { title: 'Product Roadmap Q1', slug: 'product-roadmap-q1' },
-  { title: 'Chinese Art Collection', slug: 'chinese-art-collection' },
 ]
 
 const DEFAULT_DOCUMENT_SLUG = 'the-solar-system'
 
 const documentSections = [
-  { title: 'Recently edited', items: documents.slice(0, 2) },
-  { title: 'Private', items: documents.slice(2) },
+  { title: 'Recently edited', items: documents.slice(0, 3) },
+  { title: 'Private', items: documents.slice(3) },
 ]
 
 function PlanetFact({
