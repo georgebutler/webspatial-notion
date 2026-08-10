@@ -371,34 +371,34 @@ const collectionModels: CollectionModel[] = [
     id: 'wabi-sabi-vase',
     title: '3D Model of Wabi-Sabi Vase with Dried Branches',
     description:
-      'This minimalist 3D asset presents a textured ceramic vase paired with bare dry branches, carrying classic wabi-sabi charm. The off-white jar features layered horizontal ridges and a worn matte texture, creating a rustic aged look. Slender bleached twigs stretch naturally in asymmetrical curves, delivering a quiet, artistic sense of emptiness. Its neutral earthy palette fits modern, Japanese, and light-luxury interiors. Users can rotate and magnify the model to inspect its subtle textures and natural, flowing branch lines.',
+      'This minimalist 3D asset presents a textured ceramic vase paired with bare dry branches, carrying classic wabi-sabi charm. The off-white jar features layered horizontal ridges and a worn matte texture, creating a rustic aged look. Slender bleached twigs stretch naturally in asymmetrical curves, delivering a quiet, artistic sense of emptiness. Its neutral earthy palette fits modern, Japanese, and light-luxury interiors. Users can rotate and reposition the model to inspect its subtle textures and natural, flowing branch lines.',
     spatialSrc: '/usdz/chinese-wabi-sabi-vase-spatial.usdz',
     browserSrc: '/usdz/chinese-wabi-sabi-vase-browser.usdz',
     position: { x: -0.34, y: -0.14, z: -0.06 },
     scale: 0.47,
-    attachmentPosition: [-0.24, 0.23, 0.12],
+    attachmentPosition: [-0.12, 0.12, 0.04],
   },
   {
     id: 'impasto-painting',
     title: 'Abstract Impasto Painting',
     description:
-      'This abstract artwork features thick impasto black paint forming three vertical silhouetted forms against muted off-white and grey textured backgrounds. Heavy brush strokes create dramatic raised textures, with faint hints of pale green and warm amber peeking through the dark layers and adding subtle contrast. The rough, scratched base canvas balances the dense central forms with a quiet minimalist composition and tactile depth. Users can rotate and magnify the model to inspect its layered surface.',
+      'This abstract artwork features thick impasto black paint forming three vertical silhouetted forms against muted off-white and grey textured backgrounds. Heavy brush strokes create dramatic raised textures, with faint hints of pale green and warm amber peeking through the dark layers and adding subtle contrast. The rough, scratched base canvas balances the dense central forms with a quiet minimalist composition and tactile depth. Users can rotate and reposition the model to inspect its layered surface.',
     spatialSrc: '/usdz/chinese-impasto-painting-spatial.usdz',
     browserSrc: '/usdz/chinese-impasto-painting-browser.usdz',
     position: { x: 0, y: 0.18, z: -0.18 },
     scale: 0.91,
-    attachmentPosition: [0.27, 0.24, 0.12],
+    attachmentPosition: [0.14, 0.15, 0.04],
   },
   {
     id: 'celadon-tea-set',
     title: 'Celadon Tea Set 3D Model',
     description:
-      'This refined 3D asset shows a complete oriental tea set laid on a matte black wooden tray. The teapot and three matching cups feature delicate crackle celadon glaze, trimmed with elegant thin gold rims that bring subtle luxury. The teapot is fitted with a smooth brown wooden handle for traditional style. Every piece shares unified soft grey-green tones, balanced by the dark wooden tray. Users can rotate and magnify the model to inspect the fine glaze textures from all views. It interprets minimalist Eastern tea aesthetics.',
+      'This refined 3D asset shows a complete oriental tea set laid on a matte black wooden tray. The teapot and three matching cups feature delicate crackle celadon glaze, trimmed with elegant thin gold rims that bring subtle luxury. The teapot is fitted with a smooth brown wooden handle for traditional style. Every piece shares unified soft grey-green tones, balanced by the dark wooden tray. Users can rotate and reposition the model to inspect the fine glaze textures from all views. It interprets minimalist Eastern tea aesthetics.',
     spatialSrc: '/usdz/chinese-tea-set-spatial.usdz',
     browserSrc: '/usdz/chinese-tea-set-browser.usdz',
     position: { x: 0.32, y: -0.17, z: -0.05 },
     scale: 1.1,
-    attachmentPosition: [0.23, 0.12, 0.12],
+    attachmentPosition: [0.12, 0.07, 0.04],
   },
 ]
 
@@ -903,11 +903,8 @@ function CollectionAttachmentCard({
 function ChineseArtSpatialCollection() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({})
   const [modelPositions, setModelPositions] = useState<Record<string, CollectionModel['position']>>({})
-  const [modelScales, setModelScales] = useState<Record<string, number>>({})
   const [modelRotations, setModelRotations] = useState<Record<string, { x: number; y: number; z: number }>>({})
   const dragStartPositions = useRef<Record<string, CollectionModel['position']>>({})
-  const magnificationBases = useRef<Record<string, number>>({})
-  const magnificationFactors = useRef<Record<string, number>>({})
 
   return (
     <div className="notion-model-block chinese-art-collection-block chinese-art-spatial-block mt-4">
@@ -934,7 +931,6 @@ function ChineseArtSpatialCollection() {
             {collectionModels.map((model) => {
               const expanded = expandedDescriptions[model.id] ?? false
               const position = modelPositions[model.id] ?? model.position
-              const magnificationFactor = modelScales[model.id] ?? 1
               const rotation = modelRotations[model.id] ?? { x: -Math.PI / 2, y: 0, z: 0 }
 
               return (
@@ -943,9 +939,9 @@ function ChineseArtSpatialCollection() {
                     model={`collection-${model.id}`}
                     rotation={rotation}
                     scale={{
-                      x: model.scale * magnificationFactor,
-                      y: model.scale * magnificationFactor,
-                      z: model.scale * magnificationFactor,
+                      x: model.scale,
+                      y: model.scale,
+                      z: model.scale,
                     }}
                     spatialEventOptions={{ constrainedToAxis: [0, 1, 0] }}
                     onSpatialDragStart={() => {
@@ -981,22 +977,6 @@ function ChineseArtSpatialCollection() {
                         [model.id]: { x: -Math.PI / 2, y: yaw, z: 0 },
                       }))
                     }}
-                    onSpatialMagnify={(event) => {
-                      if (event.magnification <= 0) return
-
-                      const previousBase = magnificationBases.current[model.id] ?? 1
-                      const previousFactor = magnificationFactors.current[model.id] ?? 1
-                      const nextFactor = Math.min(
-                        1.8,
-                        Math.max(0.65, previousFactor * (event.magnification / previousBase)),
-                      )
-                      magnificationBases.current[model.id] = event.magnification
-                      magnificationFactors.current[model.id] = nextFactor
-                      setModelScales((current) => ({ ...current, [model.id]: nextFactor }))
-                    }}
-                    onSpatialMagnifyEnd={() => {
-                      magnificationBases.current[model.id] = 1
-                    }}
                   />
                   <AttachmentEntity
                     attachment={`collection-${model.id}-description`}
@@ -1016,7 +996,7 @@ function ChineseArtSpatialCollection() {
       <div className="notion-model-block-handle" aria-hidden="true">
         <GripVertical size={16} strokeWidth={2} />
       </div>
-      <ModelCapabilityIcon grabbable resizable />
+      <ModelCapabilityIcon grabbable />
     </div>
   )
 }

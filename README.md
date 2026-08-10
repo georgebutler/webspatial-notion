@@ -129,7 +129,7 @@ The `avp` command targets Apple Vision Pro through `@webspatial/platform-visiono
 - `src/Model3D.tsx` wraps the SDK `Model` component and always enables XR.
 - Solar System overview and planet-detail scenes use `Reality`, `ModelAsset`, `ModelEntity`, and model-attached annotations.
 - Newton's Cradle uses separate spatial and browser USDZ packages and plays its authored loop.
-- The Chinese Art Collection uses separate spatial and PNG-textured browser packages. Spatial mode supports rotation, magnification, bounded repositioning, and independent description attachments. Browser mode layers the same three objects into one orbitable collection stage with always-visible information cards below it.
+- The Chinese Art Collection uses separate spatial and PNG-textured browser packages. Spatial mode supports rotation, bounded repositioning, and independent description attachments. Browser mode layers the same three objects into one orbitable collection stage with always-visible information cards below it.
 - `src/main.tsx` loads `public/model-element-polyfill.js` only in ordinary browsers without native `HTMLModelElement` support. Native spatial runtimes must not load that polyfill.
 
 Everything under `public/` is served as a public static asset.
