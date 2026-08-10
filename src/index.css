@@ -567,6 +567,149 @@ html.isSpatial .notion-model-capability {
   background: #f1f1ef !important;
 }
 
+.chinese-art-spatial-block {
+  aspect-ratio: 16 / 10;
+}
+
+.chinese-art-spatial-viewport,
+.chinese-art-reality {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+}
+
+.chinese-art-spatial-viewport {
+  background: #1f1f1f;
+}
+
+.chinese-art-reality {
+  display: block;
+  --xr-depth: 700px;
+  --xr-back: 80px;
+}
+
+.collection-attachment-card {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(54, 54, 54, 0.92);
+  padding: 0;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.collection-attachment-card:hover {
+  background: rgba(68, 68, 68, 0.96);
+}
+
+.collection-attachment-card:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.82);
+  outline-offset: -3px;
+}
+
+.collection-attachment-card.is-expanded {
+  position: relative;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border-radius: 22px;
+  background: rgba(48, 48, 48, 0.9);
+  padding: 22px 48px 22px 22px;
+}
+
+.collection-attachment-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.collection-attachment-card.is-expanded .collection-attachment-ellipsis {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.collection-attachment-copy {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.collection-attachment-title {
+  flex: none;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 22px;
+}
+
+.collection-attachment-description {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.chinese-art-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chinese-art-row {
+  display: grid;
+  grid-template-areas: "copy model";
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.chinese-art-row-copy {
+  grid-area: copy;
+  min-height: 100%;
+}
+
+.chinese-art-row-model {
+  grid-area: model;
+  width: 100%;
+  aspect-ratio: 1;
+  align-self: start;
+}
+
+.chinese-art-row-model .notion-planet-model,
+.chinese-art-row-model .webspatial-model,
+.chinese-art-row-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1;
+}
+
+.chinese-art-row-model .notion-planet-model,
+.chinese-art-row-model .webspatial-model,
+.chinese-art-row-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  background: #f1f1ef !important;
+}
+
 .notion-planet-list {
   display: flex;
   flex-direction: column;
@@ -780,6 +923,29 @@ html.isSpatial .notion-model-capability {
 @media (max-width: 759px) {
   .newtons-cradle-media {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chinese-art-spatial-block {
+    min-height: 420px;
+    aspect-ratio: auto;
+  }
+
+  .chinese-art-spatial-viewport,
+  .chinese-art-reality {
+    min-height: 420px;
+    aspect-ratio: auto;
+  }
+
+  .chinese-art-row {
+    grid-template-areas:
+      "model"
+      "copy";
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chinese-art-row-model {
+    width: min(100%, 360px);
+    justify-self: start;
   }
 
   .notion-planet-row {

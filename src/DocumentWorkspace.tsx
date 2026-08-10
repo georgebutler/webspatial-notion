@@ -36,6 +36,17 @@ type PlanetAnnotation = {
 
 type PlanetAnnotations = [PlanetAnnotation, PlanetAnnotation]
 
+type CollectionModel = {
+  id: string
+  title: string
+  description: string
+  spatialSrc: string
+  browserSrc: string
+  position: { x: number; y: number; z: number }
+  scale: number
+  attachmentPosition: [number, number, number]
+}
+
 const defaultAnnotationPositions = {
   first: [-0.62, 0.28, 0.3] as [number, number, number],
   second: [0.62, -0.22, 0.3] as [number, number, number],
@@ -355,6 +366,42 @@ const planets = [
 const ORBIT_MODEL_FALLBACK_SRC = '/usdz/orbit-solar-system-browser.usdz'
 const SATURN_TILT_DEGREES = (0.47 * 180) / Math.PI
 
+const collectionModels: CollectionModel[] = [
+  {
+    id: 'wabi-sabi-vase',
+    title: '3D Model of Wabi-Sabi Vase with Dried Branches',
+    description:
+      'This minimalist 3D asset presents a textured ceramic vase paired with bare dry branches, carrying classic wabi-sabi charm. The off-white jar features layered horizontal ridges and a worn matte texture, creating a rustic aged look. Slender bleached twigs stretch naturally in asymmetrical curves, delivering a quiet, artistic sense of emptiness. Its neutral earthy palette fits modern, Japanese, and light-luxury interiors. Users can rotate and magnify the model to inspect its subtle textures and natural, flowing branch lines.',
+    spatialSrc: '/usdz/chinese-wabi-sabi-vase-spatial.usdz',
+    browserSrc: '/usdz/chinese-wabi-sabi-vase-browser.usdz',
+    position: { x: -0.34, y: -0.14, z: 0.12 },
+    scale: 0.47,
+    attachmentPosition: [-0.24, 0.23, 0.12],
+  },
+  {
+    id: 'impasto-painting',
+    title: 'Abstract Impasto Painting',
+    description:
+      'This abstract artwork features thick impasto black paint forming three vertical silhouetted forms against muted off-white and grey textured backgrounds. Heavy brush strokes create dramatic raised textures, with faint hints of pale green and warm amber peeking through the dark layers and adding subtle contrast. The rough, scratched base canvas balances the dense central forms with a quiet minimalist composition and tactile depth. Users can rotate and magnify the model to inspect its layered surface.',
+    spatialSrc: '/usdz/chinese-impasto-painting-spatial.usdz',
+    browserSrc: '/usdz/chinese-impasto-painting-browser.usdz',
+    position: { x: 0, y: 0.18, z: -0.18 },
+    scale: 0.91,
+    attachmentPosition: [0.27, 0.24, 0.12],
+  },
+  {
+    id: 'celadon-tea-set',
+    title: 'Celadon Tea Set 3D Model',
+    description:
+      'This refined 3D asset shows a complete oriental tea set laid on a matte black wooden tray. The teapot and three matching cups feature delicate crackle celadon glaze, trimmed with elegant thin gold rims that bring subtle luxury. The teapot is fitted with a smooth brown wooden handle for traditional style. Every piece shares unified soft grey-green tones, balanced by the dark wooden tray. Users can rotate and magnify the model to inspect the fine glaze textures from all views. It interprets minimalist Eastern tea aesthetics.',
+    spatialSrc: '/usdz/chinese-tea-set-spatial.usdz',
+    browserSrc: '/usdz/chinese-tea-set-browser.usdz',
+    position: { x: 0.32, y: -0.17, z: 0.13 },
+    scale: 1.1,
+    attachmentPosition: [0.23, 0.12, 0.12],
+  },
+]
+
 const orbitBodies = [
   { name: 'Mercury', modelSrc: orbitModelSources.mercury, distance: 0.18, scale: 0.008, speed: 4.15, spin: 0.04, tilt: 0.01 },
   { name: 'Venus', modelSrc: orbitModelSources.venus, distance: 0.26, scale: 0.012, speed: 1.62, spin: -0.01, tilt: 3.1 },
@@ -410,6 +457,8 @@ const DETAIL_ATTACHMENT_HORIZONTAL_SCALE = 0.25
 const DETAIL_ATTACHMENT_VERTICAL_DEPTH_SCALE = 0.15
 const COMPACT_ATTACHMENT_SIZE = { width: 156, height: 44 }
 const EXPANDED_ATTACHMENT_SIZE = { width: 232, height: 112 }
+const COLLECTION_ATTACHMENT_COLLAPSED_SIZE = { width: 44, height: 44 }
+const COLLECTION_ATTACHMENT_EXPANDED_SIZE = { width: 360, height: 320 }
 
 function useModelSelfRotation(
   modelRef: RefObject<ModelRef | null>,
@@ -813,6 +862,151 @@ function SolarSystemCollection() {
   )
 }
 
+function CollectionAttachmentCard({
+  model,
+  expanded,
+  onToggle,
+}: {
+  model: CollectionModel
+  expanded: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className={`collection-attachment-card ${expanded ? 'is-expanded' : ''}`}
+      aria-expanded={expanded}
+      aria-label={`${expanded ? 'Close' : 'Open'} ${model.title} description`}
+    >
+      <span className="collection-attachment-ellipsis" aria-hidden="true">•••</span>
+      {expanded ? (
+        <span className="collection-attachment-copy">
+          <span className="collection-attachment-title">{model.title}</span>
+          <span className="collection-attachment-description">{model.description}</span>
+        </span>
+      ) : null}
+    </button>
+  )
+}
+
+function ChineseArtSpatialCollection() {
+  const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({})
+  const [modelScales, setModelScales] = useState<Record<string, number>>({})
+  const [modelRotations, setModelRotations] = useState<Record<string, { x: number; y: number; z: number }>>({})
+  const magnificationBases = useRef<Record<string, number>>({})
+  const magnificationFactors = useRef<Record<string, number>>({})
+
+  return (
+    <div className="notion-model-block chinese-art-spatial-block mt-4">
+      <div className="notion-planet-model chinese-art-spatial-viewport">
+        <Reality className="chinese-art-reality">
+          {collectionModels.map((model) => (
+            <ModelAsset key={model.id} id={`collection-${model.id}`} src={model.spatialSrc} />
+          ))}
+          {collectionModels.map((model) => (
+            <AttachmentAsset key={model.id} name={`collection-${model.id}-description`}>
+              <CollectionAttachmentCard
+                model={model}
+                expanded={expandedDescriptions[model.id] ?? false}
+                onToggle={() => {
+                  setExpandedDescriptions((current) => ({
+                    ...current,
+                    [model.id]: !current[model.id],
+                  }))
+                }}
+              />
+            </AttachmentAsset>
+          ))}
+          <SceneGraph>
+            {collectionModels.map((model) => {
+              const expanded = expandedDescriptions[model.id] ?? false
+              const magnificationFactor = modelScales[model.id] ?? 1
+              const rotation = modelRotations[model.id] ?? { x: -Math.PI / 2, y: 0, z: 0 }
+
+              return (
+                <Entity key={model.id} position={model.position}>
+                  <ModelEntity
+                    model={`collection-${model.id}`}
+                    rotation={rotation}
+                    scale={{
+                      x: model.scale * magnificationFactor,
+                      y: model.scale * magnificationFactor,
+                      z: model.scale * magnificationFactor,
+                    }}
+                    spatialEventOptions={{ constrainedToAxis: [0, 1, 0] }}
+                    onSpatialRotate={(event) => {
+                      const { x, y, z, w } = event.quaternion
+                      const yaw = Math.atan2(2 * (w * y + x * z), 1 - 2 * (y * y + z * z))
+                      setModelRotations((current) => ({
+                        ...current,
+                        [model.id]: { x: -Math.PI / 2, y: yaw, z: 0 },
+                      }))
+                    }}
+                    onSpatialMagnify={(event) => {
+                      if (event.magnification <= 0) return
+
+                      const previousBase = magnificationBases.current[model.id] ?? 1
+                      const previousFactor = magnificationFactors.current[model.id] ?? 1
+                      const nextFactor = Math.min(
+                        1.8,
+                        Math.max(0.65, previousFactor * (event.magnification / previousBase)),
+                      )
+                      magnificationBases.current[model.id] = event.magnification
+                      magnificationFactors.current[model.id] = nextFactor
+                      setModelScales((current) => ({ ...current, [model.id]: nextFactor }))
+                    }}
+                    onSpatialMagnifyEnd={() => {
+                      magnificationBases.current[model.id] = 1
+                    }}
+                  />
+                  <AttachmentEntity
+                    attachment={`collection-${model.id}-description`}
+                    position={model.attachmentPosition}
+                    size={expanded ? COLLECTION_ATTACHMENT_EXPANDED_SIZE : COLLECTION_ATTACHMENT_COLLAPSED_SIZE}
+                  />
+                </Entity>
+              )
+            })}
+          </SceneGraph>
+        </Reality>
+        <div className="notion-model-label" aria-hidden="true">
+          <Box size={16} strokeWidth={1.8} />
+          <span>3D Collection</span>
+        </div>
+      </div>
+      <div className="notion-model-block-handle" aria-hidden="true">
+        <GripVertical size={16} strokeWidth={2} />
+      </div>
+      <ModelCapabilityIcon grabbable resizable />
+    </div>
+  )
+}
+
+function ChineseArtCollectionRows() {
+  return (
+    <div className="chinese-art-list mt-4">
+      {collectionModels.map((model) => (
+        <article className="chinese-art-row" key={model.id}>
+          <NotionTextBlock className="chinese-art-row-copy">
+            <h2 className="text-xl font-semibold">{model.title}</h2>
+            <p className="mt-3 text-[16px] leading-7">{model.description}</p>
+          </NotionTextBlock>
+          <PlanetModelSlot
+            src={model.spatialSrc}
+            browserSrc={model.browserSrc}
+            instanceKey={`collection-row-${model.id}`}
+            rotate={false}
+            interactive
+            label="3D Model"
+            className="chinese-art-row-model"
+          />
+        </article>
+      ))}
+    </div>
+  )
+}
+
 function NotionTextBlock({ children, className = '' }: PropsWithChildren<{ className?: string }>) {
   return (
     <div className={`notion-text-block ${className}`}>
@@ -851,7 +1045,10 @@ const documents: DocumentItem[] = [
   { title: 'Q3 Product Development', slug: 'q3-product-development' },
   { title: 'Feature Specification', slug: 'feature-specification' },
   { title: 'Product Roadmap Q1', slug: 'product-roadmap-q1' },
+  { title: 'Chinese Art Collection', slug: 'chinese-art-collection' },
 ]
+
+const DEFAULT_DOCUMENT_SLUG = 'the-solar-system'
 
 const documentSections = [
   { title: 'Recently edited', items: documents.slice(0, 2) },
@@ -1084,7 +1281,33 @@ function NewtonsCradleDocument() {
   )
 }
 
+function ChineseArtCollectionDocument() {
+  const isSpatial = document.documentElement.classList.contains('isSpatial')
+  const supportsCollectionVolume = isSpatial
+    && WebSpatialRuntime.supports('Reality')
+    && WebSpatialRuntime.supports('SceneGraph')
+    && WebSpatialRuntime.supports('Entity')
+    && WebSpatialRuntime.supports('ModelAsset')
+    && WebSpatialRuntime.supports('ModelEntity')
+    && WebSpatialRuntime.supports('AttachmentAsset')
+    && WebSpatialRuntime.supports('AttachmentEntity')
+
+  return (
+    <>
+      <h1 className="text-3xl font-bold">Chinese Art Collection</h1>
+      <NotionTextBlock className="mt-4 text-[16px] leading-7">
+        A study of three tactile objects that pair traditional East Asian forms with restrained,
+        contemporary presentation: a celadon tea set, a wabi-sabi vase with dried branches, and an
+        abstract impasto painting.
+      </NotionTextBlock>
+      {supportsCollectionVolume ? <ChineseArtSpatialCollection /> : <ChineseArtCollectionRows />}
+      <DocumentLastModified />
+    </>
+  )
+}
+
 function DocumentBody({ title }: { title: string }) {
+  if (title === 'Chinese Art Collection') return <ChineseArtCollectionDocument />
   if (title === 'The Solar System') return <SolarSystemDocument />
   if (title === "Newton's Cradle") return <NewtonsCradleDocument />
 
@@ -1128,7 +1351,7 @@ export default function DocumentWorkspace() {
     const slug = url.pathname.startsWith('/doc/') ? url.pathname.slice('/doc/'.length) : ''
 
     if (slug) return documents.findIndex((document) => document.slug === slug)
-    return 0
+    return documents.findIndex((document) => document.slug === DEFAULT_DOCUMENT_SLUG)
   }
 
   const [selectedIndex, setSelectedIndex] = useState(getSelectedIndex)
@@ -1139,7 +1362,7 @@ export default function DocumentWorkspace() {
     const normalizedPathname = url.pathname.replace(/\/+$/, '')
 
     if (normalizedPathname === '/doc') {
-      url.pathname = `/doc/${documents[0].slug}`
+      url.pathname = `/doc/${DEFAULT_DOCUMENT_SLUG}`
       window.history.replaceState({}, '', url)
     }
 

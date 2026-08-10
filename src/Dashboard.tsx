@@ -126,12 +126,13 @@ const daysAgo = (days: number) => {
 }
 
 const workspaceItems: WorkspaceItem[] = [
-  { title: "Newton's Cradle", type: 'Document', lastAccessed: daysAgo(0), path: '/doc/newtons-cradle' },
-  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(1), path: '/doc/the-solar-system' },
-  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(2), path: '/doc/q3-product-development' },
-  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(3), path: '/doc/feature-specification' },
-  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(4), path: '/doc/product-roadmap-q1' },
-  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(5), path: '/todo' },
+  { title: 'Chinese Art Collection', type: 'Document', lastAccessed: daysAgo(0), path: '/doc/chinese-art-collection' },
+  { title: "Newton's Cradle", type: 'Document', lastAccessed: daysAgo(1), path: '/doc/newtons-cradle' },
+  { title: 'The Solar System', type: 'Document', lastAccessed: daysAgo(2), path: '/doc/the-solar-system' },
+  { title: 'Q3 Product Development', type: 'Document', lastAccessed: daysAgo(3), path: '/doc/q3-product-development' },
+  { title: 'Feature Specification', type: 'Document', lastAccessed: daysAgo(4), path: '/doc/feature-specification' },
+  { title: 'Product Roadmap Q1', type: 'Document', lastAccessed: daysAgo(5), path: '/doc/product-roadmap-q1' },
+  { title: 'User Flow & Interaction', type: 'List', lastAccessed: daysAgo(6), path: '/todo' },
   { title: 'Company Database Overview', type: 'Database', lastAccessed: daysAgo(13) },
 ]
 
