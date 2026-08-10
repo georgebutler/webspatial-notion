@@ -2,13 +2,23 @@
   "name": "webspatial-notion",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/georgebutler/webspatial-notion.git"
+  },
+  "homepage": "https://mock-notion.vercel.app",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "npm run build && vite preview --host --port 5173",
-    "avp": "npm run build && webspatial-builder run --base=http://localhost:5173"
+    "avp": "npm run build && webspatial-builder run --base=http://localhost:5173",
+    "screenshots:readme": "node scripts/capture-readme-screenshot.mjs"
   },
   "dependencies": {
     "@webspatial/core-sdk": "1.7.0",

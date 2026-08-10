@@ -567,6 +567,10 @@ html.isSpatial .notion-model-capability {
   background: #f1f1ef !important;
 }
 
+.chinese-art-collection-block {
+  aspect-ratio: 16 / 10;
+}
+
 .chinese-art-spatial-block {
   aspect-ratio: 16 / 10;
 }
@@ -585,7 +589,78 @@ html.isSpatial .notion-model-capability {
 .chinese-art-reality {
   display: block;
   --xr-depth: 700px;
-  --xr-back: 80px;
+  --xr-back: 30px;
+}
+
+.chinese-art-browser-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 255, 255, 0.08), transparent 38%),
+    #1f1f1f;
+}
+
+.chinese-art-browser-model {
+  position: absolute;
+  display: block;
+  max-width: none;
+  overflow: hidden;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.chinese-art-browser-model:active {
+  cursor: grabbing;
+}
+
+.chinese-art-browser-model:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.82);
+  outline-offset: -2px;
+}
+
+.chinese-art-browser-model .__model-element-fallback-canvas-f7a9c3e1__ {
+  width: 100% !important;
+  height: 100% !important;
+  background: transparent !important;
+}
+
+.chinese-art-browser-model--impasto-painting {
+  z-index: 1;
+  top: 3%;
+  left: 22%;
+  width: 56%;
+  height: 84%;
+}
+
+.chinese-art-browser-model--wabi-sabi-vase {
+  z-index: 2;
+  bottom: 0;
+  left: 7%;
+  width: 45%;
+  height: 72%;
+}
+
+.chinese-art-browser-model--celadon-tea-set {
+  z-index: 3;
+  right: 4%;
+  bottom: 2%;
+  width: 52%;
+  height: 60%;
+}
+
+.chinese-art-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+.chinese-art-info-card {
+  height: 100%;
 }
 
 .collection-attachment-card {
@@ -934,6 +1009,35 @@ html.isSpatial .notion-model-capability {
   .chinese-art-reality {
     min-height: 420px;
     aspect-ratio: auto;
+  }
+
+  .chinese-art-browser-block,
+  .chinese-art-browser-viewport {
+    min-height: 420px;
+    aspect-ratio: auto;
+  }
+
+  .chinese-art-browser-model--impasto-painting {
+    top: 5%;
+    left: 15%;
+    width: 70%;
+    height: 74%;
+  }
+
+  .chinese-art-browser-model--wabi-sabi-vase {
+    left: 0;
+    width: 54%;
+    height: 64%;
+  }
+
+  .chinese-art-browser-model--celadon-tea-set {
+    right: 0;
+    width: 60%;
+    height: 52%;
+  }
+
+  .chinese-art-info-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .chinese-art-row {
