@@ -374,8 +374,8 @@ const collectionModels: CollectionModel[] = [
       'This minimalist 3D asset presents a textured ceramic vase paired with bare dry branches, carrying classic wabi-sabi charm. The off-white jar features layered horizontal ridges and a worn matte texture, creating a rustic aged look. Slender bleached twigs stretch naturally in asymmetrical curves, delivering a quiet, artistic sense of emptiness. Its neutral earthy palette fits modern, Japanese, and light-luxury interiors. Users can rotate and reposition the model to inspect its subtle textures and natural, flowing branch lines.',
     spatialSrc: '/usdz/chinese-wabi-sabi-vase-spatial.usdz',
     browserSrc: '/usdz/chinese-wabi-sabi-vase-browser.usdz',
-    position: { x: -0.34, y: -0.14, z: -0.06 },
-    scale: 0.47,
+    position: { x: -0.17, y: -0.07, z: -0.03 },
+    scale: 0.235,
     attachmentPosition: [-0.12, 0.12, 0.04],
   },
   {
@@ -385,8 +385,8 @@ const collectionModels: CollectionModel[] = [
       'This abstract artwork features thick impasto black paint forming three vertical silhouetted forms against muted off-white and grey textured backgrounds. Heavy brush strokes create dramatic raised textures, with faint hints of pale green and warm amber peeking through the dark layers and adding subtle contrast. The rough, scratched base canvas balances the dense central forms with a quiet minimalist composition and tactile depth. Users can rotate and reposition the model to inspect its layered surface.',
     spatialSrc: '/usdz/chinese-impasto-painting-spatial.usdz',
     browserSrc: '/usdz/chinese-impasto-painting-browser.usdz',
-    position: { x: 0, y: 0.18, z: -0.18 },
-    scale: 0.91,
+    position: { x: 0, y: 0.09, z: -0.09 },
+    scale: 0.455,
     attachmentPosition: [0.14, 0.15, 0.04],
   },
   {
@@ -396,8 +396,8 @@ const collectionModels: CollectionModel[] = [
       'This refined 3D asset shows a complete oriental tea set laid on a matte black wooden tray. The teapot and three matching cups feature delicate crackle celadon glaze, trimmed with elegant thin gold rims that bring subtle luxury. The teapot is fitted with a smooth brown wooden handle for traditional style. Every piece shares unified soft grey-green tones, balanced by the dark wooden tray. Users can rotate and reposition the model to inspect the fine glaze textures from all views. It interprets minimalist Eastern tea aesthetics.',
     spatialSrc: '/usdz/chinese-tea-set-spatial.usdz',
     browserSrc: '/usdz/chinese-tea-set-browser.usdz',
-    position: { x: 0.32, y: -0.17, z: -0.05 },
-    scale: 1.1,
+    position: { x: 0.16, y: -0.085, z: -0.025 },
+    scale: 0.55,
     attachmentPosition: [0.12, 0.07, 0.04],
   },
 ]
