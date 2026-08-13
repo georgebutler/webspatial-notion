@@ -459,16 +459,6 @@ const COMPACT_ATTACHMENT_SIZE = { width: 156, height: 44 }
 const EXPANDED_ATTACHMENT_SIZE = { width: 232, height: 112 }
 const COLLECTION_ATTACHMENT_COLLAPSED_SIZE = { width: 44, height: 44 }
 const COLLECTION_ATTACHMENT_EXPANDED_SIZE = { width: 360, height: 320 }
-const COLLECTION_POSITION_BOUNDS = {
-  minX: -0.55,
-  maxX: 0.55,
-  minY: -0.32,
-  maxY: 0.32,
-}
-
-function clampCollectionPosition(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
-}
 
 function useModelSelfRotation(
   modelRef: RefObject<ModelRef | null>,
@@ -902,9 +892,7 @@ function CollectionAttachmentCard({
 
 function ChineseArtSpatialCollection() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<Record<string, boolean>>({})
-  const [modelPositions, setModelPositions] = useState<Record<string, CollectionModel['position']>>({})
   const [modelRotations, setModelRotations] = useState<Record<string, { x: number; y: number; z: number }>>({})
-  const dragStartPositions = useRef<Record<string, CollectionModel['position']>>({})
 
   return (
     <div className="notion-model-block chinese-art-collection-block chinese-art-spatial-block mt-4">
@@ -930,11 +918,10 @@ function ChineseArtSpatialCollection() {
           <SceneGraph>
             {collectionModels.map((model) => {
               const expanded = expandedDescriptions[model.id] ?? false
-              const position = modelPositions[model.id] ?? model.position
               const rotation = modelRotations[model.id] ?? { x: -Math.PI / 2, y: 0, z: 0 }
 
               return (
-                <Entity key={model.id} position={position}>
+                <Entity key={model.id} position={model.position}>
                   <ModelEntity
                     model={`collection-${model.id}`}
                     rotation={rotation}
@@ -942,32 +929,6 @@ function ChineseArtSpatialCollection() {
                       x: model.scale,
                       y: model.scale,
                       z: model.scale,
-                    }}
-                    spatialEventOptions={{ constrainedToAxis: [0, 1, 0] }}
-                    onSpatialDragStart={() => {
-                      dragStartPositions.current[model.id] = position
-                    }}
-                    onSpatialDrag={(event) => {
-                      const dragStartPosition = dragStartPositions.current[model.id] ?? position
-                      setModelPositions((current) => ({
-                        ...current,
-                        [model.id]: {
-                          x: clampCollectionPosition(
-                            dragStartPosition.x + event.translationX,
-                            COLLECTION_POSITION_BOUNDS.minX,
-                            COLLECTION_POSITION_BOUNDS.maxX,
-                          ),
-                          y: clampCollectionPosition(
-                            dragStartPosition.y + event.translationY,
-                            COLLECTION_POSITION_BOUNDS.minY,
-                            COLLECTION_POSITION_BOUNDS.maxY,
-                          ),
-                          z: model.position.z,
-                        },
-                      }))
-                    }}
-                    onSpatialDragEnd={() => {
-                      delete dragStartPositions.current[model.id]
                     }}
                     onSpatialRotate={(event) => {
                       const { x, y, z, w } = event.quaternion
