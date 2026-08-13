@@ -385,8 +385,8 @@ const collectionModels: CollectionModel[] = [
       'This abstract artwork features thick impasto black paint forming three vertical silhouetted forms against muted off-white and grey textured backgrounds. Heavy brush strokes create dramatic raised textures, with faint hints of pale green and warm amber peeking through the dark layers and adding subtle contrast. The rough, scratched base canvas balances the dense central forms with a quiet minimalist composition and tactile depth. Users can rotate and reposition the model to inspect its layered surface.',
     spatialSrc: '/usdz/chinese-impasto-painting-spatial.usdz',
     browserSrc: '/usdz/chinese-impasto-painting-browser.usdz',
-    position: { x: 0, y: 0.09, z: -0.09 },
-    scale: 0.455,
+    position: { x: 0, y: 0.02, z: -0.09 },
+    scale: 0.32,
     attachmentPosition: [0.14, 0.15, 0.04],
   },
   {
@@ -396,8 +396,8 @@ const collectionModels: CollectionModel[] = [
       'This refined 3D asset shows a complete oriental tea set laid on a matte black wooden tray. The teapot and three matching cups feature delicate crackle celadon glaze, trimmed with elegant thin gold rims that bring subtle luxury. The teapot is fitted with a smooth brown wooden handle for traditional style. Every piece shares unified soft grey-green tones, balanced by the dark wooden tray. Users can rotate and reposition the model to inspect the fine glaze textures from all views. It interprets minimalist Eastern tea aesthetics.',
     spatialSrc: '/usdz/chinese-tea-set-spatial.usdz',
     browserSrc: '/usdz/chinese-tea-set-browser.usdz',
-    position: { x: 0.16, y: -0.085, z: -0.025 },
-    scale: 0.55,
+    position: { x: 0.1, y: -0.085, z: -0.025 },
+    scale: 0.4,
     attachmentPosition: [0.12, 0.07, 0.04],
   },
 ]
